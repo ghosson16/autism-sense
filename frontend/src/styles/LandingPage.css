@@ -1,0 +1,62 @@
+.landing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to bottom right, #a8e6cf, #dcedc1);
+  }
+  
+  .logo-container {
+    text-align: center;
+    justify-content: center;
+  }
+  
+  .logo {
+    width: 300px; /* Adjust as necessary */
+    height: 300px;
+    background-color:#fff;
+    border-radius: 100%;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    color: #FFFFFF;
+    font-family: 'your-font-family'; /* Use your specific font */
+    margin: 20px 0;
+  }
+  
+  .btn {
+    width: 400px;
+    background-color:#fff;
+    color:#008f7a;
+    margin: 5px 10px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .btn:hover {
+    background-color: #008f7a;
+    color: #333;
+  }
+
+  .landing-footer{
+    color: #008f7a;
+    justify-content: center;
+    margin-top: 25px;
+  }
+
+  .landing-footer a{
+  color:#008f7a;
+  font-weight: bold;
+  }
+
+  .landing-footer a:hover{
+    color:#333;
+  }
+
+  
+  

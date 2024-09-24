@@ -1,0 +1,156 @@
+/* Reset body and html margin and padding to ensure navbar is at the top */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* General Container Style */
+.container {
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  margin-top: 70px; /* Added margin to push content below the navbar */
+}
+
+/* Navbar Style */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f4f4f4;
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensure it's on top of other content */
+}
+
+/* Hover and Click Effects for Navbar Sections */
+.navbar-section:hover, .navbar-section:focus {
+  transform: scale(1.05); /* Slight enlargement */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Elevation effect */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbar-section:active {
+  transform: scale(0.98); /* Slight shrink on click */
+}
+
+/* Logo Section */
+.logo-section .ring-holder {
+  width: 40px;
+  height: 40px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Profile Section */
+.navbar-section.profile-section {
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar-section.profile-section .ring-holder {
+  width: 40px;
+  height: 40px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.navbar-section.profile-section span {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-left: 10px;
+}
+
+/* Logout Section */
+.logout-section button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 25px;
+  border-radius: 50%; /* Adjusted to circular shape */
+  display: flex;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.logout-section button:hover {
+  background-color: #ff1a1a;
+  transform: scale(1.05); /* Slight enlargement on hover */
+}
+
+.logout-section button:active {
+  transform: scale(0.98); /* Slight shrink on click */
+}
+
+/* Dashboard Content */
+.dashboard-content {
+  max-width: 800px;
+  margin: 20px auto;
+  text-align: left;
+}
+
+.progress-report, .detailed-reports {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progress-report h2, .detailed-reports h2 {
+  color: #333;
+}
+
+.progress-report p, .detailed-reports p {
+  color: #555;
+}
+
+/* Footer Style */
+.footer {
+  color: #008f7a;
+  text-align: center;
+  margin-top: auto; /* Pushes the footer to the bottom */
+  padding: 10px 20px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.bottom-bar {
+  text-align: center;
+}
