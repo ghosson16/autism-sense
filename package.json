@@ -1,0 +1,12 @@
+{
+    "name": "autism-sense",
+    "version": "1.0.0",
+    "description": "A tool to help children with High-Functioning Autism understand facial expressions",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+    "author": "Your Name",
+    "license": "ISC"
+  }
+  
