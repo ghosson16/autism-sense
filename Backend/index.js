@@ -13,8 +13,7 @@ const port = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
-  origin: 'https://ghosson16.github.io',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: ['https://ghosson16.github.io', 'http://localhost:4173'],
   credentials: true ,
 }));
 

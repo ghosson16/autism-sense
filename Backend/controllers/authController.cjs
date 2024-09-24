@@ -14,7 +14,7 @@ const signUp = async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newChild = new childModel({ ...req.body, password: hashedPassword });
     await newChild.save();
-    res.status(201).json({ message: 'Child data saved successfully' , user: newChild});
+    res.status(201).json({ message: 'Child data saved successfully' , user:newChild});
   } catch (err) {
     res.status(500).json({ message: 'Error saving child data', error: err.message });
   }
@@ -24,11 +24,17 @@ const signUp = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
+    console.log("Input password:", password);
     const existingChild = await childModel.findOne({ email });
     if (!existingChild) {
       return res.status(404).json({ message: 'No records found' });
     }
+    console.log("Retrieved user:", existingChild);
+    console.log("Hashed password from DB:", existingChild.password);
+
     const passwordMatch = await bcrypt.compare(password, existingChild.password);
+    console.log("Password match:", passwordMatch);
+
     if (passwordMatch) {
       req.session.user = {
         id: existingChild.id,
@@ -38,7 +44,7 @@ const login = async (req, res) => {
         photo: existingChild.photo,
         dob: existingChild.dob,
       };
-      res.json({ message: 'Login successful' ,user:req.session.user});
+      res.json({ message: "Login successful" , user: req.session.user });
     } else {
       res.status(401).json({ message: 'Email or password is incorrect' });
     }
@@ -97,13 +103,14 @@ const sendPasswordResetEmail = async (req, res) => {
       subject: 'Password Reset',
       text: `You are receiving this because you (or someone else) have requested a password reset for your account.
              Please click on the following link, or paste this into your browser to complete the process:
-             http://localhost:3000/reset-password/${resetToken}`
+             https://ghosson16.github.io/autism-sense/#/reset-password/${resetToken}`
     };
 
     transporter.sendMail(mailOptions, (err, info) => {
       if (err) {
         return res.status(500).json({ message: 'Error sending email' });
       }
+      console.log('Email sent: ', info.response); // Add logging for tracking
       res.json({ message: 'Password reset email sent' });
     });
   } catch (err) {
@@ -129,6 +136,28 @@ const resetPassword = async (req, res) => {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
+
+    // Optional: Notify user after password is reset
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const resetMailOptions = {
+      to: user.email,
+      from: 'noreply@autism-sense.com',
+      subject: 'Password Successfully Reset',
+      text: 'Your password has been successfully reset.'
+    };
+
+    transporter.sendMail(resetMailOptions, (err, info) => {
+      if (err) {
+        console.error('Error sending password reset confirmation email:', err);
+      }
+    });
 
     res.json({ message: 'Password updated successfully' });
   } catch (err) {
