@@ -24,17 +24,11 @@ const signUp = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    console.log("Input password:", password);
     const existingChild = await childModel.findOne({ email });
     if (!existingChild) {
       return res.status(404).json({ message: 'No records found' });
     }
-    console.log("Retrieved user:", existingChild);
-    console.log("Hashed password from DB:", existingChild.password);
-
     const passwordMatch = await bcrypt.compare(password, existingChild.password);
-    console.log("Password match:", passwordMatch);
-
     if (passwordMatch) {
       req.session.user = {
         id: existingChild.id,
