@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const childModel = require('../models/ChildSchema.cjs');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
