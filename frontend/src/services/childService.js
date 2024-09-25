@@ -4,6 +4,7 @@ const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 // Fetch child data by ID
 export const fetchChildData = async (childId) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axios.get(`${apiUrl}/api/child/child-profile/${childId}`, { withCredentials: true });
     return response.data;
@@ -14,6 +15,7 @@ export const fetchChildData = async (childId) => {
 
 // Update child data
 export const updateChildData = async (childId, updatedChildData) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axios.put(`${apiUrl}/api/child/update-child/${childId}`, updatedChildData, { withCredentials: true });
     return response;

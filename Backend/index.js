@@ -6,6 +6,8 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes.cjs');
 const childRoutes = require('./routes/childRoutes.cjs');
 const emotionDetectionRoutes = require('./routes/emotionDetectionRoutes.cjs');
+const zoomRoutes = require('./routes/zoomRoutes');
+
 
 
 const app = express();
@@ -27,6 +29,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/child', childRoutes);
 app.use('/api', emotionDetectionRoutes);
+app.use('/api/zoom', zoomRoutes);
 
 // Add the `/user` route to check the user session
 app.get('/user', (req, res) => {

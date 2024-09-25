@@ -39,6 +39,7 @@ export const sendResetPasswordEmail = async (email) => {
 
 // reset password
 export const resetPassword = async (token, newPassword) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await axios.post(`${apiUrl}/api/auth/reset-password/${token}`, { password: newPassword });
     return response;
