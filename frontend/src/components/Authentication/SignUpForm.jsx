@@ -216,7 +216,7 @@ const SignUpForm = () => {
         </div>
         <div className="form-buttons">
           <button type="button" className="cancel-btn" onClick={handleCancel}>Cancel</button>
-          <button type="submit" className="add-child-btn">Add Child</button>
+          <button type="submit" className="add-child-btn">Sign up</button>
         </div>
       </form>
     </div>
