@@ -44,3 +44,28 @@ app.get('/user', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+
+// Example in your backend (Node.js)
+app.post('/api/zoom/create-meeting', async (req, res) => {
+  const { topic, startTime, duration, password } = req.body;
+  // Logic to create a Zoom meeting using the Zoom API
+  // Don't forget to handle time conversion and validation
+  try {
+    const meetingResponse = await createZoomMeeting({ topic, startTime, duration, password });
+    res.json(meetingResponse);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create meeting.' });
+  }
+});
+
+
+// Example in your backend (Node.js)
+app.get('/api/zoom/meetings', async (req, res) => {
+  try {
+    const meetings = await getZoomMeetings(); // Function to fetch meetings from Zoom
+    res.json(meetings);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch meetings.' });
+  }
+});
