@@ -20,7 +20,6 @@ const SignUpForm = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  const [duplicateEmailError, setDuplicateEmailError] = useState(""); // New state for duplicate email error
 
   const navigate = useNavigate();
 
@@ -72,7 +71,6 @@ const SignUpForm = () => {
     const value = e.target.value;
     setEmail(value);
     setEmailError(!validateEmail(value) ? "Please enter a valid email address." : "");
-    setDuplicateEmailError(""); // Clear the duplicate email error when the email changes
   };
 
   const handlePasswordChange = (e) => {
@@ -117,7 +115,7 @@ const SignUpForm = () => {
       }
     } catch (err) {
       if (err.response && err.response.status === 409) { // Check if the error is due to a duplicate email
-        setDuplicateEmailError("This email is already in use. Please use a different email.");
+        window.alert("This email is already in use. Please use a different email."); // Show prompt message
       } else {
         console.error("Sign up error:", err);
       }
@@ -196,7 +194,6 @@ const SignUpForm = () => {
             className="input-field"
           />
           {emailError && <span className="error-message">{emailError}</span>}
-          {duplicateEmailError && <span className="error-message">{duplicateEmailError}</span>} {/* Display duplicate email error */}
         </div>
         <div className="form-group">
           <input
