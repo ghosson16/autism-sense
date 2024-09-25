@@ -8,7 +8,10 @@ import AboutUs from './components/AboutUs';
 import ForgetPasswordForm from './components/Authentication/ForgetPasswordForm'; // Import the ForgetPasswordForm component
 import ChildProfilePage from './components/Profile/childProfilePage'; // Import the ChildProfilePage component
 import DetectEmotion from './components/EmotionDetection/EmotionDetection';
-import ResetPassword from './components/Authentication/ResetPassword'
+import ResetPassword from './components/Authentication/ResetPassword' ; 
+import CreateMeeting from './components/zoom/createMeetings' ; 
+import Meetings from "./components/zoom/meetings";
+
 
 function App() {
   return (
@@ -23,6 +26,8 @@ function App() {
         <Route path="/child-profile/:childId" element={<ChildProfilePage />} /> {/* Child Profile Page */}
         <Route path="/detect-emotion" element={<DetectEmotion/>} /> {/* Detect Emotion Route */}
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/create-meeting" element={<CreateMeeting />} />
+        <Route path="/meetings" element={<Meetings />} />
       </Routes>
     </Router>
   );
