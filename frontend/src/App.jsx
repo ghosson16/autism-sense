@@ -11,8 +11,6 @@ import DetectEmotion from './components/EmotionDetection/EmotionDetection';
 import ResetPassword from './components/Authentication/ResetPassword' ; 
 import CreateMeeting from './components/zoom/createMeetings' ; 
 import Meetings from "./components/zoom/meetings";
-// eslint-disable-next-line no-unused-vars
-import ZoomPage from './components/ZoomPage';
 
 import ZoomLinkInput from './components/onlineMeeting/ZoomLinkInput';
 import MeetingPage from './components/onlineMeeting/MeetingPage';
