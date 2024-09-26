@@ -1,7 +1,10 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-constant-binary-expression */
 import React, { useEffect, useState } from 'react';
 import '../../styles/Home.css';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { fetchChildData } from '../../services/childService'; // Import service functions
+import { fetchChildData } from '../../services/childService';
 import { logout } from '../../services/authService';
 import logoPath from '../../images/logo.png';
 import defaultProfileImage from '../../images/default-profile.png';
@@ -17,12 +20,11 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch child data if not already available
   useEffect(() => {
     if (!childData) {
-      const savedChildId = location.state?.id; // Ensure that childId is retrieved from the state or passed correctly
+      const savedChildId = location.state?.id;
       if (savedChildId) {
-        fetchChildData(savedChildId) // Pass the correct childId
+        fetchChildData(savedChildId)
           .then((user) => {
             if (user) {
               setChildData(user);
@@ -52,7 +54,7 @@ const Home = () => {
 
   const handleLogout = async () => {
     try {
-      await logout(); // Use service for logout
+      await logout();
       navigate('/');
     } catch (error) {
       console.error('Error during logout:', error);
@@ -65,6 +67,10 @@ const Home = () => {
     } else {
       console.error('Child ID not found. Please wait for data to load.');
     }
+  };
+
+  const handleZoomNavigation = () => {
+    navigate('/zoom'); // Adjust the route as needed
   };
 
   return (
@@ -98,6 +104,13 @@ const Home = () => {
           <h2>Detailed Reports</h2>
           <p>This section will display detailed reports and analysis.</p>
         </div>
+      </section>
+
+      {/* New Button to Navigate to Zoom Page */}
+      <section className="zoom-navigation">
+        <button className="zoom-btn" onClick={handleZoomNavigation}>
+          Go to Zoom
+        </button>
       </section>
 
       <footer className="footer">
