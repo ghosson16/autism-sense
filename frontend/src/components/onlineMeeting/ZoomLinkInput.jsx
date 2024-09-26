@@ -47,7 +47,7 @@ const ZoomLinkInput = () => {
     const signature = await getSignature(meetingNumber, 0); // 0 is for a participant role
 
     ZoomMtg.init({
-      leaveUrl: 'https://ghosson16.github.io/autism-sense', // Replace with your own URL
+      leaveUrl: 'https://ghosson16.github.io/autism-sense/#/home', // Replace with your own URL
       isSupportAV: true,
       success: () => {
         ZoomMtg.join({
