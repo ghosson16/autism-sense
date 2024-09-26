@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ZoomMtg } from '@zoomus/websdk';
-import '../../node_modules/@zoomus/websdk/dist/css/bootstrap.css';
-import '../../node_modules/@zoomus/websdk/dist/css/react-select.css';
+import '@zoomus/websdk/dist/css/bootstrap.css';
+import '@zoomus/websdk/dist/css/react-select.css';
 
 const ZoomLinkInput = () => {
   const [zoomLink, setZoomLink] = useState('');
