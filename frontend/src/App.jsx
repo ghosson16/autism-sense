@@ -12,6 +12,9 @@ import ResetPassword from './components/Authentication/ResetPassword' ;
 import CreateMeeting from './components/zoom/createMeetings' ; 
 import Meetings from "./components/zoom/meetings";
 
+import ZoomLinkInput from './components/onlineMeeting/ZoomLinkInput';
+import MeetingPage from './components/onlineMeeting/MeetingPage';
+
 
 function App() {
   return (
@@ -28,6 +31,8 @@ function App() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/create-meeting" element={<CreateMeeting />} />
         <Route path="/meetings" element={<Meetings />} />
+        <Route path="/linkpage" element={<ZoomLinkInput />} />
+        <Route path="/meeting" element={<MeetingPage />} />
       </Routes>
     </Router>
   );
