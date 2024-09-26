@@ -14,6 +14,9 @@ import Meetings from "./components/zoom/meetings";
 // eslint-disable-next-line no-unused-vars
 import ZoomPage from './components/ZoomPage';
 
+import ZoomLinkInput from './components/onlineMeeting/ZoomLinkInput';
+import MeetingPage from './components/onlineMeeting/MeetingPage';
+
 
 function App() {
   return (
@@ -30,6 +33,8 @@ function App() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/create-meeting" element={<CreateMeeting />} />
         <Route path="/meetings" element={<Meetings />} />
+        <Route path="/linkpage" element={<ZoomLinkInput />} />
+        <Route path="/meeting" element={<MeetingPage />} />
       </Routes>
     </Router>
   );

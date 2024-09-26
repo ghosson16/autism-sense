@@ -69,3 +69,19 @@ app.get('/api/zoom/meetings', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch meetings.' });
   }
 });
+
+
+const ZOOM_API_KEY="xzItAoLSXm8tOVvDOsTg"
+const ZOOM_API_SECRET="Xycgl2ogPyy4MSmPgVXppMJ5pQ3Lo0Z7"
+
+app.use(express.json());
+
+app.post('/api/generateSignature', (req, res) => {
+  const { meetingNumber, role } = req.body;
+  const timestamp = new Date().getTime() - 30000;
+  const msg = Buffer.from(`${ZOOM_API_KEY}${meetingNumber}${timestamp}${role}`).toString('base64');
+  const hash = crypto.createHmac('sha256', ZOOM_API_SECRET).update(msg).digest('base64');
+  const signature = Buffer.from(`${msg}.${hash}`).toString('base64');
+
+  res.json({ signature });
+});
