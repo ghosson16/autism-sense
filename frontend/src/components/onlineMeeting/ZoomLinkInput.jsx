@@ -80,7 +80,7 @@ const ZoomLinkInput = () => {
           meetingNumber: meetingNumber,
           userName: 'Guest User',
           signature: signature,
-          apiKey: 'YOUR_ZOOM_API_KEY', // Replace with your API key
+          apiKey: 'xzItAoLSXm8tOVvDOsTg', // Replace with your API key
           passWord: meetingPassword,
           success: () => {
             console.log('Join meeting success');
