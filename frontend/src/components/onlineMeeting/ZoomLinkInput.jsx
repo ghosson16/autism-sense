@@ -4,9 +4,13 @@ const ZoomLinkInput = () => {
   const [zoomLink, setZoomLink] = useState('');
 
   useEffect(() => {
-    ZoomMtg.setZoomJSLib('https://source.zoom.us/2.18.3/lib', '/av'); // Set SDK version
-    ZoomMtg.preLoadWasm();
-    ZoomMtg.prepareJssdk();
+    if (window.ZoomMtg) {
+      ZoomMtg.setZoomJSLib('https://source.zoom.us/2.18.3/lib', '/av'); // Set SDK version
+      ZoomMtg.preLoadWasm();
+      ZoomMtg.prepareJssdk();
+    } else {
+      console.error('Zoom SDK not loaded');
+    }
   }, []);
 
   const handleZoomLinkChange = (e) => {
