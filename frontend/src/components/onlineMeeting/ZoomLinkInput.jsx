@@ -3,14 +3,18 @@ import { useEffect, useState } from 'react';
 const ZoomLinkInput = () => {
   const [zoomLink, setZoomLink] = useState('');
 
+  // Use window.onload to ensure the Zoom SDK has fully loaded
   useEffect(() => {
-    if (window.ZoomMtg) {
-      ZoomMtg.setZoomJSLib('https://source.zoom.us/2.18.3/lib', '/av'); // Set SDK version
-      ZoomMtg.preLoadWasm();
-      ZoomMtg.prepareJssdk();
-    } else {
-      console.error('Zoom SDK not loaded');
-    }
+    window.onload = () => {
+      if (window.ZoomMtg) {
+        console.log('Zoom SDK loaded');
+        ZoomMtg.setZoomJSLib('https://source.zoom.us/2.18.3/lib', '/av'); // Set SDK version
+        ZoomMtg.preLoadWasm();
+        ZoomMtg.prepareJssdk();
+      } else {
+        console.error('Zoom SDK not loaded');
+      }
+    };
   }, []);
 
   const handleZoomLinkChange = (e) => {
@@ -61,7 +65,7 @@ const ZoomLinkInput = () => {
           meetingNumber: meetingNumber,
           userName: 'Guest User',
           signature: signature,
-          apiKey: 'xzItAoLSXm8tOVvDOsTg',
+          apiKey: 'YOUR_ZOOM_API_KEY',
           passWord: meetingPassword,
           success: () => {
             console.log('Join meeting success');
