@@ -40,7 +40,7 @@ const ZoomLinkInput = () => {
 
   const getSignature = async (meetingNumber, role) => {
     try {
-      const response = await fetch('https://autism-sense-backend.onrender.com/api/generateSignature', {
+      const response = await fetch('https://autism-sense-backend.onrender.com/api/zoomgenerateSignature', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ meetingNumber, role }),
