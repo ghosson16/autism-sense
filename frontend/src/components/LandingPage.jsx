@@ -1,12 +1,15 @@
-// eslint-disable-next-line no-unused-vars
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/LandingPage.css"; // Custom CSS file for styling
-import Logo from "../images/logo.png"
+import Logo from "../images/logo.png";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+
+  // Handle normal mode (host) meeting creation
+  const handleCreateMeeting = () => {
+    navigate("/host", );
+  };
 
   const handleCreateAccount = () => {
     navigate("/sign-up");
@@ -19,14 +22,16 @@ const LandingPage = () => {
   return (
     <div className="landing-container">
       <div className="logo-container">
-        <img
-          src= {Logo}
-          alt="AutismSense Logo"
-          className="logo"
-        />
+        <img src={Logo} alt="AutismSense Logo" className="logo" />
         <h1 className="title">AutismSense</h1>
       </div>
-      
+
+      {/* Section for creating a meeting in normal mode */}
+        <button className="btn" onClick={handleCreateMeeting}>
+          Create Meeting (Normal Mode)
+        </button>
+
+      {/* Navigation for login or sign-up */}
       <button className="btn" onClick={handleCreateAccount}>
         Create An Account
       </button>

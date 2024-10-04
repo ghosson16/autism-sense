@@ -1,0 +1,69 @@
+/* Overall container */
+#video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #eaf7f5; /* Light background */
+  }
+  
+  /* Video feed container */
+  #video-wrapper {
+    position: relative;
+    width: 640px;
+    height: 480px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f2f2f2;
+  }
+  
+  /* Video element */
+  #video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Floating emoji icon */
+  #emoji-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #006d64;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 30px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Bottom buttons */
+  #controls {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .control-button {
+    background-color: #006d64;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .control-button:hover {
+    background-color: #004d46;
+  }
+  

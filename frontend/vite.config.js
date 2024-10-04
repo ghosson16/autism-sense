@@ -3,11 +3,6 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/autism-sense/',  // Set this to your GitHub Pages repo name
+  base: '/autism-sense/', // Adjust as needed for your app's base path
   plugins: [react()],
-  build: {
-    rollupOptions: {
-      external: ['@zoom/videosdk'], // Externalize the Zoom Video SDK
-    },
-  },
 });

@@ -7,14 +7,15 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes.cjs');
 const childRoutes = require('./routes/childRoutes.cjs');
 const emotionDetectionRoutes = require('./routes/emotionDetectionRoutes.cjs');
-const zoomRoutes = require('./routes/zoomRoutes.js'); // Include your zoom routes
+const zoomRoutes = require('./routes/zoomRoutes.cjs'); // Include your zoom routes
+const roomRoutes = require("./routes/roomRoutes.cjs");
 
 const app = express();
 const port = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
-  origin: ['https://ghosson16.github.io', 'http://localhost:4173'],
+  origin: ['https://ghosson16.github.io', 'http://localhost:4173','http://localhost:5173'],
   credentials: true,
 }));
 
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/child', childRoutes);
 app.use('/api', emotionDetectionRoutes);
 app.use('/api/zoom', zoomRoutes);  // Make sure to add Zoom routes here
+app.use("/api/room", roomRoutes);
 
 // Add the `/user` route to check the user session
 app.get('/user', (req, res) => {

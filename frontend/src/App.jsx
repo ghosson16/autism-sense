@@ -11,9 +11,10 @@ import DetectEmotion from './components/EmotionDetection/EmotionDetection';
 import ResetPassword from './components/Authentication/ResetPassword' ; 
 import CreateMeeting from './components/zoom/createMeetings' ; 
 import Meetings from "./components/zoom/meetings";
-
 import ZoomLinkInput from './components/onlineMeeting/ZoomLinkInput';
-import MeetingPage from './components/onlineMeeting/MeetingPage';
+
+import CreateMeetingPage from './components/twilio/HostMeeting';
+import JoinMeetingPage from './components/twilio/GuestMeeting';
 
 
 function App() {
@@ -32,7 +33,10 @@ function App() {
         <Route path="/create-meeting" element={<CreateMeeting />} />
         <Route path="/meetings" element={<Meetings />} />
         <Route path="/linkpage" element={<ZoomLinkInput />} />
-        <Route path="/meeting" element={<MeetingPage />} />
+
+        <Route path="/host" element={<CreateMeetingPage />} />
+        <Route path="/gust" element={<JoinMeetingPage />} />
+
       </Routes>
     </Router>
   );

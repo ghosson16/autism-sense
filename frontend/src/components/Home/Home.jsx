@@ -1,6 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-constant-binary-expression */
 import React, { useEffect, useState } from 'react';
 import '../../styles/Home.css';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -11,7 +8,6 @@ import defaultProfileImage from '../../images/default-profile.png';
 
 const Home = () => {
   const location = useLocation();
-  console.log('Received state at Home:', location.state);
   const navigate = useNavigate();
   const [childData, setChildData] = useState(location.state?.user || null);
   const [userProfileImage, setUserProfileImage] = useState(defaultProfileImage);
@@ -69,9 +65,9 @@ const Home = () => {
     }
   };
 
-  const handleZoomNavigation = () => {
-    navigate('/zoom'); // Adjust the route as needed
-  };
+  const handleJoinSpecialMode = () => {
+      navigate("/gust");
+    }
 
   return (
     <div className="container">
@@ -106,11 +102,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* New Button to Navigate to Zoom Page */}
+      {/* Button to Join Zoom with Special Mode */}
       <section className="zoom-navigation">
-        <button className="zoom-btn" onClick={handleZoomNavigation}>
-          Go to Zoom
-        </button>
+      <button className="btn" onClick={handleJoinSpecialMode}>
+        Join Meeting (Special Mode)
+      </button>
       </section>
 
       <footer className="footer">
