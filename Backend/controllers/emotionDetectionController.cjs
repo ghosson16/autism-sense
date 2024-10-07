@@ -1,47 +1,38 @@
-const express = require('express');
 const { PythonShell } = require('python-shell');
-const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 
-const router = express.Router();
-
-const upload = multer({
-  dest: 'uploads/',
-  fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png/;
-    const mimetype = filetypes.test(file.mimetype);
-    if (mimetype) {
-      return cb(null, true);
-    }
-    cb(new Error('File type not supported'), false);
-  }
-});
-
-router.post('/detect-emotion', upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
-  }
-
-  const imagePath = path.resolve(__dirname, 'uploads', req.file.filename);
+const detectEmotion = (base64Image, res) => {
+  const scriptPath = path.resolve(__dirname, '../emotionDetection.py');
 
   const options = {
-    args: [imagePath]
+    mode: 'text',
+    pythonOptions: ['-u'], // Unbuffered output (immediate responses)
   };
 
-  PythonShell.run('emotionDetection.py', options, (err, results) => {
-    if (err) {
-      console.error('Error running Python script:', err);
-      return res.status(500).json({ message: 'Error detecting emotion' });
-    }
+  const pyshell = new PythonShell(scriptPath, options);
 
-    if (results && results.length > 0) {
-      const emotion = results[0].trim();
-      return res.json({ emotion });
-    } else {
-      return res.status(500).json({ message: 'No emotion detected' });
+// Send the base64-encoded image via stdin to the Python script
+pyshell.send(base64Image);
+
+
+  // Listen for messages from the Python script
+  pyshell.on('message', (message) => {
+    console.log('Emotion detected:', message);
+    res.json({ emotion: message });
+  });
+
+  // Handle any errors
+  pyshell.on('error', (err) => {
+    console.error('Error running Python script:', err);
+    res.status(500).json({ message: 'Error detecting emotion' });
+  });
+
+  // End the PythonShell and handle completion
+  pyshell.end((err) => {
+    if (err) {
+      console.error('Error during PythonShell execution:', err);
     }
   });
-});
+};
 
-module.exports = router;
+module.exports = detectEmotion;

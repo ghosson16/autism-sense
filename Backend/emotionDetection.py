@@ -1,39 +1,46 @@
-from fer import FER
-import cv2
 import sys
-import os
+import base64
+import numpy as np
+import cv2
+from fer import FER
 
-def detect_emotion(image_path):
-    # Check if the image exists
-    if not os.path.exists(image_path):
-        raise ValueError(f"Image not found: {image_path}")
-    
-    img = cv2.imread(image_path)
-    if img is None:
-        raise ValueError(f"Could not load image at path: {image_path}")
-    
-    # Resize the image to make processing faster
-    img = cv2.resize(img, (400, 400))  # Resize to 400x400 pixels
-    
-    # Initialize emotion detector
+def detect_emotion_from_image(image):
+    # Initialize the emotion detector
     detector = FER()
-    emotion, score = detector.top_emotion(img)
-
-    if emotion is None:
-        print("No emotion detected")
-        sys.exit(1)  # Exit with a non-zero status code
-
-    print(emotion)  # Only print the emotion
+    emotion, score = detector.top_emotion(image)
+    return emotion
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("No image path provided")
+    # Read base64 image data from stdin
+    base64_image = sys.stdin.read().strip()  # Read from stdin and remove any extra newlines
+
+    if not base64_image:
+        print("No image data provided", file=sys.stderr)
         sys.exit(1)
 
-    image_path = sys.argv[1]
-    print(f"Processing image: {image_path}")
     try:
-        detect_emotion(image_path)
+        # Decode the base64 string into bytes
+        image_data = base64.b64decode(base64_image)
+
+        # Convert the byte data into a NumPy array
+        np_image = np.frombuffer(image_data, dtype=np.uint8)
+
+        # Decode the NumPy array into an image using OpenCV
+        img = cv2.imdecode(np_image, cv2.IMREAD_COLOR)
+
+        if img is None:
+            print("Error decoding image", file=sys.stderr)
+            sys.exit(1)
+
+        # Detect emotion from the decoded image
+        emotion = detect_emotion_from_image(img)
+
+        if emotion:
+            print(emotion)
+        else:
+            print("No emotion detected")
+            sys.exit(1)
+
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
