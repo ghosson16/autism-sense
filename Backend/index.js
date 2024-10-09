@@ -9,6 +9,7 @@ const childRoutes = require('./routes/childRoutes.cjs');
 const emotionDetectionRoutes = require('./routes/emotionDetectionRoutes.cjs');
 const zoomRoutes = require('./routes/zoomRoutes.cjs'); // Include your zoom routes
 const roomRoutes = require("./routes/roomRoutes.cjs");
+const suggestionRoutes = require('./routes/suggestionRoutes.cjs');
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -31,6 +32,7 @@ app.use('/api/child', childRoutes);
 app.use('/api/detection', emotionDetectionRoutes);
 app.use('/api/zoom', zoomRoutes);  // Make sure to add Zoom routes here
 app.use("/api/room", roomRoutes);
+app.use('/api/suggestions', suggestionRoutes);
 
 // Add the `/user` route to check the user session
 app.get('/user', (req, res) => {
