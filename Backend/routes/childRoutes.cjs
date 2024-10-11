@@ -1,10 +1,10 @@
 const express = require('express');
-const { fetchChildById, updateChild } = require('../controllers/childController.cjs');
+const { fetchChildById, updateChild} = require('../controllers/childController.cjs');
 
 const router = express.Router();
 
 router.get('/child-profile/:childId', fetchChildById);
 router.put('/update-child/:childId', updateChild);
-router.delete('/delete-child/:childId', deleteChildAccount);
+// router.delete('/delete-child/:childId', deleteChildAccount);
 
 module.exports = router;
