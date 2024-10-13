@@ -28,7 +28,7 @@ connectDB();
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/child', childRoutes);
+app.use('/api/child', childRoutes);  // Child routes properly registered
 app.use('/api/detection', emotionDetectionRoutes);
 app.use('/api/zoom', zoomRoutes);  // Make sure to add Zoom routes here
 app.use("/api/room", roomRoutes);
