@@ -1,6 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { fetchChildData, updateChildData } from '../../services/childService'; // Import service functions
+import { fetchChildData, updateChildData, deleteChildAccount } from '../../services/childService'; // Import delete service
 import { FaPencilAlt } from "react-icons/fa";
 import defaultProfileImage from '../../images/default-profile.png';
 import '../../styles/childProfilePage.css';
@@ -9,6 +10,7 @@ const ChildProfilePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { childId } = useParams();
+
   const [child, setChild] = useState(location.state?.user || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -25,7 +27,7 @@ const ChildProfilePage = () => {
   const [childDOBError, setChildDOBError] = useState('');
   const [emailError, setEmailError] = useState('');
 
-  // Fetch child data if it's not already in state
+  // Fetch child data on load if not in state
   useEffect(() => {
     if (!child && childId) {
       fetchChildData(childId)
@@ -41,9 +43,7 @@ const ChildProfilePage = () => {
           setError('Unable to load user data. Please try again.');
           console.error('Error fetching child data:', error);
         })
-        .finally(() => {
-          setLoading(false);
-        });
+        .finally(() => setLoading(false));
     } else if (child) {
       setFirstName(child.firstName || '');
       setLastName(child.lastName || '');
@@ -57,19 +57,30 @@ const ChildProfilePage = () => {
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p>{error}</p>;
 
-  // Handle photo change for editing
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhoto(reader.result);
-      };
+      reader.onloadend = () => setPhoto(reader.result);
       reader.readAsDataURL(file);
     }
   };
 
-  // Validation functions
+  // Delete child account handler
+  const handleDeleteAccount = async () => {
+    try {
+      const confirmDelete = window.confirm('Are you sure you want to delete this account?');
+      if (confirmDelete) {
+        await deleteChildAccount(childId); // Call the delete service
+        alert('Account deleted successfully.');
+        navigate('/home', { replace: true });
+      }
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      alert('Failed to delete the account. Please try again.');
+    }
+  };
+
   const handleFirstNameChange = (e) => {
     const value = e.target.value;
     setFirstName(value);
@@ -102,18 +113,9 @@ const ChildProfilePage = () => {
 
   const handleSaveChanges = async (e) => {
     e.preventDefault();
+    if (firstNameError || lastNameError || childDOBError || emailError) return;
 
-    if (firstNameError || lastNameError || childDOBError || emailError) {
-      return;
-    }
-
-    const updatedChildData = {
-      firstName,
-      lastName,
-      dob: childDOB,
-      email,
-      photo,
-    };
+    const updatedChildData = { firstName, lastName, dob: childDOB, email, photo };
 
     try {
       const response = await updateChildData(childId, updatedChildData);
@@ -121,17 +123,13 @@ const ChildProfilePage = () => {
         setEditMode(false);
         setChild(response.data.updatedChild);
         navigate('/home', { replace: true, state: { user: response.data.updatedChild } });
-      } else {
-        console.error('Error updating child data');
       }
     } catch (error) {
-      console.error('Error:', error.response?.data || error.message);
+      console.error('Error updating child data:', error);
     }
   };
 
-  const handleCancel = () => {
-    setEditMode(false);
-  };
+  const handleCancel = () => setEditMode(false);
 
   return (
     <div className="profile-container">
@@ -148,50 +146,37 @@ const ChildProfilePage = () => {
       <section className="profile-details">
         {editMode ? (
           <>
-            <div className="form-group">
-              <input type="file" id="photo-input" accept="image/*" className="photo-input" onChange={handlePhotoChange} />
-            </div>
-
-            <div className="form-group">
-              <input className="input-field" placeholder="First Name" type="text" value={firstName} onChange={handleFirstNameChange} />
-              {firstNameError && <p>{firstNameError}</p>}
-            </div>
-
-            <div className="form-group">
-              <input className="input-field" type="text" value={lastName} onChange={handleLastNameChange} />
-              {lastNameError && <p>{lastNameError}</p>}
-            </div>
-
-            <div className="form-group">
-              <input className="input-field" type="date" value={childDOB} onChange={handleChildDOBChange} max={new Date().toISOString().split('T')[0]} />
-              {childDOBError && <p>{childDOBError}</p>}
-            </div>
-
-            <div className="form-group">
-              <input className="input-field" type="email" value={email} onChange={handleEmailChange} />
-              {emailError && <p>{emailError}</p>}
-            </div>
+            <input type="file" id="photo-input" accept="image/*" onChange={handlePhotoChange} />
+            <input type="text" value={firstName} onChange={handleFirstNameChange} placeholder="First Name" />
+            {firstNameError && <p>{firstNameError}</p>}
+            <input type="text" value={lastName} onChange={handleLastNameChange} placeholder="Last Name" />
+            {lastNameError && <p>{lastNameError}</p>}
+            <input type="date" value={childDOB} onChange={handleChildDOBChange} />
+            {childDOBError && <p>{childDOBError}</p>}
+            <input type="email" value={email} onChange={handleEmailChange} />
+            {emailError && <p>{emailError}</p>}
           </>
         ) : (
           <>
-            <h1>{`${firstName || 'First Name'} ${lastName || 'Last Name'}`}</h1>
-            <p><strong>Email:</strong> {email || 'Not provided'}</p>
-            <p><strong>Date of Birth:</strong> {childDOB ? new Date(childDOB).toLocaleDateString() : 'Not provided'}</p>
+            <h1>{`${firstName} ${lastName}`}</h1>
+            <p><strong>Email:</strong> {email}</p>
+            <p><strong>Date of Birth:</strong> {new Date(childDOB).toLocaleDateString()}</p>
           </>
         )}
       </section>
 
       <footer className="profile-footer">
         {editMode ? (
-          <div className="form-buttons">
-            <button className="cancel-btn" onClick={handleCancel}>Cancel</button>
-            <button className="save-btn" onClick={handleSaveChanges}>Save Changes</button>
-          </div>
+          <>
+            <button onClick={handleCancel}>Cancel</button>
+            <button onClick={handleSaveChanges}>Save Changes</button>
+          </>
         ) : (
-          <div className="form-buttons">
-            <button className="back-btn" onClick={() => navigate(-1)}>Go Back</button>
-            <button className="edit-btn" onClick={() => setEditMode(true)}>Edit Profile</button>
-          </div>
+          <>
+            <button onClick={() => navigate(-1)}>Go Back</button>
+            <button onClick={() => setEditMode(true)}>Edit Profile</button>
+            <button onClick={handleDeleteAccount}>Delete Account</button>  {/* Add delete button */}
+          </>
         )}
       </footer>
     </div>

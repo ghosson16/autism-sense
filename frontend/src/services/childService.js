@@ -13,3 +13,9 @@ export const updateChildData = async (childId, updatedChildData) => {
   const response = await axios.put(`${apiUrl}/api/child/update-child/${childId}`, updatedChildData, { withCredentials: true });
   return response;
 };
+
+// Delete child account
+export const deleteChildAccount = async (childId) => {
+  const response = await axios.delete(`${apiUrl}/api/child/delete-child/${childId}`, { withCredentials: true });
+  return response.data;
+};
