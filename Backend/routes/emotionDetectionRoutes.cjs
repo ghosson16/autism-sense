@@ -21,6 +21,7 @@ const upload = multer({
 
 // POST route for detecting emotion from an uploaded image
 router.post('/detect-emotion', upload.single('image'), async (req, res, next) => {
+  console.log('Received request for /detect-emotion');
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
@@ -30,7 +31,7 @@ router.post('/detect-emotion', upload.single('image'), async (req, res, next) =>
     const base64Image = req.file.buffer.toString('base64');
 
     // Call the detectEmotion controller, passing the base64-encoded image
-    await detectEmotion(base64Image, res);
+    const response = await detectEmotion(base64Image, res);
   } catch (error) {
     console.error('Error in POST /detect-emotion:', error);
 
