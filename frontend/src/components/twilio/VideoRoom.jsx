@@ -64,29 +64,42 @@ const VideoRoom = ({ token, roomName, role }) => {
         const remoteVideos = document
           .getElementById("remote-video")
           .getElementsByTagName("video");
-
+  
         if (remoteVideos.length > 0) {
           const videoElement = remoteVideos[0];
-
+  
+          // Log video dimensions to verify they're correct
+          console.log("Video width:", videoElement.videoWidth);
+          console.log("Video height:", videoElement.videoHeight);
+  
           // Check if the video is playing and ready
           if (videoElement.readyState >= 2) {
-            const canvas = document.createElement("canvas");
-            canvas.width = videoElement.videoWidth;
-            canvas.height = videoElement.videoHeight;
-            const ctx = canvas.getContext("2d");
-
-            // Draw the current frame of the video onto the canvas
-            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-            canvas.toBlob(async (blob) => {
-              if (blob) {
-                const imageUrl = URL.createObjectURL(blob);
-                setCapturedImage(imageUrl); // Set the captured image in state
-
-                // Send the photo blob to the backend
-                await sendPhotoToBackend(blob);
-              }
-            }, "image/jpeg");
+            // Ensure the canvas size matches the video resolution
+            const videoWidth = videoElement.videoWidth;
+            const videoHeight = videoElement.videoHeight;
+  
+            if (videoWidth > 0 && videoHeight > 0) {
+              const canvas = document.createElement("canvas");
+              canvas.width = videoWidth;
+              canvas.height = videoHeight;
+              const ctx = canvas.getContext("2d");
+  
+              // Draw the current frame of the video onto the canvas
+              ctx.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
+  
+              // Convert the canvas to a blob and send it to the backend
+              canvas.toBlob(async (blob) => {
+                if (blob) {
+                  const imageUrl = URL.createObjectURL(blob);
+                  setCapturedImage(imageUrl); // Set the captured image in state
+  
+                  // Send the photo blob to the backend
+                  await sendPhotoToBackend(blob);
+                }
+              }, "image/jpeg");
+            } else {
+              console.log("Invalid video dimensions.");
+            }
           } else {
             console.log("Video is not ready yet.");
           }
@@ -95,14 +108,14 @@ const VideoRoom = ({ token, roomName, role }) => {
         }
       }
     };
-
+  
     const intervalId = setInterval(() => {
       requestAnimationFrame(capturePhoto); // Use requestAnimationFrame for capturing
-      // capturePhoto();
     }, 30000);
-
+  
     return () => clearInterval(intervalId);
   }, [role]);
+  
 
   const sendPhotoToBackend = async (photoBlob) => {
     const formData = new FormData();
