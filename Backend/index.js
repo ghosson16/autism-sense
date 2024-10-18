@@ -1,54 +1,29 @@
+// Backend/index.js
 require('dotenv').config();
 const express = require('express');
-const crypto = require('crypto');  // Ensure crypto is imported
 const connectDB = require('./config/db.cjs');
-const sessionMiddleware = require('./middleware/sessionMiddleware.cjs');
 const cors = require('cors');
+const sessionMiddleware = require('./middleware/sessionMiddleware.cjs');
+
 const authRoutes = require('./routes/authRoutes.cjs');
 const childRoutes = require('./routes/childRoutes.cjs');
-const emotionDetectionRoutes = require('./routes/emotionDetectionRoutes.cjs');
-const zoomRoutes = require('./routes/zoomRoutes.cjs'); // Include your zoom routes
-const roomRoutes = require("./routes/roomRoutes.cjs");
-const suggestionRoutes = require('./routes/suggestionRoutes.cjs');
 
 const app = express();
 const port = process.env.PORT || 5001;
 
-// Middleware for handling CORS
+// Middleware
 app.use(cors({
-  origin: ['https://ghosson16.github.io', 'http://localhost:4173','http://localhost:5173'],
+  origin: ['http://localhost:4173', 'http://localhost:5173'],
   credentials: true,
 }));
-
-// Middleware for handling JSON requests and session management
 app.use(express.json());
 app.use(sessionMiddleware);
 
-// Connect to MongoDB
 connectDB();
 
-// Set up Multer for file uploads (for handling multipart/form-data)
-const storage = multer.memoryStorage();  // Store files in memory buffer
-const upload = multer({ storage });
-
-// Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/child', childRoutes);  // Child routes properly registered
-app.use('/api/detection', emotionDetectionRoutes);
-app.use('/api/zoom', zoomRoutes);  // Make sure to add Zoom routes here
-app.use("/api/room", roomRoutes);
-app.use('/api/suggestions', suggestionRoutes);
+app.use('/api/child', childRoutes);
 
-// Add the `/user` route to check the user session
-app.get('/user', (req, res) => {
-  if (req.session.user) {
-    res.json({ user: req.session.user });
-  } else {
-    res.status(401).json({ message: "Not authenticated" });
-  }
-});
-
-// Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
