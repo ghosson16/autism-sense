@@ -1,6 +1,5 @@
 // Backend/controllers/transcriptionController.js
 const axios = require('axios');
-
 const apiKey = process.env.ASSEMBLYAI_API_KEY;
 
 // Upload audio file to AssemblyAI
@@ -20,9 +19,11 @@ const uploadAudio = async (audioBuffer) => {
 };
 
 // Transcribe the uploaded audio
-const transcribeAudio = async (audioUrl) => {
+const transcribeAudio = async (req, res) => {
   try {
-    const response = await axios.post(
+    const audioBuffer = req.file.buffer;  // Get the audio buffer from the uploaded file
+    const audioUrl = await uploadAudio(audioBuffer);  // Upload audio file
+    const transcriptionResult = await axios.post(
       'https://api.assemblyai.com/v2/transcript',
       { audio_url: audioUrl },
       {
@@ -32,23 +33,10 @@ const transcribeAudio = async (audioUrl) => {
         },
       }
     );
-    return response.data;
-  } catch (error) {
-    console.error('Error transcribing audio:', error.message);
-    throw error;
-  }
-};
-
-// Controller function to handle the transcription process
-const handleTranscription = async (req, res) => {
-  try {
-    const { audioBuffer } = req.body;
-    const audioUrl = await uploadAudio(audioBuffer);
-    const transcriptionResult = await transcribeAudio(audioUrl);
-    res.json({ transcription: transcriptionResult });
+    res.json({ transcription: transcriptionResult.data });
   } catch (error) {
     res.status(500).json({ message: 'Transcription failed', error: error.message });
   }
 };
 
-module.exports = { handleTranscription };
+module.exports = { transcribeAudio };

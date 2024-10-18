@@ -10,22 +10,28 @@ const emotionDetectionRoutes = require('./routes/emotionDetectionRoutes.cjs');
 const zoomRoutes = require('./routes/zoomRoutes.cjs');
 const roomRoutes = require("./routes/roomRoutes.cjs");
 const suggestionRoutes = require('./routes/suggestionRoutes.cjs');
-const transcriptionRoutes = require('./routes/transcriptionRoutes');  // Add the transcription route
+const transcriptionRoutes = require('./routes/transcriptionRoutes.cjs');  // Transcription routes
+const multer = require('multer');  // Add multer for file uploads
 
 const app = express();
 const port = process.env.PORT || 5001;
 
-// Middleware
+// Middleware for handling CORS
 app.use(cors({
   origin: ['https://ghosson16.github.io', 'http://localhost:4173', 'http://localhost:5173'],
   credentials: true,
 }));
 
+// Middleware for handling JSON requests and session management
 app.use(express.json());
 app.use(sessionMiddleware);
 
 // Connect to MongoDB
 connectDB();
+
+// Set up Multer for file uploads (for handling multipart/form-data)
+const storage = multer.memoryStorage();  // Store files in memory buffer
+const upload = multer({ storage });
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -34,7 +40,9 @@ app.use('/api/detection', emotionDetectionRoutes);
 app.use('/api/zoom', zoomRoutes);
 app.use('/api/room', roomRoutes);
 app.use('/api/suggestions', suggestionRoutes);
-app.use('/api/transcription', transcriptionRoutes);  // Register the transcription routes
+
+// Route for handling file uploads and transcription
+app.post('/api/transcription/transcribe', upload.single('audio'), transcriptionRoutes.transcribeAudio);  // Using multer to handle file upload
 
 // Add the `/user` route to check the user session
 app.get('/user', (req, res) => {
