@@ -7,6 +7,7 @@ const sessionMiddleware = require('./middleware/sessionMiddleware.cjs');
 
 const authRoutes = require('./routes/authRoutes.cjs');
 const childRoutes = require('./routes/childRoutes.cjs');
+const deepgramRoutes = require('./routes/deepgramRoutes.cjs'); // Add deepgram routes
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -23,6 +24,7 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/child', childRoutes);
+app.use('/api/deepgram', deepgramRoutes); // Register Deepgram routes
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
