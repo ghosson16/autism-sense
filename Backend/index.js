@@ -7,18 +7,16 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes.cjs');
 const childRoutes = require('./routes/childRoutes.cjs');
 const emotionDetectionRoutes = require('./routes/emotionDetectionRoutes.cjs');
-const zoomRoutes = require('./routes/zoomRoutes.cjs');
+const zoomRoutes = require('./routes/zoomRoutes.cjs'); // Include your zoom routes
 const roomRoutes = require("./routes/roomRoutes.cjs");
 const suggestionRoutes = require('./routes/suggestionRoutes.cjs');
-const transcriptionRoutes = require('./routes/transcriptionRoutes.cjs');  // Transcription routes
-const multer = require('multer');  // Add multer for file uploads
 
 const app = express();
 const port = process.env.PORT || 5001;
 
 // Middleware for handling CORS
 app.use(cors({
-  origin: ['https://ghosson16.github.io', 'http://localhost:4173', 'http://localhost:5173'],
+  origin: ['https://ghosson16.github.io', 'http://localhost:4173','http://localhost:5173'],
   credentials: true,
 }));
 
@@ -35,14 +33,11 @@ const upload = multer({ storage });
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/child', childRoutes);
+app.use('/api/child', childRoutes);  // Child routes properly registered
 app.use('/api/detection', emotionDetectionRoutes);
-app.use('/api/zoom', zoomRoutes);
-app.use('/api/room', roomRoutes);
+app.use('/api/zoom', zoomRoutes);  // Make sure to add Zoom routes here
+app.use("/api/room", roomRoutes);
 app.use('/api/suggestions', suggestionRoutes);
-
-// Route for handling file uploads and transcription
-app.post('/api/transcription/transcribe', upload.single('audio'), transcriptionRoutes.transcribeAudio);  // Using multer to handle file upload
 
 // Add the `/user` route to check the user session
 app.get('/user', (req, res) => {
