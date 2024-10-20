@@ -9,9 +9,6 @@ import ForgetPasswordForm from './components/Authentication/ForgetPasswordForm';
 import ChildProfilePage from './components/Profile/childProfilePage'; // Import the ChildProfilePage component
 import DetectEmotion from './components/EmotionDetection/EmotionDetection';
 import ResetPassword from './components/Authentication/ResetPassword' ; 
-import CreateMeeting from './components/zoom/createMeetings' ; 
-import Meetings from "./components/zoom/meetings";
-import ZoomLinkInput from './components/onlineMeeting/ZoomLinkInput';
 
 import CreateMeetingPage from './components/twilio/HostMeeting';
 import JoinMeetingPage from './components/twilio/GuestMeeting';
@@ -30,12 +27,9 @@ function App() {
         <Route path="/child-profile/:childId" element={<ChildProfilePage />} /> {/* Child Profile Page */}
         <Route path="/detect-emotion" element={<DetectEmotion/>} /> {/* Detect Emotion Route */}
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/create-meeting" element={<CreateMeeting />} />
-        <Route path="/meetings" element={<Meetings />} />
-        <Route path="/linkpage" element={<ZoomLinkInput />} />
 
         <Route path="/host" element={<CreateMeetingPage />} />
-        <Route path="/gust" element={<JoinMeetingPage />} />
+        <Route path="/guest" element={<JoinMeetingPage />} />
 
       </Routes>
     </Router>

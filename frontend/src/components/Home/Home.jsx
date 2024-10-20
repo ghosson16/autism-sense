@@ -66,7 +66,7 @@ const Home = () => {
   };
 
   const handleJoinSpecialMode = () => {
-      navigate("/gust");
+      navigate("/guest");
     }
 
   return (
