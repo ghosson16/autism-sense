@@ -6,7 +6,8 @@ import axios from "axios";
 const VideoRoom = ({ token, roomName, role }) => {
   const [room, setRoom] = useState(null);
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
-  const [capturedImage, setCapturedImage] = useState(null);
+  // const [capturedImage, setCapturedImage] = useState(null);
+  const [faceDetectionResponse, setFaceDetectionResponse] = useState("normal");
 
   useEffect(() => {
     const connectToRoom = async () => {
@@ -64,35 +65,35 @@ const VideoRoom = ({ token, roomName, role }) => {
         const remoteVideos = document
           .getElementById("remote-video")
           .getElementsByTagName("video");
-  
+
         if (remoteVideos.length > 0) {
           const videoElement = remoteVideos[0];
-  
+
           // Log video dimensions to verify they're correct
           console.log("Video width:", videoElement.videoWidth);
           console.log("Video height:", videoElement.videoHeight);
-  
+
           // Check if the video is playing and ready
           if (videoElement.readyState >= 2) {
             // Ensure the canvas size matches the video resolution
             const videoWidth = videoElement.videoWidth;
             const videoHeight = videoElement.videoHeight;
-  
+
             if (videoWidth > 0 && videoHeight > 0) {
               const canvas = document.createElement("canvas");
               canvas.width = videoWidth;
               canvas.height = videoHeight;
               const ctx = canvas.getContext("2d");
-  
+
               // Draw the current frame of the video onto the canvas
               ctx.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
-  
+
               // Convert the canvas to a blob and send it to the backend
               canvas.toBlob(async (blob) => {
                 if (blob) {
                   const imageUrl = URL.createObjectURL(blob);
                   setCapturedImage(imageUrl); // Set the captured image in state
-  
+
                   // Send the photo blob to the backend
                   await sendPhotoToBackend(blob);
                 }
@@ -108,14 +109,13 @@ const VideoRoom = ({ token, roomName, role }) => {
         }
       }
     };
-  
+
     const intervalId = setInterval(() => {
       requestAnimationFrame(capturePhoto); // Use requestAnimationFrame for capturing
     }, 30000);
-  
+
     return () => clearInterval(intervalId);
   }, [role]);
-  
 
   const sendPhotoToBackend = async (photoBlob) => {
     const formData = new FormData();
@@ -135,7 +135,7 @@ const VideoRoom = ({ token, roomName, role }) => {
       if (response.status !== 200) {
         throw new Error("Failed to send photo to backend");
       }
-
+      setFaceDetectionResponse(response.data);
       console.log("Photo sent successfully");
     } catch (error) {
       console.error("Error sending photo to backend:", error);
@@ -151,10 +151,17 @@ const VideoRoom = ({ token, roomName, role }) => {
       ) : (
         <div id="remote-video">Remote Video</div>
       )}
-      {capturedImage && (
+      {/* {capturedImage && (
         <div>
           <h3>Captured Image:</h3>
           <img src={capturedImage} alt="Captured" />
+        </div>
+      )} */}
+      {role === "guest" && (
+        <div id="emotion-indicator">
+          {faceDetectionResponse === "happy" && <span>😊</span>}
+          {faceDetectionResponse === "sad" && <span>😢</span>}
+          {faceDetectionResponse === "normal" && <span>😐</span>}
         </div>
       )}
     </div>
