@@ -10,6 +10,7 @@ const authRoutes = require('./routes/authRoutes.cjs');
 const childRoutes = require('./routes/childRoutes.cjs');
 const roomRoutes = require("./routes/roomRoutes.cjs");
 const emotionDetectionRoutes = require('./routes/emotionDetectionRoutes.cjs');
+const suggestionRoutes = require('./routes/suggestionRoutes.cjs'); 
 const deepgramRoutes = require('./routes/deepgramRoutes.cjs'); // Add deepgram routes
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/child', childRoutes);
 app.use("/api/room", roomRoutes);
 app.use('/api/detection', emotionDetectionRoutes);
+app.use('/api/suggestions', suggestionRoutes);
 app.use('/api/deepgram', deepgramRoutes); // Register Deepgram routes
 
 app.listen(port, () => {

@@ -12,12 +12,12 @@ const generateSuggestion = async (req, res) => {
 
         // Use the chat API endpoint for chat-based models
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-3.5-turbo',  // Ensure you're using a chat-based model
+            model: 'gpt-3.5-turbo',
             messages: [
                 { role: 'system', content: 'You are a helpful assistant. Respond with short and simple phrases suitable for children with autism.' },
                 { role: 'user', content: prompt }
             ],
-            max_tokens: 10,  // Limiting tokens to ensure a short response
+            max_tokens: 10,
         }, {
             headers: {
                 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
