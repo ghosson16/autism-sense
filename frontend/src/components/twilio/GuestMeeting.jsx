@@ -53,7 +53,6 @@ const GuestMeeting = () => {
 
       {isConnected && (
         <div>
-            <div id="emoji-icon">😊</div>
             <div id="controls"></div>
           <button onClick={() => console.log("Help button clicked")}>Help</button>
           <button onClick={() => console.log("Game button clicked")}>Game</button>

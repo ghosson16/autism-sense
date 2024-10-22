@@ -7,7 +7,19 @@ const VideoRoom = ({ token, roomName, role }) => {
   const [room, setRoom] = useState(null);
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
   // const [capturedImage, setCapturedImage] = useState(null);
-  const [faceDetectionResponse, setFaceDetectionResponse] = useState("normal");
+  // const [faceDetectionResponse, setFaceDetectionResponse] = useState("normal");
+  const [emoji, setEmoji] = useState("😐"); // Default neutral emoji
+
+  // Function to map detected emotion to an emoji
+  const mapEmotionToEmoji = (emotion) => {
+    const emojiMap = {
+      happy: "😊",
+      sad: "😢",
+      angry: "😠",
+      neutral: "😐",
+    };
+    return emojiMap[emotion] || "😐"; // Default to neutral face if emotion is not mapped
+  };
 
   useEffect(() => {
     const connectToRoom = async () => {
@@ -92,7 +104,7 @@ const VideoRoom = ({ token, roomName, role }) => {
               canvas.toBlob(async (blob) => {
                 if (blob) {
                   const imageUrl = URL.createObjectURL(blob);
-                  setCapturedImage(imageUrl); // Set the captured image in state
+                  // setCapturedImage(imageUrl); // Set the captured image in state
 
                   // Send the photo blob to the backend
                   await sendPhotoToBackend(blob);
@@ -135,7 +147,9 @@ const VideoRoom = ({ token, roomName, role }) => {
       if (response.status !== 200) {
         throw new Error("Failed to send photo to backend");
       }
-      setFaceDetectionResponse(response.data);
+      // setFaceDetectionResponse(response.data);
+      const mappedEmoji = mapEmotionToEmoji(response.data.emotion);
+      setEmoji(mappedEmoji); // Update emoji state
       console.log("Photo sent successfully");
     } catch (error) {
       console.error("Error sending photo to backend:", error);
@@ -158,11 +172,7 @@ const VideoRoom = ({ token, roomName, role }) => {
         </div>
       )} */}
       {role === "guest" && (
-        <div id="emotion-indicator">
-          {faceDetectionResponse === "happy" && <span>😊</span>}
-          {faceDetectionResponse === "sad" && <span>😢</span>}
-          {faceDetectionResponse === "normal" && <span>😐</span>}
-        </div>
+        <div id="emoji-icon"> {emoji} </div>
       )}
     </div>
   );
