@@ -75,49 +75,63 @@ const VideoRoom = ({ token, roomName, role }) => {
   }, [token, roomName, role]);
 
   // Capture and send emotions for guest role
-  useEffect(() => {
-    const capturePhoto = () => {
-      if (role === "guest") {
-        const remoteVideos = document
-          .getElementById("remote-video")
-          .getElementsByTagName("video");
-
-        if (remoteVideos.length > 0) {
-          const videoElement = remoteVideos[0];
-
-          // Check if the video is ready
-          if (videoElement.readyState >= 2) {
-            const videoWidth = videoElement.videoWidth;
-            const videoHeight = videoElement.videoHeight;
-
-            const canvas = document.createElement("canvas");
-            canvas.width = videoWidth;
-            canvas.height = videoHeight;
-
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
-
-            // Convert canvas to an image in base64 format
-            const imageData = canvas.toDataURL("image/jpeg");
-
-            // Send the captured image to the backend for emotion detection
-            axios
-              .post(`${apiUrl}/detect-emotion`, { image: imageData })
-              .then((response) => {
-                const detectedEmotion = response.data.emotion;
-                const mappedEmoji = mapEmotionToEmoji(detectedEmotion);
-                setEmoji(mappedEmoji);
-              })
-              .catch((error) => {
-                console.error("Error detecting emotion:", error);
-              });
+    useEffect(() => {
+      const capturePhoto = () => {
+        if (role === "guest") {
+          const remoteVideos = document
+            .getElementById("remote-video")
+            .getElementsByTagName("video");
+  
+          if (remoteVideos.length > 0) {
+            const videoElement = remoteVideos[0];
+  
+            // Check if the video is ready
+            if (videoElement.readyState >= 2) {
+              const videoWidth = videoElement.videoWidth;
+              const videoHeight = videoElement.videoHeight;
+  
+              const canvas = document.createElement("canvas");
+              canvas.width = videoWidth;
+              canvas.height = videoHeight;
+  
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
+  
+              // Convert the canvas to a Blob
+              canvas.toBlob(async (blob) => {
+                if (blob) {
+                  const imageData = new FormData();
+                  imageData.append("image", blob, "frame.jpg"); // Append blob as a file
+  
+                  // Send captured image for emotion detection
+                  await detectEmotion(imageData);
+                }
+              }, "image/jpeg");
+            }
           }
         }
-      }
-    };
+      };
+  
+      const detectEmotion = async (imageData) => {
+        try {
+          const requestUrl = `${apiUrl}/api/detection/detect-emotion`;
+          console.log('Request URL:', requestUrl);
+          
+          const response = await axios.post(requestUrl, imageData, {
+            headers: {
+              'Content-Type': 'multipart/form-data', // Important for file uploads
+            },
+          });
+          
+          const emotion = response.data.emotion;
+          setEmoji(mapEmotionToEmoji(emotion)); // Update emoji based on detected emotion
+        } catch (error) {
+          console.error("Error detecting emotion:", error);
+        }
+      };
 
-    // Set up interval to capture video frame every 5 seconds
-    const intervalId = setInterval(capturePhoto, 5000);
+    // Set up interval to capture video frame every 15 seconds
+    const intervalId = setInterval(capturePhoto, 15000);
 
     // Clean up interval on unmount
     return () => {
