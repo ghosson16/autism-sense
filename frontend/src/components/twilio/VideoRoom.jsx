@@ -6,11 +6,11 @@ import axios from "axios";
 const VideoRoom = ({ token, roomName, role }) => {
   const [room, setRoom] = useState(null);
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
-  // const [capturedImage, setCapturedImage] = useState(null);
-  // const [faceDetectionResponse, setFaceDetectionResponse] = useState("normal");
   const [emoji, setEmoji] = useState("😐"); // Default neutral emoji
+  const [isCameraOn, setIsCameraOn] = useState(true); // Track camera state
+  const [isMicOn, setIsMicOn] = useState(true); // Track mic state
 
-  // Function to map detected emotion to an emoji
+  // Map detected emotion to an emoji
   const mapEmotionToEmoji = (emotion) => {
     const emojiMap = {
       happy: "😊",
@@ -18,7 +18,7 @@ const VideoRoom = ({ token, roomName, role }) => {
       angry: "😠",
       neutral: "😐",
     };
-    return emojiMap[emotion] || "😐"; // Default to neutral face if emotion is not mapped
+    return emojiMap[emotion] || "😐"; // Default to neutral emoji
   };
 
   useEffect(() => {
@@ -26,17 +26,20 @@ const VideoRoom = ({ token, roomName, role }) => {
       try {
         const room = await connect(token, {
           name: roomName,
-          region: "gll",
+          region: "gll", // Global low-latency region
         });
         setRoom(room);
         console.log("Connected to room:", room);
 
         // Attach local video track for host
         if (role === "host") {
+          const localVideoContainer = document.getElementById("local-video");
+          localVideoContainer.innerHTML = "";
+
           const localParticipant = room.localParticipant;
           localParticipant.videoTracks.forEach((trackPub) => {
             const track = trackPub.track;
-            document.getElementById("local-video").appendChild(track.attach());
+            localVideoContainer.appendChild(track.attach());
           });
         }
 
@@ -71,6 +74,7 @@ const VideoRoom = ({ token, roomName, role }) => {
     };
   }, [token, roomName, role]);
 
+  // Capture and send emotions for guest role
   useEffect(() => {
     const capturePhoto = () => {
       if (role === "guest") {
@@ -81,99 +85,100 @@ const VideoRoom = ({ token, roomName, role }) => {
         if (remoteVideos.length > 0) {
           const videoElement = remoteVideos[0];
 
-          // Log video dimensions to verify they're correct
-          console.log("Video width:", videoElement.videoWidth);
-          console.log("Video height:", videoElement.videoHeight);
-
-          // Check if the video is playing and ready
+          // Check if the video is ready
           if (videoElement.readyState >= 2) {
-            // Ensure the canvas size matches the video resolution
             const videoWidth = videoElement.videoWidth;
             const videoHeight = videoElement.videoHeight;
 
-            if (videoWidth > 0 && videoHeight > 0) {
-              const canvas = document.createElement("canvas");
-              canvas.width = videoWidth;
-              canvas.height = videoHeight;
-              const ctx = canvas.getContext("2d");
+            const canvas = document.createElement("canvas");
+            canvas.width = videoWidth;
+            canvas.height = videoHeight;
 
-              // Draw the current frame of the video onto the canvas
-              ctx.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
 
-              // Convert the canvas to a blob and send it to the backend
-              canvas.toBlob(async (blob) => {
-                if (blob) {
-                  const imageUrl = URL.createObjectURL(blob);
-                  // setCapturedImage(imageUrl); // Set the captured image in state
+            // Convert canvas to an image in base64 format
+            const imageData = canvas.toDataURL("image/jpeg");
 
-                  // Send the photo blob to the backend
-                  await sendPhotoToBackend(blob);
-                }
-              }, "image/jpeg");
-            } else {
-              console.log("Invalid video dimensions.");
-            }
-          } else {
-            console.log("Video is not ready yet.");
+            // Send the captured image to the backend for emotion detection
+            axios
+              .post(`${apiUrl}/detect-emotion`, { image: imageData })
+              .then((response) => {
+                const detectedEmotion = response.data.emotion;
+                const mappedEmoji = mapEmotionToEmoji(detectedEmotion);
+                setEmoji(mappedEmoji);
+              })
+              .catch((error) => {
+                console.error("Error detecting emotion:", error);
+              });
           }
-        } else {
-          console.log("No remote video found.");
         }
       }
     };
 
-    const intervalId = setInterval(() => {
-      requestAnimationFrame(capturePhoto); // Use requestAnimationFrame for capturing
-    }, 30000);
+    // Set up interval to capture video frame every 5 seconds
+    const intervalId = setInterval(capturePhoto, 5000);
 
-    return () => clearInterval(intervalId);
-  }, [role]);
+    // Clean up interval on unmount
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [role, apiUrl]);
 
-  const sendPhotoToBackend = async (photoBlob) => {
-    const formData = new FormData();
-    formData.append("image", photoBlob, "snapshot.jpg");
-
-    try {
-      const response = await axios.post(
-        `${apiUrl}/api/detection/detect-emotion`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+  // Toggle camera on/off
+  const toggleCamera = () => {
+    if (room) {
+      const localParticipant = room.localParticipant;
+      localParticipant.videoTracks.forEach((trackPub) => {
+        const track = trackPub.track;
+        if (isCameraOn) {
+          track.disable();
+        } else {
+          track.enable();
         }
-      );
+      });
+      setIsCameraOn(!isCameraOn);
+    }
+  };
 
-      if (response.status !== 200) {
-        throw new Error("Failed to send photo to backend");
-      }
-      // setFaceDetectionResponse(response.data);
-      const mappedEmoji = mapEmotionToEmoji(response.data.emotion);
-      setEmoji(mappedEmoji); // Update emoji state
-      console.log("Photo sent successfully");
-    } catch (error) {
-      console.error("Error sending photo to backend:", error);
+  // Toggle mic on/off
+  const toggleMic = () => {
+    if (room) {
+      const localParticipant = room.localParticipant;
+      localParticipant.audioTracks.forEach((trackPub) => {
+        const track = trackPub.track;
+        if (isMicOn) {
+          track.disable();
+        } else {
+          track.enable();
+        }
+      });
+      setIsMicOn(!isMicOn);
     }
   };
 
   return (
-    <div id="video-room">
-      <h2>Video Room: {roomName}</h2>
-      {/* Only show the local video if the role is host */}
-      {role === "host" ? (
-        <div id="local-video">Local Video</div>
-      ) : (
-        <div id="remote-video">Remote Video</div>
-      )}
-      {/* {capturedImage && (
-        <div>
-          <h3>Captured Image:</h3>
-          <img src={capturedImage} alt="Captured" />
-        </div>
-      )} */}
+    <div className="video-room">
+      <div className="video-container">
+        <div id="local-video" className="video-section"></div>
+        <div id="remote-video" className="video-section"></div>
+      </div>
+
       {role === "guest" && (
-        <div id="emoji-icon"> {emoji} </div>
+        <div className="emoji-display">
+          <span>Detected Emotion: {emoji}</span>
+        </div>
       )}
+
+      {/* Camera and Mic Controls */}
+      <div className="controls">
+        <button onClick={toggleCamera}>
+          {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
+        </button>
+        <button onClick={toggleMic}>
+          {isMicOn ? "Mute Mic" : "Unmute Mic"}
+        </button>
+      </div>
     </div>
   );
 };

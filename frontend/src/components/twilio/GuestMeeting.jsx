@@ -3,8 +3,6 @@ import axios from "axios";
 import VideoRoom from "./VideoRoom";
 import "../../styles/VideoRoom.css";
 
-
-
 const GuestMeeting = () => {
   const [roomName, setRoomName] = useState("");
   const [token, setToken] = useState(null);
@@ -53,7 +51,7 @@ const GuestMeeting = () => {
 
       {isConnected && (
         <div>
-            <div id="controls"></div>
+          <div id="controls"></div>
           <button onClick={() => console.log("Help button clicked")}>Help</button>
           <button onClick={() => console.log("Game button clicked")}>Game</button>
         </div>
