@@ -25,7 +25,7 @@ const handleFileTranscription = async (req, res) => {
       {
         headers: {
           Authorization: `Token ${DEEPGRAM_API_KEY}`,
-          'Content-Type': 'audio/mpeg', // Assuming MP3, change as per file type
+          'Content-Type': 'audio/webm', // Assuming MP3, change as per file type
         },
         params: {
           punctuate: true,
@@ -35,7 +35,7 @@ const handleFileTranscription = async (req, res) => {
     );
 
     // Send the transcription result back to the client
-    res.status(200).json({ transcription: response.data.results.channels[0].alternatives[0].transcript });
+    res.status(200).json({ conversationContext: response.data.results.channels[0].alternatives[0].transcript });
   } catch (error) {
     console.error('Error during transcription:', error.message);
     res.status(500).json({ message: 'Transcription failed', error: error.message });

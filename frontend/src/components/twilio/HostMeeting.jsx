@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from "uuid"; // To generate unique room names
 const HostMeeting = () => {
   const [roomName, setRoomName] = useState("");
   const [token, setToken] = useState(null);
-  const [copySuccess, setCopySuccess] = useState(""); // State to track copy status
 
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -45,10 +44,6 @@ const HostMeeting = () => {
       {roomName && token && (
         <div>
           <p>Room Name: {roomName}</p>
-          <button onClick={() => navigator.clipboard.writeText(roomName)}>
-            Copy Room Name
-          </button>
-          {copySuccess && <p>{copySuccess}</p>}
         </div>
       )}
       

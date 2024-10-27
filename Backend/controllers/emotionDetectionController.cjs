@@ -30,7 +30,7 @@ pyshell.send(base64Image);
   // End the PythonShell and handle completion
   pyshell.end((err) => {
     if (err) {
-      console.error('Error during PythonShell execution:', err);
+      console.error('Error during PythonShell execution');
     }
   });
 };

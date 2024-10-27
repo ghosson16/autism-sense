@@ -1,14 +1,14 @@
 const axios = require('axios');
 
 const generateSuggestion = async (req, res) => {
-    const { conversationContext, emotion } = req.body;
+    const { conversationContext } = req.body;
 
-    if (!conversationContext || !emotion) {
-        return res.status(400).json({ error: 'Missing conversation context or emotion' });
+    if (!conversationContext ) {
+        return res.status(400).json({ error: 'Missing conversation context' });
     }
 
     try {
-        const prompt = `The conversation is: "${conversationContext}". The other person's current facial expression is "${emotion}". Respond in 3 words or less.`;
+        const prompt = `The conversation is: "${conversationContext}". Respond in 3 words or less.`;
 
         // Use the chat API endpoint for chat-based models
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {

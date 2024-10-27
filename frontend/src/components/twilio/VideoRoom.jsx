@@ -2,13 +2,17 @@ import React, { useEffect, useState } from "react";
 import { connect } from "twilio-video";
 import "../../styles/VideoRoom.css";
 import axios from "axios";
+import AudioRecorder from "./AudioRecorder";
 
 const VideoRoom = ({ token, roomName, role }) => {
   const [room, setRoom] = useState(null);
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
   const [emoji, setEmoji] = useState("😐"); // Default neutral emoji
+
   const [isCameraOn, setIsCameraOn] = useState(true); // Track camera state
   const [isMicOn, setIsMicOn] = useState(true); // Track mic state
+  const [copySuccess, setCopySuccess] = useState(""); // State to track copy status
+
 
   // Map detected emotion to an emoji
   const mapEmotionToEmoji = (emotion) => {
@@ -171,6 +175,15 @@ const VideoRoom = ({ token, roomName, role }) => {
     }
   };
 
+  const copyRoomName = () => {
+    navigator.clipboard.writeText(roomName)
+      .then(() => setCopySuccess("Room name copied to clipboard!"))
+      .catch(() => setCopySuccess("Failed to copy room name."));
+
+    // Clear the success message after a few seconds
+    setTimeout(() => setCopySuccess(""), 2000);
+  };
+
   return (
     <div className="video-room">
       <div className="video-container">
@@ -181,18 +194,41 @@ const VideoRoom = ({ token, roomName, role }) => {
       {role === "guest" && (
         <div className="emoji-display">
           <span>Detected Emotion: {emoji}</span>
+          <div><AudioRecorder/></div>
         </div>
+        
       )}
 
       {/* Camera and Mic Controls */}
-      <div className="controls">
-        <button onClick={toggleCamera}>
-          {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
-        </button>
-        <button onClick={toggleMic}>
-          {isMicOn ? "Mute Mic" : "Unmute Mic"}
-        </button>
+    <div className="call-controls">
+      <div className="three-dot-container">
+        <button className="three-dot-button">•••</button>
+        <div className="control-panel">
+          <button className="control-button end-call">
+            <span role="img" aria-label="End Call">📞</span> End Call
+          </button>
+          <button onClick={toggleCamera} className="control-button video">
+            <span role="img" aria-label="Video">📹</span>
+            {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
+          </button>
+          <button onClick={toggleMic} className="control-button microphone">
+            <span role="img" aria-label="Microphone">🎤</span>
+            {isMicOn ? "Mute Mic" : "Unmute Mic"}
+          </button>
+
+          {role === "host" && (
+            <button onClick={copyRoomName} className="control-button copy-room">
+              <span role="img" aria-label="Copy Room Name">📋</span> Copy Room Name
+            </button>
+          )}
+
+          {copySuccess && <p className="copy-success">{copySuccess}</p>}
+
+        </div>
       </div>
+    </div>
+
+
     </div>
   );
 };
