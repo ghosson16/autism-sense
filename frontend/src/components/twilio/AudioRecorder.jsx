@@ -84,6 +84,7 @@ const AudioRecorder = () => {
       });
 
       const transcribe = response.data.conversationContext;
+      console.log(transcribe );
       const suggestionText = await generateSuggestion(transcribe);
       setSuggestion(suggestionText);
     } catch (error) {

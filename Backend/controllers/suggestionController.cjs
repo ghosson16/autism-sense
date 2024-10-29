@@ -8,7 +8,7 @@ const generateSuggestion = async (req, res) => {
     }
 
     try {
-        const prompt = `The conversation is: "${conversationContext}". Respond in 3 words or less.`;
+        const prompt = `The conversation is: \n"${conversationContext}" \n the conversation is between an adult and a child.for the last adult's question asked, suggest a respone for the child, in 3 words or less.`;
 
         // Use the chat API endpoint for chat-based models
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
