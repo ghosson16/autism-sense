@@ -33,9 +33,9 @@ const GuestMeeting = () => {
 
   return (
     <div>
-      <h1>Join Meeting</h1>
       {!token ? (
         <>
+          <h1>Join Meeting</h1>
           <input
             type="text"
             value={roomName}
@@ -49,12 +49,6 @@ const GuestMeeting = () => {
         <VideoRoom token={token} roomName={roomName} role="guest" />
       )}
 
-      {isConnected && (
-        <div>
-          <div id="controls"></div>
-          <button onClick={() => console.log("Game button clicked")}>Game</button>
-        </div>
-      )}
     </div>
   );
 };

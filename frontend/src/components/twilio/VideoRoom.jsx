@@ -192,15 +192,18 @@ const VideoRoom = ({ token, roomName, role }) => {
       </div>
 
       {role === "guest" && (
+        <>
         <div className="emoji-display">
-          <span>Detected Emotion: {emoji}</span>
-          <div><AudioRecorder/></div>
+          <span>{emoji}</span>
         </div>
+        <div className="control">
+          <div><AudioRecorder/></div>
+          <button onClick={() => console.log("Game button clicked")}>Game</button>
+        </div>
+        </>
         
       )}
-
-      {/* Camera and Mic Controls */}
-    <div className="call-controls">
+     <div className="call-controls">
       <div className="three-dot-container">
         <button className="three-dot-button">•••</button>
         <div className="control-panel">

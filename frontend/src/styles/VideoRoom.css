@@ -1,120 +1,186 @@
-/* Overall container */
-#video-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #eaf7f5; /* Light background */
-  }
-  
-  /* Video feed container */
-  #video-wrapper {
-    position: relative;
-    width: 640px;
-    height: 480px;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #f2f2f2;
-  }
-  
-  /* Video element */
-  #video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  /* Floating emoji icon */
-  #emoji-icon {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: #006d64;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 30px;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Bottom buttons */
-  .call-controls {
-    position: relative;
-    text-align: left;
-  }
-  
-  .three-dot-container {
-    position: relative;
-    display: inline-block;
-  }
-  
-  /* Style for the three-dot button */
-  .three-dot-button {
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    color: #1b4a46;
-    cursor: pointer;
-    background-color: #fff;
-  }
-  
-  .control-panel {
-    display: none;
-    position: absolute;
-    left: 0;
-    bottom: 40px;
-    background-color: #1b4a46;
-    border-radius: 8px;
-    padding: 8px;
-    flex-direction: column;
-    gap: 8px;
-    width: 180px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  .three-dot-container:hover .control-panel,
-  .control-panel:hover {
-    display: flex;
-  }
-  
-  .control-button {
-    display: flex;
-    padding: 8px;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  
-  .control-button span {
-    margin-right: 14px;
-  }
-  
-  .end-call {
-    background-color: #e53935;
-  }
-  
-  .video {
-    background-color: #1e88e5;
-  }
-  
-  .microphone {
-    background-color: #42a5f5;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  .copy-room {
-    background-color: #4caf50;
-  }
-  
-  .copy-success {
-    font-size: 12px;
-    color: #4caf50;
-    margin-top: 4px;
-    text-align: center;
-  }
-  
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+  font-family: Arial, sans-serif;
+}
+
+.video-room {
+  width: 1000px;
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+}
+
+.video-container {
+  width: 100%;
+  height: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-color: #eef5f4;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#remote-video {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#remote-video video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+#local-video {
+  width: 150px;
+  height: 100px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  overflow: hidden;
+}
+
+#local-video video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+
+.emoji-display {
+  width: auto;
+  background-color: #00796b;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 16px;
+  color: #00796b;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  margin: 6px;
+  z-index: 10;
+}
+
+.emoji-display span {
+  font-size: 80px;
+  color: #00796b;
+}
+
+.control {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 20px;
+}
+
+.control button {
+  font-size: 18px;
+  width: 200px;
+  background-color: #00796b;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.control button:hover {
+  background-color: #00574b;
+}
+
+
+.call-controls {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  text-align: left;
+  width: 100%;
+}
+
+.three-dot-container {
+  position: relative;
+}
+
+.three-dot-button {
+  background-color: #00796b;
+  color: #fff;
+  font-size: 18px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor:pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.three-dot-button:hover {
+  background-color: #00574b;
+}
+
+.control-panel {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  bottom: 40px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  gap: 8px;
+  width: 220px;
+}
+
+.three-dot-container:hover .control-panel,
+.control-panel:hover {
+  display: flex;
+}
+
+.control-button {
+  width: 190px;
+  background: #f5f5f5;
+  color: #333;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-button:hover {
+  background: #e0e0e0;
+}

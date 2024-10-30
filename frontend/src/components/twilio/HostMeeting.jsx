@@ -39,16 +39,10 @@ const HostMeeting = () => {
 
   return (
     <div>
-      <h1>Start a Meeting</h1>
-      {/* Always display the room name and copy button */}
-      {roomName && token && (
-        <div>
-          <p>Room Name: {roomName}</p>
-        </div>
-      )}
-      
       {!token ? (
         <>
+        <h1>Start Meeting</h1>
+        <p>description host mode </p>
           <button onClick={startMeeting}>Start Meeting</button>
         </>
       ) : (

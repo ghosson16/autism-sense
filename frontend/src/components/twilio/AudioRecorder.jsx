@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import "../../styles/ModalPop-up.css";
 
 const AudioRecorder = () => {
   const mediaRecorder = useRef(null);
@@ -7,7 +8,8 @@ const AudioRecorder = () => {
   const [stream, setStream] = useState(null);
   const [audio, setAudio] = useState(null);
   const [suggestion, setSuggestion] = useState(null);
-  const [paused, setPaused] = useState(false); // Track if recording is paused
+  const [paused, setPaused] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const mimeType = "audio/webm";
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
@@ -68,6 +70,7 @@ const AudioRecorder = () => {
 
   const handleOkClick = () => {
     setPaused(false);   // Resume recording when "OK" is clicked
+    setIsModalOpen(false)
   };
 
   const STT = async (audioBlob) => {
@@ -87,6 +90,7 @@ const AudioRecorder = () => {
       console.log(transcribe );
       const suggestionText = await generateSuggestion(transcribe);
       setSuggestion(suggestionText);
+      setIsModalOpen(true);
     } catch (error) {
       console.error("Error during transcription:", error);
     }
@@ -105,10 +109,17 @@ const AudioRecorder = () => {
 
   return (
     <div>
-      <button onClick={recordingStatus === "recording" ? handleHelpClick : handleOkClick}>
-        {recordingStatus === "recording" ? "Help" : "Ok"}
-      </button>
-      {suggestion && <p>Suggestion: {suggestion}</p>}
+      <button onClick={handleHelpClick}>Help</button>
+
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <p>{suggestion}</p>
+            <button onClick={handleOkClick}>Close</button>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 };
