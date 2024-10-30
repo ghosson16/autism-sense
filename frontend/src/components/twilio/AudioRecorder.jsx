@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/ModalPop-up.css";
 
 const AudioRecorder = () => {
@@ -10,6 +12,9 @@ const AudioRecorder = () => {
   const [suggestion, setSuggestion] = useState(null);
   const [paused, setPaused] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
 
   const mimeType = "audio/webm";
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
@@ -64,6 +69,7 @@ const AudioRecorder = () => {
   };
 
   const handleHelpClick = () => {
+    setLoading(true);   // Set loading to true when "Help" is clicked
     stopRecording();   // Stop recording when "Help" is clicked
     setPaused(true);    // Set paused state to true
   };
@@ -89,6 +95,7 @@ const AudioRecorder = () => {
       console.log(transcribe );
       const suggestionText = await generateSuggestion(transcribe);
       setSuggestion(suggestionText);
+      setLoading(false);
       setIsModalOpen(true);
       setPaused(false);
     } catch (error) {
@@ -103,19 +110,28 @@ const AudioRecorder = () => {
       return response.data.suggestion;
     } catch (error) {
       console.error("Error generating suggestion:", error);
-      return "Unable to generate suggestion.";
+      return "Oops, I cannot help you now.";
     }
   };
 
   return (
     <div>
-      <button onClick={handleHelpClick}>Help</button>
+      <button onClick={handleHelpClick} disabled={loading} >
+      {loading ? (
+        <FontAwesomeIcon icon={faSpinner} spin />
+      ) : (
+        <>
+        <b>Help</b>
+          <FontAwesomeIcon icon={faQuestionCircle} style={{ marginLeft: '10px' }} />
+        </>
+      )}
+      </button>
 
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
             <p>{suggestion}</p>
-            <button onClick={handleOkClick}>Close</button>
+            <button onClick={handleOkClick}> <b>Close</b></button>
           </div>
         </div>
       )}

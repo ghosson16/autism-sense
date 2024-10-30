@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { connect } from "twilio-video";
 import "../../styles/VideoRoom.css";
 import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVideo, faVideoSlash, faMicrophone, faMicrophoneSlash, faPhone, faClipboard, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faGamepad } from '@fortawesome/free-solid-svg-icons';
 import AudioRecorder from "./AudioRecorder";
 
 const VideoRoom = ({ token, roomName, role }) => {
@@ -200,39 +203,47 @@ const VideoRoom = ({ token, roomName, role }) => {
         <div className="emoji-display">
           <span>{emoji}</span>
         </div>
-        <div className="control">
-          <div><AudioRecorder/></div>
-          <button onClick={() => console.log("Game button clicked")}>Game</button>
-        </div>
         </>
         
       )}
      <div className="call-controls">
       <div className="three-dot-container">
-        <button className="three-dot-button">•••</button>
+        <button className="three-dot-button">
+        <FontAwesomeIcon icon={faEllipsisV} />
+        </button>
         <div className="control-panel">
-          <button className="control-button end-call">
-            <span role="img" aria-label="End Call">📞</span> End Call
+        <button className="control-button end-call">
+            <FontAwesomeIcon icon={faPhone} /> End Call
           </button>
           <button onClick={toggleCamera} className="control-button video">
-            <span role="img" aria-label="Video">📹</span>
+            <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
             {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
           </button>
           <button onClick={toggleMic} className="control-button microphone">
-            <span role="img" aria-label="Microphone">🎤</span>
+            <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
             {isMicOn ? "Mute Mic" : "Unmute Mic"}
           </button>
 
           {role === "host" && (
             <button onClick={copyRoomName} className="control-button copy-room">
-              <span role="img" aria-label="Copy Room Name">📋</span> Copy Room Name
+              <FontAwesomeIcon icon={faClipboard} /> Copy Room Name
             </button>
           )}
 
-          {copySuccess && <p className="copy-success">{copySuccess}</p>}
-
         </div>
       </div>
+
+      {role === "guest" && (
+      <div className="control">
+          <div><AudioRecorder/></div>
+          <button onClick={() => console.log("Game button clicked")}>
+          <b>Game</b>
+          <FontAwesomeIcon icon={faGamepad} style={{ marginLeft: '10px' }} />
+          </button>
+      </div>
+      )}
+      
+      {copySuccess && <p className="copy-success">{copySuccess}</p>}
     </div>
 
 
