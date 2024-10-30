@@ -21,17 +21,6 @@ const HostMeeting = () => {
 
       const token = response.data.token;
       setToken(token); // Set the token for later use
-
-      // Automatically copy the room name to the clipboard
-      navigator.clipboard.writeText(generatedRoomName)
-        .then(() => {
-          setCopySuccess("Room name copied to clipboard!");
-        })
-        .catch(err => {
-          setCopySuccess("Failed to copy room name.");
-          console.error("Copy failed:", err);
-        });
-
     } catch (error) {
       console.error("Error starting the meeting:", error);
     }

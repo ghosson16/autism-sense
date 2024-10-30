@@ -69,7 +69,6 @@ const AudioRecorder = () => {
   };
 
   const handleOkClick = () => {
-    setPaused(false);   // Resume recording when "OK" is clicked
     setIsModalOpen(false)
   };
 
@@ -91,6 +90,7 @@ const AudioRecorder = () => {
       const suggestionText = await generateSuggestion(transcribe);
       setSuggestion(suggestionText);
       setIsModalOpen(true);
+      setPaused(false);
     } catch (error) {
       console.error("Error during transcription:", error);
     }

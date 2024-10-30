@@ -7,7 +7,7 @@ import AudioRecorder from "./AudioRecorder";
 const VideoRoom = ({ token, roomName, role }) => {
   const [room, setRoom] = useState(null);
   const apiUrl = import.meta.env.VITE_BACKEND_URL;
-  const [emoji, setEmoji] = useState("😐"); // Default neutral emoji
+  const [emoji, setEmoji] = useState(null); // Default neutral emoji
 
   const [isCameraOn, setIsCameraOn] = useState(true); // Track camera state
   const [isMicOn, setIsMicOn] = useState(true); // Track mic state
@@ -22,7 +22,7 @@ const VideoRoom = ({ token, roomName, role }) => {
       angry: "😠",
       neutral: "😐",
     };
-    return emojiMap[emotion] || "😐"; // Default to neutral emoji
+    return emojiMap[emotion] ;
   };
 
   useEffect(() => {
@@ -50,12 +50,16 @@ const VideoRoom = ({ token, roomName, role }) => {
         // Attach remote participants' video tracks
         room.participants.forEach((participant) => {
           participant.on("trackSubscribed", (track) => {
+            const remoteVideoContainer = document.getElementById("remote-video");
+            remoteVideoContainer.innerHTML = "";
             document.getElementById("remote-video").appendChild(track.attach());
           });
         });
 
         room.on("participantConnected", (participant) => {
           participant.on("trackSubscribed", (track) => {
+            const remoteVideoContainer = document.getElementById("remote-video");
+            remoteVideoContainer.innerHTML = "";
             document.getElementById("remote-video").appendChild(track.attach());
           });
         });
