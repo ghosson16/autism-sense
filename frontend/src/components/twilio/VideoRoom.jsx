@@ -34,6 +34,8 @@ const VideoRoom = ({ token, roomName, role }) => {
         const room = await connect(token, {
           name: roomName,
           region: "gll", // Global low-latency region
+          audio: true,
+          video: true
         });
         setRoom(room);
         console.log("Connected to room:", room);
