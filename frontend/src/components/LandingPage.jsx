@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, Link } from "react-router-dom";
+import  "../images/staticLogo.png";
+import  "../images/animatedLogo.gif";
 import "../styles/LandingPage.css"; // Custom CSS file for styling
-import Logo from "../images/logo.png";
+
+// Import the images
+
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
-  // Handle normal mode (host) meeting creation
   const handleCreateMeeting = () => {
-    navigate("/host", );
+    navigate("/host");
   };
 
   const handleCreateAccount = () => {
@@ -22,14 +25,12 @@ const LandingPage = () => {
   return (
     <div className="landing-container">
       <div className="logo-container">
-        <img src={Logo} alt="AutismSense Logo" className="logo" />
-        <h1 className="title">AutismSense</h1>
       </div>
 
       {/* Section for creating a meeting in normal mode */}
-        <button className="btn" onClick={handleCreateMeeting}>
-          Create Meeting (Normal Mode)
-        </button>
+      <button className="btn" onClick={handleCreateMeeting}>
+        Create Meeting (Normal Mode)
+      </button>
 
       {/* Navigation for login or sign-up */}
       <button className="btn" onClick={handleCreateAccount}>
@@ -41,7 +42,7 @@ const LandingPage = () => {
 
       <footer className="landing-footer">
         <Link to="/about-us">About Us</Link>
-        <p>&copy; 2024 AutismSense. All rights reserved. </p>
+        <p>&copy; 2024 AutismSense. All rights reserved.</p>
         <a href="https://lordicon.com/">Icons by Lordicon.com</a>
       </footer>
     </div>

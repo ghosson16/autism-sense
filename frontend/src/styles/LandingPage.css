@@ -7,24 +7,28 @@
     /* background: linear-gradient(to bottom right, #a8e6cf, #dcedc1); */
   }
   
-  .logo-container {
-    text-align: center;
-    justify-content: center;
-  }
-  
-  .logo {
-    width: 300px; /* Adjust as necessary */
-    height: 300px;
-    background-color:#fff;
-    border-radius: 100%;
-  }
-  
-  .title {
-    font-size: 2.5rem;
-    color: #FFFFFF;
-    font-family: 'your-font-family'; /* Use your specific font */
-    margin: 20px 0;
-  }
+/* Container styling */
+.logo-container {
+  width: 350px; /* Adjust as needed */
+  height: 350px; /* Adjust as needed */
+  background-image: url('../images/staticLogo.png'); /* Default static image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Change to animated GIF on hover */
+.logo-container:hover {
+  background-image: url('../images/animatedLogo.gif');
+}
+
+.title {
+  font-size: 2em;
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+
   
   .btn {
     width: 400px;
