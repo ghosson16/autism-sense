@@ -140,7 +140,7 @@ html, body {
 
 /* Footer Style */
 .footer {
-  color: #008f7a;
+  color: #000000;
   text-align: center;
   margin-top: auto; /* Pushes the footer to the bottom */
   padding: 10px 20px;
@@ -153,4 +153,64 @@ html, body {
 
 .bottom-bar {
   text-align: center;
+}
+/* Container to align both buttons horizontally */
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 100px; /* Space between buttons */
+  margin-top: 0px; /* Adjust as needed */
+}
+
+/* Button styling adjustments */
+.btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em;
+  font-weight: 800;
+  font-family: inherit;
+  background-color: #FFFFFF;
+  color: #008f7a;
+  border: 3px solid #000000;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+  width: 200px;
+}
+.btn {
+  width: 320px; /* Adjusted width to fit larger icons */
+  padding: 1.5em; /* Increased padding for better spacing */
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: inherit;
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 3px solid #000000;
+  border-radius: 25px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+  position: relative;
+  gap: 10px; 
+}
+
+.btn:hover {
+  background-color: #f8f8d2;
+  color: #000000;
+  border-color: #000000; /* Ensure border stays black on hover */
+  transform: scale(1.05); /* Slightly enlarge button on hover */
+}
+
+.btn:active {
+  background-color: #f8f8d2; 
+  transform: scale(1); /* Reset to original size on click */
+}
+.btn h2 {
+  margin: 0;
+  font-size: 1.3em;
 }
