@@ -93,7 +93,14 @@ const Home = () => {
 
       <section className="dashboard-content">
         <div className="progress-report">
-          <h2>Progress Overview</h2>
+          <h2>
+          <lord-icon
+        src="https://cdn.lordicon.com/jomkxqbs.json"
+        trigger="hover"
+        colors="primary:#121331,secondary:#eeca66,tertiary:#e4e4e4,quaternary:#b4b4b4,quinary:#b26836"
+        style={{ width: "100px", height: "250px" }}
+      ></lord-icon>
+            Progress Overview</h2>
           <p>This section will display an overview of the child's progress.</p>
         </div>
         <div className="detailed-reports">
@@ -105,13 +112,21 @@ const Home = () => {
       {/* Button to Join Zoom with Special Mode */}
       <section className="zoom-navigation">
       <button className="btn" onClick={handleJoinSpecialMode}>
-        Join Meeting (Special Mode)
+        Join Meeting <lord-icon
+    src="https://cdn.lordicon.com/kiynvdns.json"
+    trigger="hover"
+    colors="primary:#121331,secondary:#e4e4e4,tertiary:#e4e4e4,quaternary:#d1fad7,quinary:#d1f3fa"
+    style={{ width: "180px", height: "200px" }}
+></lord-icon>
+
+        
       </button>
       </section>
 
       <footer className="footer">
         <nav className="bottom-bar">
           <p>&copy; 2024 AutismSense. All rights reserved.</p>
+          <a href="https://lordicon.com/">Icons by Lordicon.com</a>
         </nav>
       </footer>
     </div>

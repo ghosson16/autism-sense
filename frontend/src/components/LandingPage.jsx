@@ -41,7 +41,8 @@ const LandingPage = () => {
 
       <footer className="landing-footer">
         <Link to="/about-us">About Us</Link>
-        <p>&copy; 2024 AutismSense. All rights reserved.</p>
+        <p>&copy; 2024 AutismSense. All rights reserved. </p>
+        <a href="https://lordicon.com/">Icons by Lordicon.com</a>
       </footer>
     </div>
   );
