@@ -4,6 +4,7 @@ import "../styles/LandingPage.css";
 import AuthModal from "./Authentication/AuthModal";
 import lottie from "lottie-web";
 import { defineElement } from "@lordicon/element";
+import Footer from "./Footer";
 
 const LandingPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -52,11 +53,9 @@ const LandingPage = () => {
       </button>
     </section>
       {showAuthModal && <AuthModal onClose={closeAuthModal} />}
-      <footer className="landing-footer">
-        <Link to="/about-us">About Us</Link>
-        <p>&copy; 2024 AutismSense. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
+    
   );
 };
 
