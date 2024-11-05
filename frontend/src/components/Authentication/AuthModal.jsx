@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import SignUpForm from "./SignUpForm";
 import LoginForm from "./LoginForm";
-import ForgetPasswordForm from "./ForgetPasswordForm"; // Import ForgetPasswordForm
+import ForgetPasswordForm from "./ForgetPasswordForm";
 import "../../styles/AuthModal.css";
 
 const AuthModal = ({ onClose }) => {
-  const [mode, setMode] = useState("login"); // Start with login view
+  const [mode, setMode] = useState("login");
 
   const toggleMode = (newMode) => {
     setMode(newMode);
@@ -14,22 +14,25 @@ const AuthModal = ({ onClose }) => {
   return (
     <div className="auth-modal">
       <div className="auth-modal-content">
+        {/* Close button on the top right to close the modal */}
         <button className="close-btn" onClick={onClose}>
           &times;
         </button>
 
         {/* Display different forms based on the mode */}
-        {mode === "login" && <LoginForm onCancel={onClose} />}
-        {mode === "sign-up" && <SignUpForm onCancel={onClose} />}
-        {mode === "forget-password" && <ForgetPasswordForm onCancel={onClose} />}
+        {mode === "login" && <LoginForm />}
+        {mode === "sign-up" && <SignUpForm />}
+        {mode === "forget-password" && <ForgetPasswordForm />}
 
         <p className="toggle-text">
           {mode === "login" && (
             <>
-              <button className="forget-btn" onClick={() => toggleMode("forget-password")}>
-                Forgot Password?
-              </button>
-              <br /> <br />
+              <br />
+              Forgot password?{" "}
+              <span className="toggle-link" onClick={() => toggleMode("forget-password")}>
+                Reset password
+              </span>
+              <br />
               Don't have an account?{" "}
               <span className="toggle-link" onClick={() => toggleMode("sign-up")}>
                 Sign up

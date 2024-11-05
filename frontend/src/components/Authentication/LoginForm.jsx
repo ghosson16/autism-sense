@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
 import '../../styles/AuthModal.css';
 
@@ -11,7 +11,7 @@ const LoginForm = ({ onCancel }) => {
   const [loginError, setLoginError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const validatePassword = (password) => password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
@@ -37,7 +37,7 @@ const LoginForm = ({ onCancel }) => {
       const result = await login(email, password);
       if (result.message === "Login successful" && result.user) {
         console.log("Navigating with user:", result.user);
-        navigate("/home", { state: { user: result.user } }); // Navigate to /home after successful login
+        navigate("/home", { state: { user: result.user } });
       } else {
         setLoginError(result.message || "Login failed. Please try again.");
       }
@@ -77,9 +77,6 @@ const LoginForm = ({ onCancel }) => {
         </div>
         {loginError && <span className="error-message">{loginError}</span>}
         <div className="form-buttons">
-          <button type="button" className="cancel-btn" onClick={onCancel}>
-            Cancel
-          </button>
           <button type="submit" className="add-child-btn" disabled={isSubmitting}>
             {isSubmitting ? "Logging in..." : "Login"}
           </button>
