@@ -1,4 +1,4 @@
-/* Centering form containers vertically and horizontally */
+/* Centering content vertically and horizontally */
 body {
   display: flex;
   align-items: center;
@@ -7,35 +7,33 @@ body {
   margin: 0;
 }
 
-/* Base modal size for .auth-modal-content with scaling effect */
 /* Modal overlay */
 .auth-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-  
-  /* Modal content */
-  .auth-modal-content {
-    background: #fff;
-    padding: 20px;
-    width: 400px;
-    max-width: 90%;
-    border-radius: 8px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.3s ease; /* Fade-in animation */
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
 
-/* Scaling animation for modal */
+/* Modal content */
+.auth-modal-content {
+  background: #fff;
+  padding: 20px;
+  width: 400px;
+  max-width: 90%;
+  border-radius: 8px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease; /* Fade-in animation */
+}
+
 @keyframes scaleUp {
   from {
     opacity: 0;
@@ -47,7 +45,7 @@ body {
   }
 }
 
-/* Form headers */
+
 h2 {
   text-align: center;
   margin-bottom: 20px;
@@ -56,17 +54,21 @@ h2 {
   font-weight: bold;
 }
 
-/* Input fields for forms */
-.input-field, .form-group input, .dob-input {
+.form-group,
+.dob-field-container {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.input-field,
+.dob-input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  margin-top: 5px;
   background-color: #f9f9f9;
   color: #333;
   font-size: 14px;
-  box-sizing: border-box; /* Ensures padding doesn’t affect total width */
 }
 
 /* Error message styling */
@@ -78,46 +80,6 @@ h2 {
   line-height: 1.2;
 }
 
-/* Button container styling */
-.form-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-/* General button styling */
-.cancel-btn, .send-email-btn, .add-child-btn, .reset-btn, .forget-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  width: calc(50% - 10px); /* Ensures buttons are evenly spaced */
-}
-
-/* Cancel button styling */
-.cancel-btn {
-  background: #ccc;
-  color: #333;
-}
-
-.cancel-btn:hover {
-  background: #bbb;
-}
-
-/* Primary action buttons (Send, Add, Reset) */
-.send-email-btn, .add-child-btn, .reset-btn {
-  background: #00bfa5;
-  color: white;
-}
-
-.send-email-btn:hover, .add-child-btn:hover, .reset-btn:hover  {
-  background: #008f7a;
-}
-
-/* Date of Birth field styling */
 .dob-field-container {
   position: relative;
   margin-bottom: 20px;
@@ -144,12 +106,67 @@ h2 {
   z-index: 1;
 }
 
-/* Specific styling for profile header */
-.profile-header {
+/* Button container styling */
+.form-buttons {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.cancel-btn,
+.save-btn,
+.edit-btn,
+.back-btn,
+.delete-btn,
+.send-email-btn,
+.add-child-btn,
+.reset-btn,
+.forget-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+}
+
+/* Action buttons */
+.cancel-btn {
+  background: #ccc;
+  color: #333;
+}
+
+.save-btn,
+.edit-btn,
+.send-email-btn,
+.add-child-btn,
+.reset-btn {
+  background: #00bfa5; /* Primary action color */
+  color: white;
+}
+
+.save-btn:hover,
+.edit-btn:hover,
+.send-email-btn:hover,
+.add-child-btn:hover,
+.reset-btn:hover {
+  background: #008f7a; /* Darker primary action */
+}
+
+
+.back-btn {
+  background: #9E9E9E;
+  color: white;
+}
+
+.delete-btn {
+  background: #e74c3c; /* Red for delete action */
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #c0392b; /* Darker red on hover */
 }
 
 /* Additional styling for Forget Password button */
@@ -219,7 +236,6 @@ h2 {
   cursor: pointer;
   border-radius: 5px;
   font-size: 1.2rem;
-  background: #ceeff0;
   padding: 6px;
   margin-left: 10px;
   display: flex;
