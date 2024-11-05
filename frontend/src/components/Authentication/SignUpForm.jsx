@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { signUp } from "../../services/authService"; // Import sign-up function
 import '../../styles/LoginForm.css';
 import defaultProfileImage from '../../images/default-profile.png'; // Import local image
 import { FaPencilAlt } from "react-icons/fa";
 
-const SignUpForm = () => {
+const SignUpForm = ({ onCancel }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [childDOB, setChildDOB] = useState("");
@@ -20,8 +19,7 @@ const SignUpForm = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
-
-  const navigate = useNavigate();
+  const [submitError, setSubmitError] = useState("");
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
@@ -41,61 +39,20 @@ const SignUpForm = () => {
     const selectedDate = new Date(dob);
     return selectedDate <= today;
   };
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-  const validatePassword = (password) => {
-    return password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
-  };
-
-  const handleFirstNameChange = (e) => {
-    const value = e.target.value;
-    setFirstName(value);
-    setFirstNameError(!validateFirstName(value) ? "First name should be at least two letters long." : "");
-  };
-
-  const handleLastNameChange = (e) => {
-    const value = e.target.value;
-    setLastName(value);
-    setLastNameError(!validateLastName(value) ? "Last name should be at least two letters long." : "");
-  };
-
-  const handleChildDOBChange = (e) => {
-    const value = e.target.value;
-    setChildDOB(value);
-    setChildDOBError(!validateChildDOB(value) ? "Child's date of birth cannot be in the future." : "");
-  };
-
-  const handleEmailChange = (e) => {
-    const value = e.target.value;
-    setEmail(value);
-    setEmailError(!validateEmail(value) ? "Please enter a valid email address." : "");
-  };
-
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setPassword(value);
-    setPasswordError(!validatePassword(value) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    const value = e.target.value;
-    setConfirmPassword(value);
-    setConfirmPasswordError(value !== password ? "Passwords do not match." : "");
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validatePassword = (password) => password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
 
     // Validate all fields
     if (!validateFirstName(firstName) || !validateLastName(lastName) || !validateChildDOB(childDOB) || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
-      if (!validateFirstName(firstName)) setFirstNameError("First name should be at least two letters long.");
-      if (!validateLastName(lastName)) setLastNameError("Last name should be at least two letters long.");
-      if (!validateChildDOB(childDOB)) setChildDOBError("Child's date of birth cannot be in the future.");
-      if (!validateEmail(email)) setEmailError("Please enter a valid email address.");
-      if (!validatePassword(password)) setPasswordError("Password must be at least 8 characters long and contain both letters and numbers.");
-      if (password !== confirmPassword) setConfirmPasswordError("Passwords do not match.");
+      setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
+      setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
+      setChildDOBError(!validateChildDOB(childDOB) ? "Child's date of birth cannot be in the future." : "");
+      setEmailError(!validateEmail(email) ? "Please enter a valid email address." : "");
+      setPasswordError(!validatePassword(password) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
+      setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match." : "");
       return;
     }
 
@@ -111,19 +68,16 @@ const SignUpForm = () => {
     try {
       const result = await signUp(childData); // Use signUp function from authService
       if (result.message === "Child data saved successfully") {
-        navigate("/home", { state: { user: result.user } });
+        onCancel(); // Close the modal on successful sign-up
       }
     } catch (err) {
-      if (err.response && err.response.status === 409) { // Check if the error is due to a duplicate email
-        window.alert("This email is already in use. Please use a different email."); // Show prompt message
+      if (err.response && err.response.status === 409) { 
+        setSubmitError("This email is already in use. Please use a different email.");
       } else {
+        setSubmitError("An error occurred during sign up. Please try again.");
         console.error("Sign up error:", err);
       }
     }
-  };
-
-  const handleCancel = () => {
-    navigate("/"); // Redirect to home or another route
   };
 
   return (
@@ -138,7 +92,7 @@ const SignUpForm = () => {
               className="photo-img"
             />
             <label htmlFor="photo-input" className="photo-pencil">
-              <FaPencilAlt />
+              <FaPencilAlt /> Add Photo
             </label>
             <input
               type="file"
@@ -154,7 +108,10 @@ const SignUpForm = () => {
             type="text"
             placeholder="First Name"
             value={firstName}
-            onChange={handleFirstNameChange}
+            onChange={(e) => {
+              setFirstName(e.target.value);
+              setFirstNameError(!validateFirstName(e.target.value) ? "First name should be at least two letters long." : "");
+            }}
             required
             className="input-field"
           />
@@ -165,7 +122,10 @@ const SignUpForm = () => {
             type="text"
             placeholder="Last Name"
             value={lastName}
-            onChange={handleLastNameChange}
+            onChange={(e) => {
+              setLastName(e.target.value);
+              setLastNameError(!validateLastName(e.target.value) ? "Last name should be at least two letters long." : "");
+            }}
             required
             className="input-field"
           />
@@ -176,7 +136,10 @@ const SignUpForm = () => {
             type="date"
             id="childDOB"
             value={childDOB}
-            onChange={handleChildDOBChange}
+            onChange={(e) => {
+              setChildDOB(e.target.value);
+              setChildDOBError(!validateChildDOB(e.target.value) ? "Child's date of birth cannot be in the future." : "");
+            }}
             required
             max={new Date().toISOString().split("T")[0]}
             className="dob-input"
@@ -189,7 +152,10 @@ const SignUpForm = () => {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={handleEmailChange}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEmailError(!validateEmail(e.target.value) ? "Please enter a valid email address." : "");
+            }}
             required
             className="input-field"
           />
@@ -200,7 +166,10 @@ const SignUpForm = () => {
             type="password"
             placeholder="Password"
             value={password}
-            onChange={handlePasswordChange}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setPasswordError(!validatePassword(e.target.value) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
+            }}
             required
             className="input-field"
           />
@@ -211,14 +180,20 @@ const SignUpForm = () => {
             type="password"
             placeholder="Confirm Password"
             value={confirmPassword}
-            onChange={handleConfirmPasswordChange}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setConfirmPasswordError(e.target.value !== password ? "Passwords do not match." : "");
+            }}
             required
             className="input-field"
           />
           {confirmPasswordError && <span className="error-message">{confirmPasswordError}</span>}
         </div>
+        {submitError && <span className="error-message">{submitError}</span>}
         <div className="form-buttons">
-          <button type="button" className="cancel-btn" onClick={handleCancel}>Cancel</button>
+          <button type="button" className="cancel-btn" onClick={onCancel}>
+            Cancel
+          </button>
           <button type="submit" className="add-child-btn">Sign up</button>
         </div>
       </form>

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { resetPassword } from '../../services/authService';
-import '../../styles/ForgetPasswordForm.css';
+//import '../../styles/AuthModal.css';
+import '../../styles/LoginForm.css';
 
-const ResetPassword = () => {
+const ResetPassword = ({ onClose }) => {
   const { token } = useParams(); // Get token from URL
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -43,8 +44,8 @@ const ResetPassword = () => {
     try {
       const response = await resetPassword(token, password);
       alert('Password has been reset. You can now log in with your new password.');
-      console.log(password); 
-      navigate('/login');
+      console.log(password);
+      navigate('/');
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setError('Invalid or expired token.');
@@ -57,27 +58,32 @@ const ResetPassword = () => {
 
   return (
     <div className="form-container">
-      <h2>Reset Your Password</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="password"
-          placeholder="New Password"
-          value={password}
-          onChange={handlePasswordChange}
-          required
-          className="input-field"
-        />
-        <input
-          type="password"
-          placeholder="Confirm New Password"
-          value={confirmPassword}
-          onChange={handleConfirmPasswordChange}
-          required
-          className="input-field"
-        />
-        {error && <p className="error-message">{error}</p>}
-        <button type="submit">Reset Password</button>
-      </form>
+      <div className="form-group">
+        <button className="close-btn" onClick={onClose}>
+          &times;
+        </button>
+        <h2>Reset Your Password</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="password"
+            placeholder="New Password"
+            value={password}
+            onChange={handlePasswordChange}
+            required
+            className="input-field"
+          />
+          <input
+            type="password"
+            placeholder="Confirm New Password"
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
+            required
+            className="input-field"
+          />
+          {error && <p className="error-message">{error}</p>}
+          <button type="submit" className="reset-btn">Reset Password</button>
+        </form>
+      </div>
     </div>
   );
 };

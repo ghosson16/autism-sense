@@ -1,85 +1,52 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { login } from "../../services/authService"; // Import login function
-import '../../styles/LoginForm.css'
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { login } from "../../services/authService";
+import '../../styles/LoginForm.css';
 
-const LoginForm = () => {
+const LoginForm = ({ onCancel }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [loginError, setLoginError] = useState(""); // New state for login error
+  const [loginError, setLoginError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize navigate
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    return password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validatePassword = (password) => password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
 
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    if (!validateEmail(value)) {
-      setEmailError("Please enter a valid email address.");
-    } else {
-      setEmailError("");
-    }
+    setEmailError(validateEmail(value) ? "" : "Please enter a valid email address.");
   };
 
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setPassword(value);
-    if (!validatePassword(value)) {
-      setPasswordError("Password must be at least 8 characters long and contain both letters and numbers.");
-    } else {
-      setPasswordError("");
-    }
+    setPasswordError(validatePassword(value) ? "" : "Password must be at least 8 characters long and contain both letters and numbers.");
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email address.");
-      return;
-    }
-
-    if (!validatePassword(password)) {
-      setPasswordError("Password must be at least 8 characters long and contain both letters and numbers.");
-      return;
-    }
+    setIsSubmitting(true);
+    setLoginError("");
 
     try {
       const result = await login(email, password);
-      console.log('Login result:', result); 
-      if (result.message === "Login successful") {
-        if (result.user) {
-          console.log('Navigating with user:', result.user);
-          navigate("/home", { state: { user: result.user } });
-        } else {
-          console.error('No user data received from backend');
-          setLoginError("No user data received.");
-        }
+      if (result.message === "Login successful" && result.user) {
+        console.log("Navigating with user:", result.user);
+        navigate("/home", { state: { user: result.user } }); // Navigate to /home after successful login
       } else {
         setLoginError(result.message || "Login failed. Please try again.");
       }
     } catch (err) {
       setLoginError("An error occurred during login. Please try again.");
       console.error("Login error:", err);
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const handleCancel = () => {
-    navigate("/");
-  };
-
-  const handleForgetPassword = () => {
-    navigate("/forget-password");
   };
 
   return (
@@ -93,7 +60,7 @@ const LoginForm = () => {
             value={email}
             onChange={handleEmailChange}
             required
-            className="input-field"
+            className={`input-field ${emailError ? "error" : ""}`}
           />
           {emailError && <span className="error-message">{emailError}</span>}
         </div>
@@ -104,22 +71,17 @@ const LoginForm = () => {
             value={password}
             onChange={handlePasswordChange}
             required
-            className="input-field"
+            className={`input-field ${passwordError ? "error" : ""}`}
           />
           {passwordError && <span className="error-message">{passwordError}</span>}
         </div>
-        <div>
-          <button type="button" className="forget-btn" onClick={handleForgetPassword}>
-            Forget password?
-          </button>
-        </div>
-        {loginError && <span className="error-message">{loginError}</span>} {/* Display login errors */}
+        {loginError && <span className="error-message">{loginError}</span>}
         <div className="form-buttons">
-          <button type="button" className="cancel-btn" onClick={handleCancel}>
+          <button type="button" className="cancel-btn" onClick={onCancel}>
             Cancel
           </button>
-          <button type="submit" className="add-child-btn">
-            Login
+          <button type="submit" className="add-child-btn" disabled={isSubmitting}>
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </div>
       </form>

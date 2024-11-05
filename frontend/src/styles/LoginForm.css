@@ -1,155 +1,232 @@
+/* Centering form containers vertically and horizontally */
 body {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #f3f4f6; /* Light grey background */
 }
 
-.profile-details {
-  max-width: 400px;
-  margin: 5px auto;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* Base modal size for .auth-modal-content with scaling effect */
+/* Modal overlay */
+.auth-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  /* Modal content */
+  .auth-modal-content {
+    background: #fff;
+    padding: 20px;
+    width: 400px;
+    max-width: 90%;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease; /* Fade-in animation */
+  }
+
+/* Scaling animation for modal */
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
+/* Form headers */
 h2 {
-  align-items: center;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   color: #333;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
-img {
-  width: 100px;
-  height: 100px;
-  border: #ccc;
-  border-radius: 80%;
-  margin: 10px;
-}
-.form-container{
-  max-width: 400px;
-  margin: 20px auto;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.form-photo {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.form-group, .form-group-s {
-  width: 380px;
-  margin-bottom: 10px;
-}
-
-.input-field {
+/* Input fields for forms */
+.input-field, .form-group input, .dob-input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
   margin-top: 5px;
+  background-color: #f9f9f9;
+  color: #333;
+  font-size: 14px;
+  box-sizing: border-box; /* Ensures padding doesn’t affect total width */
 }
 
+/* Error message styling */
 .error-message {
-  color: #e74c3c; /* Red color for errors */
-  font-size: 12px; /* Smaller font size */
-  margin-top: 5px; /* Small space above the error message */
-  display: block; /* Ensures error message is displayed on a new line */
-  line-height: 1.2; /* Tightens the line height for a more compact look */
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+  line-height: 1.2;
 }
 
-.profile-header{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.photo-label {
-  color: #555;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  background-color: #ceeff0;
-  padding: 5px 25px;
-  border-radius: 5px;
-  height: 40px;
-}
-
-.photo-input {
-  display: none;
-}
-
+/* Button container styling */
 .form-buttons {
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
 }
 
-.forget-btn{
-  background-color: #ceeff0;
-}
-
-.cancel-btn, .add-child-btn {
+/* General button styling */
+.cancel-btn, .send-email-btn, .add-child-btn, .reset-btn, .forget-btn {
   padding: 10px 20px;
+  border: none;
   border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  width: calc(50% - 10px); /* Ensures buttons are evenly spaced */
 }
 
+/* Cancel button styling */
 .cancel-btn {
   background: #ccc;
   color: #333;
 }
 
+.cancel-btn:hover {
+  background: #bbb;
+}
 
-.add-child-btn {
+/* Primary action buttons (Send, Add, Reset) */
+.send-email-btn, .add-child-btn, .reset-btn {
   background: #00bfa5;
   color: white;
 }
 
-.add-child-btn:hover {
+.send-email-btn:hover, .add-child-btn:hover, .reset-btn:hover {
   background: #008f7a;
 }
 
-
-/* Date of Birth Field Styling */
-/* Date of Birth Field Container */
+/* Date of Birth field styling */
 .dob-field-container {
   position: relative;
-  margin-bottom: 20px; /* Add margin to separate from other elements */
-}
-
-.dob-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  color: #555;
-  font-size: 14px;
+  margin-bottom: 20px;
 }
 
 .dob-hint {
   position: absolute;
-  top: 10px; /* Position above the input field */
-  left: 15px; /* Align with the left padding of the input */
+  top: 10px;
+  left: 15px;
   color: #aaa;
   font-size: 14px;
   transition: all 0.3s ease;
-  pointer-events: none; /* Prevent interaction with the hint */
+  pointer-events: none;
 }
 
 .dob-input:focus + .dob-hint,
 .dob-input:not(:placeholder-shown) + .dob-hint {
-  top: -20px; /* Move hint above the input field */
+  top: -20px;
   left: 15px;
-  font-size: 12px; /* Smaller font size */
-  color: #333; /* Darker color for readability */
-  background: white; /* Ensure the hint text is readable over any input background */
-  padding: 0 4px; /* Add padding for a cleaner look */
-  z-index: 1; /* Ensure hint is above other elements */
+  font-size: 12px;
+  color: #333;
+  background: white;
+  padding: 0 4px;
+  z-index: 1;
+}
+
+/* Specific styling for profile header */
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Additional styling for Forget Password button */
+.forget-btn {
+  background-color: #ceeff0;
+}
+
+/* Close button styling for modals */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+  color: #008f7a;
+}
+
+/* Toggle text and link for modal */
+.toggle-text {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.toggle-link {
+  color: #008f7a;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.toggle-link:hover {
+  color: #005f56;
+  text-decoration: underline;
+}
+
+/* Profile photo image */
+.form-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Adds space between image and pencil icon */
+}
+
+.photo-ring {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.photo-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.photo-pencil {
+  color: #008f7a;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  background: #ceeff0;
+  padding: 6px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-input {
+  display: none;
 }

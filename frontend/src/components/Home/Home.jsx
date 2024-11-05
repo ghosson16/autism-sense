@@ -9,44 +9,46 @@ import defaultProfileImage from '../../images/default-profile.png';
 const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  
   const [childData, setChildData] = useState(location.state?.user || null);
   const [userProfileImage, setUserProfileImage] = useState(defaultProfileImage);
   const [userName, setUserName] = useState('First Name Last Name');
-  const [childId, setChildId] = useState(null);
+  const [childId, setChildId] = useState(childData?._id || location.state?.id || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!childData) {
-      const savedChildId = location.state?.id;
-      if (savedChildId) {
-        fetchChildData(savedChildId)
-          .then((user) => {
-            if (user) {
-              setChildData(user);
-              setUserProfileImage(user.photo || defaultProfileImage);
-              setUserName(`${user.firstName} ${user.lastName}` || 'First Name Last Name');
-              setChildId(user._id || user.id);
-            } else {
-              navigate('/login');
-            }
-          })
-          .catch(() => {
-            setError('Unable to load user data. Please try again.');
-            navigate('/login');
-          })
-          .finally(() => setLoading(false));
-      } else {
-        setError('No child ID available');
-        navigate('/login');
-      }
-    } else {
+    // Fetch child data if not already available
+    if (!childData && childId) {
+      setLoading(true);
+      fetchChildData(childId)
+        .then((user) => {
+          if (user) {
+            setChildData(user);
+            setUserProfileImage(user.photo || defaultProfileImage);
+            setUserName(`${user.firstName} ${user.lastName}`);
+          } else {
+            throw new Error("User data is unavailable");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+          setError("Unable to load user data. Please try again.");
+          navigate('/');
+        })
+        .finally(() => setLoading(false));
+    } else if (childData) {
+      // If child data is already available, set up necessary states
       setUserProfileImage(childData.photo || defaultProfileImage);
-      setUserName(`${childData.firstName} ${childData.lastName}` || 'First Name Last Name');
+      setUserName(`${childData.firstName} ${childData.lastName}`);
       setChildId(childData._id || childData.id);
       setLoading(false);
+    } else {
+      // No child data or ID; redirect to login
+      setError('No child ID available');
+      navigate('/');
     }
-  }, [childData, navigate, location.state]);
+  }, [childData, childId, navigate]);
 
   const handleLogout = async () => {
     try {
@@ -54,6 +56,7 @@ const Home = () => {
       navigate('/');
     } catch (error) {
       console.error('Error during logout:', error);
+      setError("Logout failed. Please try again.");
     }
   };
 
@@ -66,8 +69,8 @@ const Home = () => {
   };
 
   const handleJoinSpecialMode = () => {
-      navigate("/guest");
-    }
+    navigate("/guest");
+  };
 
   return (
     <div className="container">
@@ -80,7 +83,11 @@ const Home = () => {
             <img src={logoPath} alt="Logo" className="logo-image" />
           </div>
         </div>
-        <button className="navbar-section profile-section" onClick={handleProfileClick} disabled={loading}>
+        <button
+          className="navbar-section profile-section"
+          onClick={handleProfileClick}
+          disabled={loading}
+        >
           <div className="ring-holder">
             <img src={userProfileImage} alt="Profile" className="profile-image" />
           </div>

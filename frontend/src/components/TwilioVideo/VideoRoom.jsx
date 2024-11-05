@@ -1,23 +1,20 @@
+// components/VideoRoom.js
 import React, { useEffect, useState } from "react";
 import { connect } from "twilio-video";
 import "../../styles/VideoRoom.css";
-import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo, faVideoSlash, faMicrophone, faMicrophoneSlash, faPhone, faClipboard, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons';
 import AudioRecorder from "./AudioRecorder";
+import { detectEmotion } from "../../services/videoService"; // Import the detectEmotion service
 
 const VideoRoom = ({ token, roomName, role }) => {
   const [room, setRoom] = useState(null);
-  const apiUrl = import.meta.env.VITE_BACKEND_URL;
-  const [emoji, setEmoji] = useState(null); // Default neutral emoji
+  const [emoji, setEmoji] = useState(null);
+  const [isCameraOn, setIsCameraOn] = useState(true);
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [copySuccess, setCopySuccess] = useState("");
 
-  const [isCameraOn, setIsCameraOn] = useState(true); // Track camera state
-  const [isMicOn, setIsMicOn] = useState(true); // Track mic state
-  const [copySuccess, setCopySuccess] = useState(""); // State to track copy status
-
-
-  // Map detected emotion to an emoji
   const mapEmotionToEmoji = (emotion) => {
     const emojiMap = {
       happy: "😊",
@@ -25,7 +22,7 @@ const VideoRoom = ({ token, roomName, role }) => {
       angry: "😠",
       neutral: "😐",
     };
-    return emojiMap[emotion] ;
+    return emojiMap[emotion];
   };
 
   useEffect(() => {
@@ -33,45 +30,12 @@ const VideoRoom = ({ token, roomName, role }) => {
       try {
         const room = await connect(token, {
           name: roomName,
-          region: "gll", // Global low-latency region
+          region: "gll",
           audio: true,
           video: true
         });
         setRoom(room);
         console.log("Connected to room:", room);
-
-        // Attach local video track for host
-        if (role === "host") {
-          const localVideoContainer = document.getElementById("local-video");
-          localVideoContainer.innerHTML = "";
-
-          const localParticipant = room.localParticipant;
-          localParticipant.videoTracks.forEach((trackPub) => {
-            const track = trackPub.track;
-            localVideoContainer.appendChild(track.attach());
-          });
-        }
-
-        // Attach remote participants' video tracks
-        room.participants.forEach((participant) => {
-          participant.on("trackSubscribed", (track) => {
-            const remoteVideoContainer = document.getElementById("remote-video");
-            remoteVideoContainer.innerHTML = "";
-            document.getElementById("remote-video").appendChild(track.attach());
-          });
-        });
-
-        room.on("participantConnected", (participant) => {
-          participant.on("trackSubscribed", (track) => {
-            const remoteVideoContainer = document.getElementById("remote-video");
-            remoteVideoContainer.innerHTML = "";
-            document.getElementById("remote-video").appendChild(track.attach());
-          });
-        });
-
-        room.on("participantDisconnected", (participant) => {
-          console.log(`${participant.identity} disconnected.`);
-        });
       } catch (error) {
         console.error("Error connecting to room:", error);
       }
@@ -79,7 +43,6 @@ const VideoRoom = ({ token, roomName, role }) => {
 
     connectToRoom();
 
-    // Clean up the room connection on unmount
     return () => {
       if (room) {
         room.disconnect();
@@ -87,70 +50,42 @@ const VideoRoom = ({ token, roomName, role }) => {
     };
   }, [token, roomName, role]);
 
-  // Capture and send emotions for guest role
-    useEffect(() => {
-      const capturePhoto = () => {
-        if (role === "guest") {
-          const remoteVideos = document
-            .getElementById("remote-video")
-            .getElementsByTagName("video");
-  
-          if (remoteVideos.length > 0) {
-            const videoElement = remoteVideos[0];
-  
-            // Check if the video is ready
-            if (videoElement.readyState >= 2) {
-              const videoWidth = videoElement.videoWidth;
-              const videoHeight = videoElement.videoHeight;
-  
-              const canvas = document.createElement("canvas");
-              canvas.width = videoWidth;
-              canvas.height = videoHeight;
-  
-              const ctx = canvas.getContext("2d");
-              ctx.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
-  
-              // Convert the canvas to a Blob
-              canvas.toBlob(async (blob) => {
-                if (blob) {
-                  const imageData = new FormData();
-                  imageData.append("image", blob, "frame.jpg"); // Append blob as a file
-  
-                  // Send captured image for emotion detection
-                  await detectEmotion(imageData);
+  useEffect(() => {
+    const capturePhoto = () => {
+      if (role === "guest") {
+        const remoteVideos = document.getElementById("remote-video").getElementsByTagName("video");
+        if (remoteVideos.length > 0) {
+          const videoElement = remoteVideos[0];
+          if (videoElement.readyState >= 2) {
+            const videoWidth = videoElement.videoWidth;
+            const videoHeight = videoElement.videoHeight;
+            const canvas = document.createElement("canvas");
+            canvas.width = videoWidth;
+            canvas.height = videoHeight;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
+
+            canvas.toBlob(async (blob) => {
+              if (blob) {
+                const imageData = new FormData();
+                imageData.append("image", blob, "frame.jpg");
+                try {
+                  const emotion = await detectEmotion(imageData);
+                  setEmoji(mapEmotionToEmoji(emotion));
+                } catch (error) {
+                  console.error("Error detecting emotion:", error);
                 }
-              }, "image/jpeg");
-            }
+              }
+            }, "image/jpeg");
           }
         }
-      };
-  
-      const detectEmotion = async (imageData) => {
-        try {
-          const requestUrl = `${apiUrl}/api/detection/detect-emotion`;
-          console.log('Request URL:', requestUrl);
-          
-          const response = await axios.post(requestUrl, imageData, {
-            headers: {
-              'Content-Type': 'multipart/form-data', // Important for file uploads
-            },
-          });
-          
-          const emotion = response.data.emotion;
-          setEmoji(mapEmotionToEmoji(emotion)); // Update emoji based on detected emotion
-        } catch (error) {
-          console.error("Error detecting emotion:", error);
-        }
-      };
-
-    // Set up interval to capture video frame every 15 seconds
-    const intervalId = setInterval(capturePhoto, 15000);
-
-    // Clean up interval on unmount
-    return () => {
-      clearInterval(intervalId);
+      }
     };
-  }, [role, apiUrl]);
+
+    const intervalId = setInterval(capturePhoto, 15000);
+    return () => clearInterval(intervalId);
+  }, [role]);
 
   // Toggle camera on/off
   const toggleCamera = () => {

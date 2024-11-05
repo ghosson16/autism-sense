@@ -1,49 +1,35 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import  "../images/staticLogo.png";
-import  "../images/animatedLogo.gif";
-import "../styles/LandingPage.css"; // Custom CSS file for styling
-
-// Import the images
-
+import "../styles/LandingPage.css";
+import AuthModal from "./Authentication/AuthModal";
 
 const LandingPage = () => {
-  const navigate = useNavigate();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate
 
-  const handleCreateMeeting = () => {
-    navigate("/host");
+  const handleSignInUp = () => {
+    setShowAuthModal(true);
   };
 
-  const handleCreateAccount = () => {
-    navigate("/sign-up");
-  };
-
-  const handleLogin = () => {
-    navigate("/login");
+  const closeAuthModal = () => {
+    setShowAuthModal(false);
   };
 
   return (
     <div className="landing-container">
-      <div className="logo-container">
+      <div className="logo-container"></div>
+      <div className="button-container">
+        <button className="btn" onClick={() => navigate("/host")}>
+          Remote Person
+        </button>
+        <button className="btn" onClick={handleSignInUp}>
+          Sign In/Up
+        </button>
       </div>
-
-      {/* Section for creating a meeting in normal mode */}
-      <button className="btn" onClick={handleCreateMeeting}>
-        Create Meeting (Normal Mode)
-      </button>
-
-      {/* Navigation for login or sign-up */}
-      <button className="btn" onClick={handleCreateAccount}>
-        Create An Account
-      </button>
-      <button className="btn" onClick={handleLogin}>
-        Login
-      </button>
-
+      {showAuthModal && <AuthModal onClose={closeAuthModal} />}
       <footer className="landing-footer">
         <Link to="/about-us">About Us</Link>
         <p>&copy; 2024 AutismSense. All rights reserved.</p>
-        <a href="https://lordicon.com/">Icons by Lordicon.com</a>
       </footer>
     </div>
   );
