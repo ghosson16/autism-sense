@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/LandingPage.css";
 import AuthModal from "./Authentication/AuthModal";
+import lottie from "lottie-web";
+import { defineElement } from "@lordicon/element";
 
 const LandingPage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);

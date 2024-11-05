@@ -5,6 +5,8 @@ import { fetchChildData } from '../../services/childService';
 import { logout } from '../../services/authService';
 import logoPath from '../../images/logo.png';
 import defaultProfileImage from '../../images/default-profile.png';
+import lottie from "lottie-web";
+import { defineElement } from "@lordicon/element";
 
 const Home = () => {
   const location = useLocation();
