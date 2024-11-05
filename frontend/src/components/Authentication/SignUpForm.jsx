@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { signUp } from "../../services/authService"; // Import sign-up function
+import { signUp } from "../../services/authService";
 import '../../styles/AuthModal.css';
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-import defaultProfileImage from '../../images/default-profile.png'; // Import local image
+import defaultProfileImage from '../../images/default-profile.png';
 import { FaPencilAlt } from "react-icons/fa";
 
 const SignUpForm = ({ onCancel }) => {
@@ -49,7 +49,6 @@ const SignUpForm = ({ onCancel }) => {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    // Validate all fields
     if (!validateFirstName(firstName) || !validateLastName(lastName) || !validateChildDOB(childDOB) || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
       setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
       setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
@@ -70,7 +69,7 @@ const SignUpForm = ({ onCancel }) => {
     };
 
     try {
-      const result = await signUp(childData); // Use signUp function from authService
+      const result = await signUp(childData);
       if (result.message === "Child data saved successfully") {
         navigate("/home", { state: { user: childData } });
         onCancel();
@@ -196,9 +195,6 @@ const SignUpForm = ({ onCancel }) => {
         </div>
         {submitError && <span className="error-message">{submitError}</span>}
         <div className="form-buttons">
-          <button type="button" className="cancel-btn" onClick={onCancel}>
-            Cancel
-          </button>
           <button type="submit" className="add-child-btn">Sign up</button>
         </div>
       </form>

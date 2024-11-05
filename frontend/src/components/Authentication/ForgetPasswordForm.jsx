@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { sendResetPasswordEmail } from "../../services/authService"; // Import reset password email function
+import { sendResetPasswordEmail } from "../../services/authService";
 import '../../styles/AuthModal.css';
 
 const ForgetPasswordForm = ({ onCancel }) => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [serverError, setServerError] = useState("");
-  const [loading, setLoading] = useState(false); // Track loading state
+  const [loading, setLoading] = useState(false);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,7 +43,7 @@ const ForgetPasswordForm = ({ onCancel }) => {
       console.error("Error during reset password:", err);
       setServerError("An error occurred while sending the reset email. Please try again.");
     } finally {
-      setLoading(false); // Reset loading state after request
+      setLoading(false);
     }
   };
 
@@ -65,9 +65,6 @@ const ForgetPasswordForm = ({ onCancel }) => {
           {serverError && <span className="server-error-message">{serverError}</span>}
         </div>
         <div className="form-buttons">
-          <button type="button" className="cancel-btn" onClick={onCancel}>
-            Cancel
-          </button>
           <button type="submit" disabled={loading}>
             {loading ? 'Sending...' : 'Send Reset Email'}
           </button>
