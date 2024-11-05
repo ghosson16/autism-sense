@@ -2,19 +2,32 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "twilio-video";
 import "../../styles/VideoRoom.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVideo, faVideoSlash, faMicrophone, faMicrophoneSlash, faPhone, faClipboard, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { faGamepad } from '@fortawesome/free-solid-svg-icons';
+import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faVideo,
+  faVideoSlash,
+  faMicrophone,
+  faMicrophoneSlash,
+  faPhone,
+  faClipboard,
+  faEllipsisV,
+} from "@fortawesome/free-solid-svg-icons";
+import { faGamepad } from "@fortawesome/free-solid-svg-icons";
 import AudioRecorder from "./AudioRecorder";
-import { detectEmotion } from "../../services/videoService"; // Import the detectEmotion service
+import Game from "../Game/Game";
 
 const VideoRoom = ({ token, roomName, role }) => {
   const [room, setRoom] = useState(null);
-  const [emoji, setEmoji] = useState(null);
-  const [isCameraOn, setIsCameraOn] = useState(true);
-  const [isMicOn, setIsMicOn] = useState(true);
-  const [copySuccess, setCopySuccess] = useState("");
+  const apiUrl = import.meta.env.VITE_BACKEND_URL;
+  const [emoji, setEmoji] = useState(null); // Default neutral emoji
 
+  const [isCameraOn, setIsCameraOn] = useState(true); // Track camera state
+  const [isMicOn, setIsMicOn] = useState(true); // Track mic state
+  const [copySuccess, setCopySuccess] = useState(""); // State to track copy status
+  const [openGame, setOpenGame] = useState(false);
+
+  // Map detected emotion to an emoji
   const mapEmotionToEmoji = (emotion) => {
     const emojiMap = {
       happy: "😊",
@@ -32,7 +45,7 @@ const VideoRoom = ({ token, roomName, role }) => {
           name: roomName,
           region: "gll",
           audio: true,
-          video: true
+          video: true,
         });
         setRoom(room);
         console.log("Connected to room:", room);
@@ -120,7 +133,8 @@ const VideoRoom = ({ token, roomName, role }) => {
   };
 
   const copyRoomName = () => {
-    navigator.clipboard.writeText(roomName)
+    navigator.clipboard
+      .writeText(roomName)
       .then(() => setCopySuccess("Room name copied to clipboard!"))
       .catch(() => setCopySuccess("Failed to copy room name."));
 
@@ -137,53 +151,60 @@ const VideoRoom = ({ token, roomName, role }) => {
 
       {role === "guest" && (
         <>
-        <div className="emoji-display">
-          <span>{emoji}</span>
-        </div>
+          <div className="emoji-display">
+            <span>{emoji}</span>
+          </div>
         </>
-        
       )}
-     <div className="call-controls">
-      <div className="three-dot-container">
-        <button className="three-dot-button">
-        <FontAwesomeIcon icon={faEllipsisV} />
-        </button>
-        <div className="control-panel">
-        <button className="control-button end-call">
-            <FontAwesomeIcon icon={faPhone} /> End Call
+      <div className="call-controls">
+        <div className="three-dot-container">
+          <button className="three-dot-button">
+            <FontAwesomeIcon icon={faEllipsisV} />
           </button>
-          <button onClick={toggleCamera} className="control-button video">
-            <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
-            {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
-          </button>
-          <button onClick={toggleMic} className="control-button microphone">
-            <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
-            {isMicOn ? "Mute Mic" : "Unmute Mic"}
-          </button>
-
-          {role === "host" && (
-            <button onClick={copyRoomName} className="control-button copy-room">
-              <FontAwesomeIcon icon={faClipboard} /> Copy Room Name
+          <div className="control-panel">
+            <button className="control-button end-call">
+              <FontAwesomeIcon icon={faPhone} /> End Call
             </button>
-          )}
+            <button onClick={toggleCamera} className="control-button video">
+              <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
+              {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
+            </button>
+            <button onClick={toggleMic} className="control-button microphone">
+              <FontAwesomeIcon
+                icon={isMicOn ? faMicrophone : faMicrophoneSlash}
+              />
+              {isMicOn ? "Mute Mic" : "Unmute Mic"}
+            </button>
 
+            {role === "host" && (
+              <button
+                onClick={copyRoomName}
+                className="control-button copy-room"
+              >
+                <FontAwesomeIcon icon={faClipboard} /> Copy Room Name
+              </button>
+            )}
+          </div>
         </div>
+
+        {role === "guest" && (
+          <div className="control">
+            <div>
+              <AudioRecorder />
+            </div>
+            <button onClick={() => setOpenGame(true)}>
+              <b>Game</b>
+              <FontAwesomeIcon
+                icon={faGamepad}
+                style={{ marginLeft: "10px" }}
+              />
+            </button>
+          {openGame && <Game onClose={() => setOpenGame(false)} />}
+          </div>
+        )}
+
+        {copySuccess && <p className="copy-success">{copySuccess}</p>}
       </div>
-
-      {role === "guest" && (
-      <div className="control">
-          <div><AudioRecorder/></div>
-          <button onClick={() => console.log("Game button clicked")}>
-          <b>Game</b>
-          <FontAwesomeIcon icon={faGamepad} style={{ marginLeft: '10px' }} />
-          </button>
-      </div>
-      )}
-      
-      {copySuccess && <p className="copy-success">{copySuccess}</p>}
-    </div>
-
-
     </div>
   );
 };

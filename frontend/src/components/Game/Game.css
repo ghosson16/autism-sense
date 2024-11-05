@@ -1,0 +1,152 @@
+/* Modal backdrop */
+.game-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  /* Modal content */
+  .game-modal-content {
+    background-color: #fff;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  /* Close button */
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 16px;
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    padding: 5px;
+  }
+  
+  .close-btn:hover {
+    color: #000;
+  }
+  
+  /* Image styling */
+  .game-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  /* Emoji buttons */
+  .emoji-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .emoji-btn {
+    font-size: 40px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .emoji-btn:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.1);
+  }
+  
+  .emoji-btn.selected-happy {
+    background-color: #d4edda;
+  }
+  
+  .emoji-btn.selected-sad {
+    background-color: #cce5ff;
+  }
+  
+  .emoji-btn.selected-angry {
+    background-color: #f8d7da;
+  }
+  
+  /* Feedback message */
+  .feedback {
+    font-size: 18px;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  .feedback.correct {
+    color: green;
+  }
+  
+  .feedback.wrong {
+    color: red;
+  }
+  
+  /* Score page */
+  .score-page {
+    text-align: center;
+  }
+  
+  .score-page h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .score-page p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #555;
+  }
+  
+  .score-page .stars-container {
+    margin-bottom: 20px;
+  }
+  
+  .star {
+    font-size: 40px;
+    color: #ccc; /* Grey by default */
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .star.correct {
+    color: #ffcc00; /* Gold for correct answers */
+  }
+  
+  .star.incorrect {
+    color: #ccc; /* Grey for incorrect answers */
+  }
+  
+  .score-page .close-btn {
+    padding: 12px 30px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .score-page .close-btn:hover {
+    background-color: #0056b3;
+  }
+  
