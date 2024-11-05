@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { signUp } from "../../services/authService";
 import '../../styles/AuthModal.css';
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import defaultProfileImage from '../../images/default-profile.png';
 import { FaPencilAlt } from "react-icons/fa";
 
@@ -12,6 +13,9 @@ const SignUpForm = ({ onCancel }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [photo, setPhoto] = useState(null);
+
+  const navigate = useNavigate(); // Initialize navigate
+
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
@@ -67,6 +71,7 @@ const SignUpForm = ({ onCancel }) => {
     try {
       const result = await signUp(childData);
       if (result.message === "Child data saved successfully") {
+        navigate("/home", { state: { user: childData } });
         onCancel();
       }
     } catch (err) {

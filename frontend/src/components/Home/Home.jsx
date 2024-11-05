@@ -11,6 +11,7 @@ import { defineElement } from "@lordicon/element";
 const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   
   const [childData, setChildData] = useState(location.state?.user || null);
   const [userProfileImage, setUserProfileImage] = useState(defaultProfileImage);

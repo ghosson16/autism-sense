@@ -1,16 +1,16 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { fetchChildData, updateChildData, deleteChildAccount } from '../../services/childService'; // Import delete service
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { fetchChildData, updateChildData, deleteChildAccount } from '../../services/childService';
 import { FaPencilAlt } from "react-icons/fa";
 import defaultProfileImage from '../../images/default-profile.png';
-import '../../styles/childProfilePage.css';
+import '../../styles/AuthModal.css';
 
-const ChildProfilePage = () => {
+const ChildProfilePage = ({ onClose }) => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Added navigate hook
   const { childId } = useParams();
 
+  // State variables
   const [child, setChild] = useState(location.state?.user || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -33,11 +33,7 @@ const ChildProfilePage = () => {
       fetchChildData(childId)
         .then((data) => {
           setChild(data);
-          setFirstName(data.firstName || '');
-          setLastName(data.lastName || '');
-          setChildDOB(data.dob ? new Date(data.dob).toISOString().split('T')[0] : '');
-          setEmail(data.email || '');
-          setPhoto(data.photo || defaultProfileImage);
+          setInitialFormData(data);
         })
         .catch((error) => {
           setError('Unable to load user data. Please try again.');
@@ -45,18 +41,30 @@ const ChildProfilePage = () => {
         })
         .finally(() => setLoading(false));
     } else if (child) {
-      setFirstName(child.firstName || '');
-      setLastName(child.lastName || '');
-      setChildDOB(child.dob ? new Date(child.dob).toISOString().split('T')[0] : '');
-      setEmail(child.email || '');
-      setPhoto(child.photo || defaultProfileImage);
+      setInitialFormData(child);
       setLoading(false);
     }
   }, [child, childId]);
 
+  // Utility Functions
+  const setInitialFormData = (data) => {
+    setFirstName(data.firstName || '');
+    setLastName(data.lastName || '');
+    setChildDOB(data.dob ? new Date(data.dob).toISOString().split('T')[0] : '');
+    setEmail(data.email || '');
+    setPhoto(data.photo || defaultProfileImage);
+  };
+
+  const validateChildDOB = (dob) => {
+    const today = new Date();
+    const selectedDate = new Date(dob);
+    return selectedDate <= today;
+  };
+
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p>{error}</p>;
 
+  // Event Handlers
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -66,14 +74,13 @@ const ChildProfilePage = () => {
     }
   };
 
-  // Delete child account handler
   const handleDeleteAccount = async () => {
     try {
       const confirmDelete = window.confirm('Are you sure you want to delete this account?');
       if (confirmDelete) {
-        await deleteChildAccount(childId); // Call the delete service
+        await deleteChildAccount(childId);
         alert('Account deleted successfully.');
-        navigate('/home', { replace: true });
+        onClose();  // Close the modal on delete
       }
     } catch (error) {
       console.error('Error deleting account:', error);
@@ -105,80 +112,87 @@ const ChildProfilePage = () => {
     setEmailError(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Please enter a valid email address.' : '');
   };
 
-  const validateChildDOB = (dob) => {
-    const today = new Date();
-    const selectedDate = new Date(dob);
-    return selectedDate <= today;
-  };
-
   const handleSaveChanges = async (e) => {
     e.preventDefault();
     if (firstNameError || lastNameError || childDOBError || emailError) return;
-
+  
     const updatedChildData = { firstName, lastName, dob: childDOB, email, photo };
-
+  
     try {
       const response = await updateChildData(childId, updatedChildData);
       if (response.status === 200) {
         setEditMode(false);
         setChild(response.data.updatedChild);
-        navigate('/home', { replace: true, state: { user: response.data.updatedChild } });
+        navigate('/home', { state: { user: response.data.updatedChild } }); // Pass updated data as state
       }
     } catch (error) {
       console.error('Error updating child data:', error);
     }
   };
+  
 
-  const handleCancel = () => setEditMode(false);
-
+  // Render
   return (
-    <div className="profile-container">
-      <header className="profile-header">
-        <img src={photo || defaultProfileImage} alt="Profile" className="profile-img" />
-        {editMode && (
-          <label htmlFor="photo-input" className="photo-label">
-            <FaPencilAlt />
-            <p>Change Image</p>
-          </label>
-        )}
-      </header>
+    <div className="auth-modal">
+      <div className="auth-modal-content">
+        <button className="close-btn" onClick={onClose}>X</button>
+        
+        <header className="form-photo">
+          <div className="photo-ring">
+            <img src={photo || defaultProfileImage} alt="Profile" className="photo-img" />
+            {editMode && (
+              <label htmlFor="photo-input" className="photo-pencil">
+                <FaPencilAlt /> Change Image
+              </label>
+            )}
+          </div>
+        </header>
 
-      <section className="profile-details">
-        {editMode ? (
-          <>
-            <input type="file" id="photo-input" accept="image/*" onChange={handlePhotoChange} />
-            <input type="text" value={firstName} onChange={handleFirstNameChange} placeholder="First Name" />
-            {firstNameError && <p>{firstNameError}</p>}
-            <input type="text" value={lastName} onChange={handleLastNameChange} placeholder="Last Name" />
-            {lastNameError && <p>{lastNameError}</p>}
-            <input type="date" value={childDOB} onChange={handleChildDOBChange} />
-            {childDOBError && <p>{childDOBError}</p>}
-            <input type="email" value={email} onChange={handleEmailChange} />
-            {emailError && <p>{emailError}</p>}
-          </>
-        ) : (
-          <>
-            <h1>{`${firstName} ${lastName}`}</h1>
-            <p><strong>Email:</strong> {email}</p>
-            <p><strong>Date of Birth:</strong> {new Date(childDOB).toLocaleDateString()}</p>
-          </>
-        )}
-      </section>
+        <section className="profile-details">
+          {editMode ? (
+            <div className="form-container">
+              <div className="form-photo">
+                <div className="photo-ring">
+                  <input type="file" id="photo-input" accept="image/*" onChange={handlePhotoChange} className="photo-input"/>
+                </div>
+              </div>
+              <div className="form-group">
+                <input type="text" value={firstName} onChange={handleFirstNameChange} placeholder="First Name" className="input-field" />
+                {firstNameError && <p>{firstNameError}</p>}
+              </div>
+              <div className="form-group">
+                <input type="text" value={lastName} onChange={handleLastNameChange} placeholder="Last Name" className="input-field"/>
+                {lastNameError && <p>{lastNameError}</p>}
+              </div>
+              <div className="form-group">
+                <input type="date" value={childDOB} onChange={handleChildDOBChange} className="dob-input" />
+                {childDOBError && <p>{childDOBError}</p>}
+              </div>
+              <div className="form-group">
+                <input type="email" value={email} onChange={handleEmailChange} className="input-field"/>
+                {emailError && <p>{emailError}</p>}
+              </div>
+            </div>
+          ) : (
+            <>
+              <h1>{`${firstName} ${lastName}`}</h1>
+              <p><strong>Email:</strong> {email}</p>
+              <p><strong>Date of Birth:</strong> {new Date(childDOB).toLocaleDateString()}</p>
+            </>
+          )}
+        </section>
 
-      <footer className="profile-footer">
-        {editMode ? (
-          <>
-            <button onClick={handleCancel}>Cancel</button>
-            <button onClick={handleSaveChanges}>Save Changes</button>
-          </>
-        ) : (
-          <>
-            <button onClick={() => navigate(-1)}>Go Back</button>
-            <button onClick={() => setEditMode(true)}>Edit Profile</button>
-            <button onClick={handleDeleteAccount}>Delete Account</button>  {/* Add delete button */}
-          </>
-        )}
-      </footer>
+        <footer className="profile-footer">
+          {editMode ? (
+            <button className="save-btn" onClick={handleSaveChanges}>Save Changes</button>
+          ) : (
+            <div className="form-buttons">
+              <button className="delete-btn" onClick={handleDeleteAccount}>Delete Account</button>
+              <button className="edit-btn" onClick={() => setEditMode(true)}>Edit Profile</button>
+            </div>
+          )}
+        </footer>
+      </div>
     </div>
   );
 };
