@@ -18,14 +18,37 @@ const LandingPage = () => {
   return (
     <div className="landing-container">
       <div className="logo-container"></div>
-      <div className="button-container">
-        <button className="btn" onClick={() => navigate("/host")}>
-          Remote Person
-        </button>
-        <button className="btn" onClick={handleSignInUp}>
-          Sign In/Up
-        </button>
-      </div>
+      <section className="button-container">
+      <button
+        className="btn therapist-button"
+        onClick={() => navigate("/host")}
+        style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px' }}
+      >
+        <lord-icon
+          src="https://cdn.lordicon.com/uwixxspd.json"
+          trigger="morph"
+          colors="primary:#000000,secondary:#3a3347,tertiary:#faddd1,quaternary:#e5e0e9,quinary:#545454,senary:#87ceed"
+          style={{ width: '140px', height: '140px' }}
+          class="therapist-icon"
+        ></lord-icon>
+        I'M A THERAPIST
+      </button>
+
+      <button
+        className="btn child-button"
+        onClick={handleSignInUp}
+        style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px' }}
+      >
+        <lord-icon
+          src="https://cdn.lordicon.com/cfbvvbil.json"
+          trigger="morph"
+          colors="primary:#000000,secondary:#faddd1,tertiary:#3a3347,quaternary:#f28ba8,quinary:#f49cc8"
+          style={{ width: '140px', height: '140px' }}
+          class="child-icon"
+        ></lord-icon>
+        I'M A CHILD
+      </button>
+    </section>
       {showAuthModal && <AuthModal onClose={closeAuthModal} />}
       <footer className="landing-footer">
         <Link to="/about-us">About Us</Link>

@@ -1,13 +1,14 @@
 .landing-container {
+  justify-content: flex-start;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     height: 100vh;
   }
   
 /* Container styling */
 .logo-container {
+  margin-top: 0;
   width: 350px; /* Adjust as needed */
   height: 350px; /* Adjust as needed */
   background-image: url('../images/staticLogo.png'); /* Default static image */
@@ -39,8 +40,7 @@
     font-size: 1rem;
     cursor: pointer;
     transition: background 0.3s;
-  }
-  
+  }  
   .btn:hover {
     background-color: #008f7a;
     color: #333;

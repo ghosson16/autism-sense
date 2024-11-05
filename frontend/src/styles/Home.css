@@ -160,7 +160,7 @@ html, body {
   justify-content: center;
   align-items: center;
   gap: 100px; /* Space between buttons */
-  margin-top: 0px; /* Adjust as needed */
+  margin-top: 20px; /* Adjust as needed */
 }
 
 /* Button styling adjustments */
