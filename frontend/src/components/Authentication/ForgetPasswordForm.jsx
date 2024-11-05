@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { sendResetPasswordEmail } from "../../services/authService"; // Import reset password email function
-import '../../styles/LoginForm.css';
+import '../../styles/AuthModal.css';
 
 const ForgetPasswordForm = ({ onCancel }) => {
   const [email, setEmail] = useState("");

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { login } from "../../services/authService";
-import '../../styles/LoginForm.css';
+import '../../styles/AuthModal.css';
 
 const LoginForm = ({ onCancel }) => {
   const [email, setEmail] = useState("");

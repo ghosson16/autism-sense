@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { signUp } from "../../services/authService"; // Import sign-up function
-import '../../styles/LoginForm.css';
+import '../../styles/AuthModal.css';
 import defaultProfileImage from '../../images/default-profile.png'; // Import local image
 import { FaPencilAlt } from "react-icons/fa";
 

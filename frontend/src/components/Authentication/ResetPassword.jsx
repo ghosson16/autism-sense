@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { resetPassword } from '../../services/authService';
-//import '../../styles/AuthModal.css';
-import '../../styles/LoginForm.css';
+import '../../styles/AuthModal.css';
 
 const ResetPassword = ({ onClose }) => {
   const { token } = useParams(); // Get token from URL

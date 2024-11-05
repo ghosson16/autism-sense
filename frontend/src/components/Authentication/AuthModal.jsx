@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SignUpForm from "./SignUpForm";
 import LoginForm from "./LoginForm";
 import ForgetPasswordForm from "./ForgetPasswordForm"; // Import ForgetPasswordForm
-import "../../styles/LoginForm.css";
+import "../../styles/AuthModal.css";
 
 const AuthModal = ({ onClose }) => {
   const [mode, setMode] = useState("login"); // Start with login view
@@ -26,10 +26,10 @@ const AuthModal = ({ onClose }) => {
         <p className="toggle-text">
           {mode === "login" && (
             <>
-              <span className="forget-password-link" onClick={() => toggleMode("forget-password")}>
+              <button className="forget-btn" onClick={() => toggleMode("forget-password")}>
                 Forgot Password?
-              </span>
-              <br />
+              </button>
+              <br /> <br />
               Don't have an account?{" "}
               <span className="toggle-link" onClick={() => toggleMode("sign-up")}>
                 Sign up
