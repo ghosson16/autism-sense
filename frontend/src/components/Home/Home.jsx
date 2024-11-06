@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../services/authService';
-import logoPath from '../../images/logo.png';
-import defaultProfileImage from '../../images/default-profile.png';
+import Header from './Header';
 import Modal from '../Profile/ProfileModal';
 import ProfilePage from '../Profile/ProfilePage';
 import '../../styles/Home.css';
@@ -10,28 +9,20 @@ import '../../styles/Home.css';
 const Home = () => {
   const navigate = useNavigate();
 
-  // Initialize childData from localStorage
   const [childData, setChildData] = useState(() => {
     const userFromStorage = localStorage.getItem('childData');
-    if (userFromStorage) {
-      return JSON.parse(userFromStorage);
-    } else {
-      navigate('/');
-      return null;
-    }
+    return userFromStorage ? JSON.parse(userFromStorage) : null;
   });
 
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [error, setError] = useState('');
 
-  // Sync childData with localStorage whenever it changes
   useEffect(() => {
     if (childData) {
       localStorage.setItem('childData', JSON.stringify(childData));
     }
   }, [childData]);
 
-  // Function to handle user logout
   const handleLogout = async () => {
     try {
       await logout();
@@ -42,18 +33,15 @@ const Home = () => {
     }
   };
 
-  // Function to open the profile modal
   const handleProfileClick = () => setIsProfileModalOpen(true);
 
-  // Function to close the profile modal
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
-  // Function to handle profile update
   const handleProfileUpdate = (updatedData) => {
     const childDetails = updatedData.data;
     if (childDetails) {
-      setChildData(childDetails); // Update state
-      setIsProfileModalOpen(false); // Close modal
+      setChildData(childDetails);
+      setIsProfileModalOpen(false);
     } else {
       setError("Profile update failed. Please try again.");
     }
@@ -61,29 +49,15 @@ const Home = () => {
 
   const handleJoinSpecialMode = () => navigate("/guest");
 
-  const userProfileImage = childData?.photo || defaultProfileImage;
-  const userName = childData ? `${childData.firstName} ${childData.lastName}` : 'First Name Last Name';
-
   return (
     <div className="container">
       {error && <p className="error-message">{error}</p>}
 
-      <header className="navbar">
-        <div className="navbar-section logo-section">
-          <div className="ring-holder">
-            <img src={logoPath} alt="Logo" className="logo-image" />
-          </div>
-        </div>
-        <button className="navbar-section profile-section" onClick={handleProfileClick}>
-          <div className="ring-holder">
-            <img src={userProfileImage} alt="Profile" className="profile-image" />
-          </div>
-          <span>{userName}</span>
-        </button>
-        <div className="navbar-section logout-section">
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      </header>
+      <Header
+        onLogout={handleLogout}
+        onProfileClick={handleProfileClick}
+        childData={childData}
+      />
 
       <section className="button-container">
         <button className="btn">
