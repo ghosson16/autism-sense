@@ -36,7 +36,6 @@ const LoginForm = () => {
     try {
       const result = await login(email, password);
       if (result.message === "Login successful" && result.user) {
-        // Save user data in localStorage and navigate to home
         localStorage.setItem('childData', JSON.stringify(result.user));
         navigate("/home");
       } else {
@@ -76,7 +75,8 @@ const LoginForm = () => {
           {passwordError && <span className="error-message">{passwordError}</span>}
         </div>
         {loginError && <span className="error-message">{loginError}</span>}
-        <div className="form-buttons">
+        
+        <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
           <button type="submit" className="add-child-btn" disabled={isSubmitting}>
             {isSubmitting ? "Logging in..." : "Login"}
           </button>

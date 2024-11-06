@@ -48,7 +48,6 @@ const SignUpForm = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
   
-    // Perform validation checks
     if (!validateFirstName(firstName) || !validateLastName(lastName) || !validateChildDOB(childDOB) || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
       setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
       setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
@@ -137,6 +136,7 @@ const SignUpForm = () => {
           />
           {lastNameError && <span className="error-message">{lastNameError}</span>}
         </div>
+        <br />
         <div className="form-group dob-field-container">
           <input
             type="date"
@@ -196,7 +196,7 @@ const SignUpForm = () => {
           {confirmPasswordError && <span className="error-message">{confirmPasswordError}</span>}
         </div>
         {submitError && <span className="error-message">{submitError}</span>}
-        <div className="form-buttons">
+        <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
           <button type="submit" className="add-child-btn">Sign up</button>
         </div>
       </form>

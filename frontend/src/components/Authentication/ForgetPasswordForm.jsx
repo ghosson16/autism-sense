@@ -64,7 +64,7 @@ const ForgetPasswordForm = ({ onCancel }) => {
           {emailError && <span className="error-message">{emailError}</span>}
           {serverError && <span className="server-error-message">{serverError}</span>}
         </div>
-        <div className="form-buttons">
+        <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
           <button type="submit" disabled={loading}>
             {loading ? 'Sending...' : 'Send Reset Email'}
           </button>

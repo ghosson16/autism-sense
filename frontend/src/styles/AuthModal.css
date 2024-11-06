@@ -23,7 +23,7 @@ body {
 
 /* Modal content */
 .auth-modal-content {
-  background: #fff;
+  background: #d2eef9;
   padding: 20px;
   width: 400px;
   max-width: 90%;
@@ -66,7 +66,7 @@ h2 {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   color: #333;
   font-size: 14px;
 }
@@ -140,8 +140,8 @@ h2 {
 .send-email-btn,
 .add-child-btn,
 .reset-btn {
-  background: #00bfa5; /* Primary action color */
-  color: white;
+  background: #fff9cd; /* Primary action color */
+  color: rgb(0, 0, 0);
 }
 
 .save-btn:hover,
@@ -149,7 +149,7 @@ h2 {
 .send-email-btn:hover,
 .add-child-btn:hover,
 .reset-btn:hover {
-  background: #008f7a; /* Darker primary action */
+  background: #fff6b6; /* Darker primary action */
 }
 
 
@@ -240,4 +240,26 @@ h2 {
 
 .photo-input {
   display: none;
+}
+/* Adding black border to modal content */
+.auth-modal-content {
+  border: 2px solid black; /* Black border for retro feel */
+}
+
+/* Adding black border to input fields */
+.input-field,
+.dob-input {
+  border: 2px solid black; /* Black border for retro feel */
+}
+
+/* Adding black border to all buttons */
+.cancel-btn,
+.save-btn,
+.edit-btn,
+.back-btn,
+.send-email-btn,
+.add-child-btn,
+.reset-btn,
+.forget-btn {
+  border: 2px solid black; /* Black border for retro feel */
 }
