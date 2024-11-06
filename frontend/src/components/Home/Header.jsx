@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import logoPath from '../../images/logo.png';
 import defaultProfileImage from '../../images/default-profile.png';
 
 const Header = ({ onLogout, onProfileClick, childData }) => {
@@ -14,85 +13,99 @@ const Header = ({ onLogout, onProfileClick, childData }) => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: '#f4f4f4',
-      padding: '10px 20px',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+      backgroundColor: '#B3D9FF', // Light baby blue background
+      padding: '5px 20px', // Reduced top/bottom padding for a slimmer look
+      borderBottom: '2px solid black', // Consistent border thickness
       width: '100%',
       position: 'fixed',
       top: 0,
       left: 0,
       zIndex: 1000,
+      boxSizing: 'border-box',
     },
     navbarSection: {
       display: 'flex',
       alignItems: 'center',
-      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
     },
-    ringHolder: {
-      width: '40px',
-      height: '40px',
-      backgroundColor: '#ffffff',
-      borderRadius: '50%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    separator: {
+      width: '2px',
+      height: '100%', // Full height for consistency
+      backgroundColor: 'black',
+      margin: '0 20px',
     },
     profileImage: {
-      width: '100%',
-      height: '100%',
+      width: '50px',
+      height: '50px',
+      borderRadius: '50%',
       objectFit: 'cover',
-    },
-    logoImage: {
-      width: '100%',
-      height: '100%',
-      objectFit: 'contain',
+      boxShadow: 'none', // Explicitly ensure no shadow
     },
     profileSection: {
-      background: 'none',
-      border: 'none',
-      padding: 0,
       display: 'flex',
       alignItems: 'center',
       color: '#333',
       fontSize: '16px',
-      fontWeight: 500,
-      marginLeft: '10px',
+      fontWeight: 'bold',
+      textTransform: 'uppercase',
+      cursor: 'pointer',
+      transition: 'transform 0.3s ease',
+      backgroundColor: 'transparent', // Transparent background
+      border: 'none', // No border for the button
+      padding: '0',
+    },
+    profileName: {
+      marginLeft: '10px', // Spacing between image and name
     },
     logoutButton: {
-      backgroundColor: '#ff4d4d',
-      color: 'white',
-      border: 'none',
-      padding: '8px 16px',
-      borderRadius: '4px',
+      backgroundColor: '#FF4D4D', // Retro red
+      color: 'black',
+      border: '2px solid black', // Black border for retro feel
+      padding: '5px 10px', // Reduced padding for slimmer button
       fontSize: '14px',
-      transition: 'background-color 0.3s ease, transform 0.3s ease',
-      marginRight: '25px',
-    },
-    logoutButtonHover: {
-      backgroundColor: '#ff1a1a',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      transition: 'background-color 0.3s ease',
+      boxSizing: 'border-box',
+      borderRadius: '0', // Square shape
+      outline: 'none', // Remove outline
+      boxShadow: 'none', // Ensure no shadow on default or hover
     },
   };
 
   return (
     <header style={styles.navbar}>
-      <div style={{ ...styles.navbarSection, ...styles.ringHolder }}>
-        <img src={logoPath} alt="Logo" style={styles.logoImage} />
+      <div style={styles.navbarSection}>
+        {/* Animated Lordicon for Logo */}
+        <lord-icon
+          src="https://cdn.lordicon.com/ofzpbawy.json"
+          trigger="hover"
+          stroke="bold"
+          colors="primary:#121331,secondary:#ebe6ef,tertiary:#e4e4e4,quaternary:#86ceed"
+          style={{ width: '70px', height: '70px' }} // Kept logo size consistent
+        ></lord-icon>
       </div>
 
-      <button
-        style={{ ...styles.navbarSection, ...styles.profileSection }}
+      <div style={styles.separator}></div> {/* Separator line */}
+
+      <div
+        style={styles.profileSection}
         onClick={onProfileClick}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.4)')}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
       >
-        <div style={styles.ringHolder}>
+        <div>
           <img src={userProfileImage} alt="Profile" style={styles.profileImage} />
         </div>
-        <span>{userName}</span>
-      </button>
+        <span style={styles.profileName}>{userName}</span>
+      </div>
+
+      <div style={styles.separator}></div> {/* Separator line */}
 
       <div style={styles.navbarSection}>
         <button
           style={styles.logoutButton}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = '#FF3333')} // Brighter hover color
+          onMouseLeave={(e) => (e.target.style.backgroundColor = '#FF4D4D')}
           onClick={onLogout}
         >
           Logout
