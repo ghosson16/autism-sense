@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { updateChildData, deleteChildAccount } from '../../services/childService';
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";
 import defaultProfileImage from '../../images/default-profile.png';
 import '../../styles/AuthModal.css';
@@ -46,15 +46,12 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
   
     try {
       const response = await updateChildData(childId, updatedChildData);
-      console.log("Response from updateChildData:", response);
       onSave(response);
       setEditMode(false);
     } catch (error) {
-      console.error('Error updating child data:', error);
       setError('Failed to save changes. Please try again.');
     }
   };
-  
 
   const handleDeleteAccount = async () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this account?');
@@ -63,9 +60,8 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
         await deleteChildAccount(childId);
         alert('Account deleted successfully.');
         onClose();
-        navigate("/")
+        navigate("/");
       } catch (error) {
-        console.error('Error deleting account:', error);
         setError('Failed to delete the account. Please try again.');
       }
     }

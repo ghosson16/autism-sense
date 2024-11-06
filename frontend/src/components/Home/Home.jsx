@@ -1,73 +1,63 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { fetchChildData } from '../../services/childService';
+import { useNavigate } from 'react-router-dom';
 import { logout } from '../../services/authService';
 import logoPath from '../../images/logo.png';
 import defaultProfileImage from '../../images/default-profile.png';
-import lottie from "lottie-web";
-import { defineElement } from "@lordicon/element";
 import Modal from '../Profile/ProfileModal';
-import ChildProfilePage from '../Profile/childProfilePage';
+import ProfilePage from '../Profile/ProfilePage';
 import '../../styles/Home.css';
 
 const Home = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  
+
+  // Initialize childData from localStorage
   const [childData, setChildData] = useState(() => {
-    return JSON.parse(localStorage.getItem('childData')) || location.state?.user || null;
+    const userFromStorage = localStorage.getItem('childData');
+    if (userFromStorage) {
+      return JSON.parse(userFromStorage);
+    } else {
+      navigate('/');
+      return null;
+    }
   });
+
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Sync childData with localStorage whenever it changes
   useEffect(() => {
-    if (!childData) {
-      // Fetch data if not available in state or local storage
-      fetchChildData(location.state?.id)
-        .then((user) => {
-          if (user) {
-            setChildData(user);
-            localStorage.setItem('childData', JSON.stringify(user));
-          } else {
-            throw new Error("User data is unavailable");
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          setError("Unable to load user data. Please try again.");
-          navigate('/');
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+    if (childData) {
+      localStorage.setItem('childData', JSON.stringify(childData));
     }
-  }, [childData, navigate, location.state]);
+  }, [childData]);
 
+  // Function to handle user logout
   const handleLogout = async () => {
     try {
       await logout();
       localStorage.removeItem('childData');
       navigate('/');
     } catch (error) {
-      console.error('Error during logout:', error);
       setError("Logout failed. Please try again.");
     }
   };
 
+  // Function to open the profile modal
   const handleProfileClick = () => setIsProfileModalOpen(true);
+
+  // Function to close the profile modal
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
+  // Function to handle profile update
   const handleProfileUpdate = (updatedData) => {
-    console.log("Updated data:", updatedData); // Log updated data for verification
-  
     const childDetails = updatedData.data;
-  
-    setChildData(childDetails);
-    localStorage.setItem('childData', JSON.stringify(childDetails));
-    setIsProfileModalOpen(false);
+    if (childDetails) {
+      setChildData(childDetails); // Update state
+      setIsProfileModalOpen(false); // Close modal
+    } else {
+      setError("Profile update failed. Please try again.");
+    }
   };
-  
 
   const handleJoinSpecialMode = () => navigate("/guest");
 
@@ -76,7 +66,6 @@ const Home = () => {
 
   return (
     <div className="container">
-      {loading && <p>Loading...</p>}
       {error && <p className="error-message">{error}</p>}
 
       <header className="navbar">
@@ -85,7 +74,7 @@ const Home = () => {
             <img src={logoPath} alt="Logo" className="logo-image" />
           </div>
         </div>
-        <button className="navbar-section profile-section" onClick={handleProfileClick} disabled={loading}>
+        <button className="navbar-section profile-section" onClick={handleProfileClick}>
           <div className="ring-holder">
             <img src={userProfileImage} alt="Profile" className="profile-image" />
           </div>
@@ -120,7 +109,7 @@ const Home = () => {
 
       {isProfileModalOpen && (
         <Modal onClose={closeProfileModal}>
-          <ChildProfilePage
+          <ProfilePage
             child={childData}
             childId={childData?._id || childData?.id}
             onClose={closeProfileModal}

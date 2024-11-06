@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap');
 
+* {
+  cursor: url('./images/icons8-3d-pointer-48.png'), auto;
+}
+
+a, button {
+  cursor: url('./images/icons8-hand-cursor-48.png'), pointer;
+}
+
 body, #root {
   font-family: 'Baloo 2', sans-serif; /* Set Baloo 2 as the primary font */
   background-color: #FFFFFA; /* Very Soft Ivory */
@@ -45,7 +53,6 @@ button {
   font-family: inherit;
   border-radius: 12px; /* Rounded edges for a retro feel */
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15), -4px -4px 8px rgba(255, 255, 255, 0.5); /* Retro-style shadow */
-  cursor: pointer;
   transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
 }
 

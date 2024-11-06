@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { signUp } from "../../services/authService";
 import '../../styles/AuthModal.css';
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import defaultProfileImage from '../../images/default-profile.png';
 import { FaPencilAlt } from "react-icons/fa";
 
-const SignUpForm = ({ onCancel }) => {
+const SignUpForm = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [childDOB, setChildDOB] = useState("");
@@ -14,8 +14,7 @@ const SignUpForm = ({ onCancel }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [photo, setPhoto] = useState(null);
 
-  const navigate = useNavigate(); // Initialize navigate
-
+  const navigate = useNavigate();
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
@@ -48,7 +47,8 @@ const SignUpForm = ({ onCancel }) => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-
+  
+    // Perform validation checks
     if (!validateFirstName(firstName) || !validateLastName(lastName) || !validateChildDOB(childDOB) || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
       setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
       setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
@@ -58,7 +58,7 @@ const SignUpForm = ({ onCancel }) => {
       setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match." : "");
       return;
     }
-
+  
     const childData = {
       firstName,
       lastName,
@@ -67,19 +67,21 @@ const SignUpForm = ({ onCancel }) => {
       password,
       photo,
     };
-
+  
     try {
       const result = await signUp(childData);
-      if (result.message === "Child data saved successfully") {
-        navigate("/home", { state: { user: childData } });
-        onCancel();
+  
+      if (result && result.message === "Child data saved successfully" && result.user) {
+        localStorage.setItem('childData', JSON.stringify(result.user));
+        navigate("/home");
+      } else {
+        setSubmitError("Sign-up completed, but could not retrieve user data.");
       }
     } catch (err) {
-      if (err.response && err.response.status === 409) { 
+      if (err.response && err.response.status === 409) {
         setSubmitError("This email is already in use. Please use a different email.");
       } else {
         setSubmitError("An error occurred during sign up. Please try again.");
-        console.error("Sign up error:", err);
       }
     }
   };

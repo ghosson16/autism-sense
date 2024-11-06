@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
 import '../../styles/AuthModal.css';
 
-const LoginForm = ({ onCancel }) => {
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -36,14 +36,14 @@ const LoginForm = ({ onCancel }) => {
     try {
       const result = await login(email, password);
       if (result.message === "Login successful" && result.user) {
-        console.log("Navigating with user:", result.user);
-        navigate("/home", { state: { user: result.user } });
+        // Save user data in localStorage and navigate to home
+        localStorage.setItem('childData', JSON.stringify(result.user));
+        navigate("/home");
       } else {
         setLoginError(result.message || "Login failed. Please try again.");
       }
     } catch (err) {
       setLoginError("An error occurred during login. Please try again.");
-      console.error("Login error:", err);
     } finally {
       setIsSubmitting(false);
     }
