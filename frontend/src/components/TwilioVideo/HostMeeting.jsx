@@ -124,16 +124,23 @@ const closeButtonHoverStyle = {
             {/* Instructions List */}
             <ol style={{ lineHeight: "1.7", padding: "10px 0", textAlign: "justify" }}>
               <li style={{ marginBottom: "15px", }}>
-                <strong>Create & Share the Meeting Link:</strong> Start the meeting and share the link with the child or their caregiver.
+                <strong>Create & Share the Meeting Link:
+                  <br/>
+                  </strong> Start the meeting and share the link with the child or their caregiver.
               </li>
               <li style={{ marginBottom: "15px" }}>
-                <strong>Emotion Detection:</strong> Emotions will appear as icons based on your expressions; encourage the child to observe and relate these icons.
+                <strong>Emotion Detection:</strong>
+                <br/>
+                 Emotions will appear as icons based on your expressions; encourage the child to observe and relate these icons.
               </li>
               <li style={{ marginBottom: "15px" }}>
-                <strong>Guided Help:</strong> If the child is struggling, remind them to use the Help button for response suggestions.
+                <strong>Guided Help:</strong>
+                <br/>
+                 If the child is struggling, remind them to use the Help button for response suggestions.
               </li>
               <li style={{ marginBottom: "15px" }}>
-                <strong>Emotion Game:</strong> The child can start an emotion-identification game, providing a fun, interactive learning experience.
+                <strong>Emotion Game:</strong> 
+                <br/>The child can start an emotion-identification game, providing a fun, interactive learning experience.
               </li>
             </ol>
 
