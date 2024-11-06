@@ -180,12 +180,12 @@ body {
   background: #e0e0e0;
 }
 
-.end-call {
+.end-call ,.leave-call{
   background-color: #dc3545; /* Red background for End Call */
   color: #ffffff; /* White text color */
 }
 
-.end-call:hover {
+.end-call:hover ,.leave-call:hover {
   background-color: #c82333; /* Darker red on hover */
 }
 
