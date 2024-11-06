@@ -43,11 +43,11 @@ const HostMeeting = () => {
   };
 
   const modalStyle = {
-    backgroundColor: "#B3D9FF",
+    backgroundColor: "#d2eef9",
     border: "2px solid black",
     padding: "30px",
-    width: "500px", // Increased width for better readability
-    textAlign: "left",
+    width: "600px", // Increased width for better readability
+    textAlign: "center",
     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
     position: "relative",
     display: "flex",
@@ -123,7 +123,7 @@ const closeButtonHoverStyle = {
 
             {/* Instructions List */}
             <ol style={{ lineHeight: "1.7", padding: "10px 0", textAlign: "justify" }}>
-              <li style={{ marginBottom: "15px" }}>
+              <li style={{ marginBottom: "15px", }}>
                 <strong>Create & Share the Meeting Link:</strong> Start the meeting and share the link with the child or their caregiver.
               </li>
               <li style={{ marginBottom: "15px" }}>
