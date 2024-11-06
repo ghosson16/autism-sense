@@ -27,11 +27,12 @@ body {
   padding: 20px;
   width: 400px;
   max-width: 90%;
-  border-radius: 8px;
+  border-radius: 0; /* Square shape */
   text-align: center;
   position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease; /* Fade-in animation */
+  border: 2px solid black; /* Black border for retro feel */
 }
 
 @keyframes scaleUp {
@@ -44,7 +45,6 @@ body {
     transform: scale(1);
   }
 }
-
 
 h2 {
   text-align: center;
@@ -60,12 +60,13 @@ h2 {
   margin-bottom: 10px;
 }
 
+/* Input fields - Square shape */
 .input-field,
 .dob-input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  border: 2px solid black; /* Black border for retro feel */
+  border-radius: 0; /* Square shape */
   background-color: #ffffff;
   color: #333;
   font-size: 14px;
@@ -113,6 +114,7 @@ h2 {
   margin-top: 20px;
 }
 
+/* Square buttons with retro style */
 .cancel-btn,
 .save-btn,
 .edit-btn,
@@ -122,36 +124,24 @@ h2 {
 .reset-btn,
 .forget-btn {
   padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
+  border-radius: 0; /* Square shape */
+  border: 2px solid black; /* Black border for retro feel */
   font-size: 16px;
   transition: background-color 0.3s ease;
   font-weight: bold;
-}
-
-/* Action buttons */
-.cancel-btn {
-  background: #ccc;
-  color: #333;
-}
-
-.save-btn,
-.edit-btn,
-.send-email-btn,
-.add-child-btn,
-.reset-btn {
-  background: #fff9cd; /* Primary action color */
+  background: #fff7b8; /* Primary action color */
   color: rgb(0, 0, 0);
 }
 
+/* Action buttons hover effect */
 .save-btn:hover,
 .edit-btn:hover,
 .send-email-btn:hover,
 .add-child-btn:hover,
 .reset-btn:hover {
-  background: #fff6b6; /* Darker primary action */
+  background: #ffee71; /* Darker primary action */
+  border-color: black;
 }
-
 
 .back-btn {
   background: #9E9E9E;
@@ -159,12 +149,27 @@ h2 {
 }
 
 .delete-btn {
-  background: #e74c3c; /* Red for delete action */
-  color: white;
+  padding: 10px 20px;
+  width: auto; /* Keeps width consistent with other buttons */
+  background-color: #ff604e; /* Red background */
+  color: black;
+  border: 2px solid black; /* Black border for retro feel */
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 0; /* Square shape */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: none; /* Removes shadow for a flatter appearance */
 }
 
+/* Hover effect for brighter red */
 .delete-btn:hover {
-  background: #c0392b; /* Darker red on hover */
+  background-color: #ff2b2b; /* Brighter red on hover */
+  border-color: black;
+
 }
 
 /* Additional styling for Forget Password button */
@@ -173,20 +178,29 @@ h2 {
   font-size: 14px;
 }
 
-/* Close button styling for modals */
+/* Close button styling for modals with square look */
 .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.5rem;
-  background: none;
-  border: none;
-  color: #333;
-  transition: color 0.3s ease;
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  width: 30px !important; /* Square dimensions */
+  height: 30px !important;
+  background-color: #ff604e !important; /* Red background */
+  color: black !important; /* Black text */
+  border: 2px solid black !important; /* Black border */
+  font-size: 1.2rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0 !important; /* Square shape */
+  box-shadow: none !important; /* Remove shadow */
+  cursor: pointer !important;
+  transition: background-color 0.3s ease !important;
 }
 
+/* Hover effect for brighter red */
 .close-btn:hover {
-  color: #008f7a;
+  background-color: #ff2b2b !important; /* Brighter red on hover */
 }
 
 /* Toggle text and link for modal */
@@ -227,9 +241,10 @@ h2 {
   object-fit: cover;
 }
 
+/* Photo pencil icon with retro feel */
 .photo-pencil {
   color: #008f7a;
-  border-radius: 5px;
+  border-radius: 0; /* Square shape */
   font-size: 1.2rem;
   padding: 6px;
   margin-left: 10px;
@@ -241,18 +256,17 @@ h2 {
 .photo-input {
   display: none;
 }
-/* Adding black border to modal content */
+
+/* Final styling adjustments */
 .auth-modal-content {
-  border: 2px solid black; /* Black border for retro feel */
+  border: 2px solid black; /* Retro border */
 }
 
-/* Adding black border to input fields */
 .input-field,
 .dob-input {
-  border: 2px solid black; /* Black border for retro feel */
+  border: 2px solid black; /* Retro border */
 }
 
-/* Adding black border to all buttons */
 .cancel-btn,
 .save-btn,
 .edit-btn,
@@ -261,5 +275,5 @@ h2 {
 .add-child-btn,
 .reset-btn,
 .forget-btn {
-  border: 2px solid black; /* Black border for retro feel */
+  border: 2px solid black; /* Retro border */
 }

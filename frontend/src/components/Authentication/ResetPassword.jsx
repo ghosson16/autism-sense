@@ -43,7 +43,6 @@ const ResetPassword = ({ onClose }) => {
     try {
       const response = await resetPassword(token, password);
       alert('Password has been reset. You can now log in with your new password.');
-      console.log(password);
       navigate('/');
     } catch (err) {
       if (err.response && err.response.status === 400) {
@@ -80,7 +79,9 @@ const ResetPassword = ({ onClose }) => {
             className="input-field"
           />
           {error && <p className="error-message">{error}</p>}
-          <button type="submit" className="reset-btn">Reset Password</button>
+          <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+            <button type="submit" className="reset-btn">Reset Password</button>
+          </div>
         </form>
       </div>
     </div>
