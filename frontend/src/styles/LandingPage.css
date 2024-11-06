@@ -1,50 +1,138 @@
+/* Landing Container */
 .landing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
   justify-content: flex-start;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-  }
-  
-/* Container styling */
+  width: 100%;
+}
+
+/* Logo Container */
 .logo-container {
-  margin-top: 0;
-  width: 350px; /* Adjust as needed */
-  height: 350px; /* Adjust as needed */
-  background-image: url('../images/staticLogo.png'); /* Default static image */
+  margin-top: 150px;
+  width: 350px;
+  height: 350px;
+  background-image: url('../images/staticLogo.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* Change to animated GIF on hover */
-.logo-container:hover {
-  background-image: url('../images/animatedLogo.gif');
+/* Button Styling */
+.btn {
+  width: 400px;
+  background-color: #fff;
+  color: #008f7a;
+  margin: 5px 10px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.title {
-  font-size: 2em;
-  margin-top: 0.5em;
+.btn:hover {
+  background-color: #008f7a;
+  color: #333;
+}
+
+.therapist-icon,
+.child-icon {
+  width: 140px;
+  height: 140px;
+}
+
+/* Footer Container Styling */
+.footer-container {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  margin: 0;
+}
+
+/* Footer Section Styling */
+.footer-section {
+  flex: 1;
+  padding: 2rem;
+  text-align: left;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.about {
+  background-color: #fff9cd;
+  color: #333;
+}
+
+.mission {
+  background-color: rgb(183, 220, 234);
+  color: #333;
+}
+
+.features {
+  background-color: #dddddd;
+  color: #333;
+}
+
+.footer-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
+.footer-section p {
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: justify; /* Justify for regular paragraphs */
+  margin: 0;
+}
 
-  
-  .btn {
-    width: 400px;
-    background-color:#fff;
-    color:#008f7a;
-    margin: 5px 10px;
-    border: none;
-    border-radius: 25px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s;
-  }  
-  .btn:hover {
-    background-color: #008f7a;
-    color: #333;
+/* List items in the Key Features section */
+.footer-section ul {
+  padding-left: 1.5rem; /* Add padding for indentation */
+  margin: 0;
+  text-align: left; /* Left-align list items */
+}
+
+.footer-section ul li {
+  margin-bottom: 0.5rem;
+  list-style-type: disc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
   }
 
-  
-  
+  .footer-section {
+    width: 100%;
+    padding: 1.5rem;
+  }
+}
+.features-list {
+  text-align: left; /* Align text to the left */
+  margin: 0;
+  padding-left: 1.5rem; /* Indent to make space for bullets */
+}
+
+.features-list span {
+  display: block; /* Make each item a block element */
+  position: relative;
+  padding-left: 1.5rem; /* Space between bullet and text */
+  margin-bottom: 0.5rem; /* Spacing between items */
+}
+
+.features-list span::before {
+  content: "•"; /* Filled circle bullet */
+  position: absolute;
+  left: 0; /* Position bullet at the start */
+  color: #333; /* Set bullet color to match text */
+  font-size: 1.2rem; /* Adjust size as needed */
+  line-height: 1;
+}
