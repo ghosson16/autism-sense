@@ -7,10 +7,9 @@ const apiUrl = import.meta.env.VITE_BACKEND_URL; // Set in .env file
 export const login = async (email, password) => {
   try {
     const response = await axios.post(`${apiUrl}/api/auth/login`, { email, password }, {
-      withCredentials: true, // Include credentials for session-based auth
+      withCredentials: true,
     });
     const { token, user } = response.data;
-    // Store token in localStorage to maintain login session
     localStorage.setItem("token", token);
     return { message: "Login successful", user };
   } catch (error) {
