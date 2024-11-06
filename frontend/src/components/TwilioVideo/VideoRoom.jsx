@@ -27,6 +27,7 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
   const [isMicOn, setIsMicOn] = useState(true);
   const [copySuccess, setCopySuccess] = useState("");
   const [openGame, setOpenGame] = useState(false);
+  const [gamePhoto, setGamePhoto] = useState({blob: 'https://banner2.cleanpng.com/20230816/vew/transparent-happy-face-1711091557183.webp', result: 'sad'});
   const navigate = useNavigate();
 
   // Map detected emotion to an emoji
@@ -172,6 +173,7 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
                 } catch (error) {
                   console.error("Error detecting emotion:", error);
                 }
+                setGamePhoto({blob: blob, result: emotion});
               }
             }, "image/jpeg");
           }
@@ -267,7 +269,7 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
               <b>Game</b>
               <FontAwesomeIcon icon={faGamepad} style={{ marginLeft: "10px" }} />
             </button>
-            {openGame && <Game onClose={() => setOpenGame(false)} />}
+            {openGame && <Game gameImage={gamePhoto} onClose={() => setOpenGame(false)} />}
           </div>
         )}
 
