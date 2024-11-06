@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, replace } from 'react-router-dom';
 import { resetPassword } from '../../services/authService';
 import '../../styles/AuthModal.css';
 
@@ -25,21 +25,21 @@ const ResetPassword = ({ onClose }) => {
     }
     return null;
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const passwordValidationError = validatePasswordStrength(password);
     if (passwordValidationError) {
       setError(passwordValidationError);
       return;
     }
-  
+
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
-  
+
     try {
       const response = await resetPassword(token, password);
       alert('Password has been reset. You can now log in with your new password.');
@@ -52,37 +52,48 @@ const ResetPassword = ({ onClose }) => {
       }
       console.error(err);
     }
-  };  
+  };
+
+  const handleClose = () => {
+    navigate('/', { replace: true });
+  };
+  
 
   return (
-    <div className="form-container">
-      <div className="form-group">
-        <button className="close-btn" onClick={onClose}>
+    <div className="auth-modal">
+      <div className="auth-modal-content">
+        <button className="close-btn" onClick={handleClose}>
           &times;
         </button>
-        <h2>Reset Your Password</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="password"
-            placeholder="New Password"
-            value={password}
-            onChange={handlePasswordChange}
-            required
-            className="input-field"
-          />
-          <input
-            type="password"
-            placeholder="Confirm New Password"
-            value={confirmPassword}
-            onChange={handleConfirmPasswordChange}
-            required
-            className="input-field"
-          />
-          {error && <p className="error-message">{error}</p>}
-          <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-            <button type="submit" className="reset-btn">Reset Password</button>
-          </div>
-        </form>
+        <div className="form-container">
+          <h2>Reset Your Password</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <input
+                type="password"
+                placeholder="New Password"
+                value={password}
+                onChange={handlePasswordChange}
+                required
+                className="input-field"
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="password"
+                placeholder="Confirm New Password"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                required
+                className="input-field"
+              />
+            </div>
+            {error && <p className="error-message">{error}</p>}
+            <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+              <button type="submit" className="reset-btn">Reset Password</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
