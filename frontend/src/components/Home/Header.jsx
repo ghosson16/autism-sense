@@ -13,7 +13,7 @@ const Header = ({ onLogout, onProfileClick, childData }) => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: '#B3D9FF', // Light baby blue background
+      backgroundColor: '#B4E9FF', // Light baby blue background
       padding: '5px 20px', // Reduced top/bottom padding for a slimmer look
       borderBottom: '2px solid black', // Consistent border thickness
       width: '100%',
