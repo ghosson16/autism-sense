@@ -15,9 +15,9 @@ body {
 .video-room {
   width: 1000px;
   height: 100%;
-  background-color: #ebfcf6;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #d2eef9; /* Updated background color */
+  border: 2px solid black; /* Retro black border */
+  border-radius: 0; /* Square shape */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,12 +28,15 @@ body {
 .video-container {
   width: 100%;
   height: 490px;
+  background-color: #d2eef9; /* Updated background color */
+  border: 2px solid black; /* Retro black border */
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  border-radius: 10px;
   overflow: hidden;
+  padding: 0; /* Remove padding to fit the video content exactly */
+  border-radius: 0; /* Square shape */
 }
 
 #remote-video {
@@ -44,14 +47,13 @@ body {
   align-items: center;
   position: relative;
   padding: 20px;
-
 }
 
 #remote-video video {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 0; /* Square shape */
 }
 
 #local-video {
@@ -60,23 +62,21 @@ body {
   position: absolute;
   top: 20px;
   right: 20px;
-  border-radius: 8px;
-  z-index: 10;
   overflow: hidden;
+  z-index: 10;
+  border-radius: 0; /* Square shape */
 }
 
 #local-video video {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover;
-  border-radius: 8px;
 }
-
 
 .emoji-display {
   width: auto;
-  background-color: #00796b;
-  border-radius: 8px;
+  background-color: #59bde4;
+  border-radius: 0; /* Square shape */
   display: flex;
   align-items: center;
   gap: 5px;
@@ -87,6 +87,8 @@ body {
   right: 40px;
   margin: 6px;
   z-index: 10;
+  border: 2px solid black; /* Retro black border */
+
 }
 
 .emoji-display span {
@@ -104,18 +106,19 @@ body {
 .control button {
   font-size: 18px;
   width: 200px;
-  background-color: #00796b;
-  color: #ffffff;
-  border: none;
-  border-radius: 20px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #fff394; /* Updated retro button color */
+  color: black;
+  border: 2px solid black; /* Retro black border */
+  padding: 10px 20px;
+  border-radius: 0; /* Square shape */
+  box-shadow: none;
   transition: background-color 0.3s ease;
 }
 
 .control button:hover {
-  background-color: #00574b;
+  background-color: #fff300; /* Updated brighter hover color */
+  border-color: black;
 }
-
 
 .call-controls {
   display: flex;
@@ -131,21 +134,23 @@ body {
 }
 
 .three-dot-button {
-  background-color: #00796b;
+  background-color: #59bde4;
   color: #fff;
   font-size: 18px;
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  border-radius: 0; /* Square shape */
   align-items: center;
   justify-content: center;
-  border: none;
+  border: 2px solid black; /* Retro border */
   margin-top: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 .three-dot-button:hover {
-  background-color: #00574b;
+  background-color: #00a0df;
+  border-color: black;
+  box-shadow: none;
 }
 
 .control-panel {
@@ -154,8 +159,9 @@ body {
   position: absolute;
   bottom: 40px;
   background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid black;
+  border-radius: 0; /* Square shape */
+  box-shadow: none;
   padding: 10px;
   gap: 8px;
   width: 220px;
@@ -169,7 +175,7 @@ body {
 .control-button {
   width: 200px;
   padding: 8px 12px;
-  border-radius: 5px;
+  border-radius: 0; /* Square shape */
   text-align: left;
   display: flex;
   align-items: center;
@@ -180,12 +186,12 @@ body {
   background: #e0e0e0;
 }
 
-.end-call ,.leave-call{
+.end-call, .leave-call {
   background-color: #dc3545; /* Red background for End Call */
   color: #ffffff; /* White text color */
 }
 
-.end-call:hover ,.leave-call:hover {
+.end-call:hover, .leave-call:hover {
   background-color: #c82333; /* Darker red on hover */
 }
 
@@ -224,6 +230,6 @@ body {
   background-color: rgba(0, 0, 0, 0.6);
   color: #f5f5f5;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 0; /* Square shape */
   z-index: 20;
 }
