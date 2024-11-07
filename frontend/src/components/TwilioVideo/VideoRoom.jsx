@@ -173,7 +173,6 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
                 } catch (error) {
                   console.error("Error detecting emotion:", error);
                 }
-                setGamePhoto({blob: blob, result: emotion});
               }
             }, "image/jpeg");
           }
@@ -264,7 +263,7 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
 
         {role === "guest" && (
           <div className="control">
-            <AudioRecorder />
+            <AudioRecorder/>
             <button onClick={() => setOpenGame(true)}>
               <b>Game</b>
               <FontAwesomeIcon icon={faGamepad} style={{ marginLeft: "10px" }} />

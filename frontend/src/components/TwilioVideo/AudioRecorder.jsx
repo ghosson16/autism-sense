@@ -1,9 +1,8 @@
-// components/AudioRecorder.js
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/ModalPop-up.css";
-import { transcribeAudio, generateSuggestion } from "../../services/videoService"; // Import services
+import { transcribeAudio, generateSuggestion } from "../../services/videoService";
 
 const AudioRecorder = () => {
   const mediaRecorder = useRef(null);
@@ -14,6 +13,8 @@ const AudioRecorder = () => {
   const [paused, setPaused] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const mimeType = "audio/webm";
 
   useEffect(() => {
     const initStream = async () => {
@@ -30,9 +31,15 @@ const AudioRecorder = () => {
     initStream();
   }, []);
 
+  useEffect(() => {
+    if (stream && !paused) {
+      startRecording();
+    }
+  }, [stream, paused]);
+
   const startRecording = () => {
     setRecordingStatus("recording");
-    const media = new MediaRecorder(stream, { mimeType: "audio/webm" });
+    const media = new MediaRecorder(stream, { mimeType });
     mediaRecorder.current = media;
 
     const localAudioChunks = [];
@@ -42,38 +49,66 @@ const AudioRecorder = () => {
       if (event.data.size > 0) localAudioChunks.push(event.data);
     };
 
-    mediaRecorder.current.onstop = async () => {
-      const audioBlob = new Blob(localAudioChunks, { type: "audio/webm" });
-      setAudio(URL.createObjectURL(audioBlob));
-      await processAudio(audioBlob);
+    mediaRecorder.current.onstop = () => {
+      const audioBlob = new Blob(localAudioChunks, { type: mimeType });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      setAudio(audioUrl);
+      handleTranscription(audioBlob);
     };
   };
 
-  const processAudio = async (audioBlob) => {
+  const stopRecording = () => {
+    setRecordingStatus("inactive");
+    if (mediaRecorder.current && mediaRecorder.current.state !== "inactive") {
+      mediaRecorder.current.stop();
+    }
+  };
+
+  const handleHelpClick = () => {
+    setLoading(true);
+    stopRecording();
+    setPaused(true);
+  };
+
+  const handleOkClick = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleTranscription = async (audioBlob) => {
     try {
-      setLoading(true);
-      const conversationContext = await transcribeAudio(audioBlob);
-      const suggestionText = await generateSuggestion(conversationContext);
+      const transcribe = await transcribeAudio(audioBlob);
+      const suggestionText = await generateSuggestion(transcribe);
       setSuggestion(suggestionText);
       setLoading(false);
       setIsModalOpen(true);
+      setPaused(false);
     } catch (error) {
-      console.error("Error during transcription:", error);
+      console.error("Error during transcription or suggestion generation:", error);
       setSuggestion("Oops, I cannot help you now.");
       setLoading(false);
+      setIsModalOpen(true);
+      setPaused(false);
     }
   };
 
   return (
     <div>
-      <button onClick={() => startRecording()} disabled={loading}>
-        {loading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Help"}
+      <button onClick={handleHelpClick} disabled={loading}>
+        {loading ? (
+          <FontAwesomeIcon icon={faSpinner} spin />
+        ) : (
+          <>
+            <b>Help</b>
+            <FontAwesomeIcon icon={faQuestionCircle} style={{ marginLeft: '10px' }} />
+          </>
+        )}
       </button>
+
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
             <p>{suggestion}</p>
-            <button onClick={() => setIsModalOpen(false)}>Close</button>
+            <button onClick={handleOkClick}><b>Close</b></button>
           </div>
         </div>
       )}
