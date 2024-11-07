@@ -1,4 +1,109 @@
-/* Landing Container */
+/* Base Styles - Default for Desktop */
+body {
+  font-size: 16px;
+}
+
+/* Laptop (up to 1440px) */
+@media (max-width: 1440px) {
+  body {
+    font-size: 15px;
+  }
+
+  .container {
+    max-width: 1024px;
+  }
+
+  .modal {
+    width: 500px;
+    padding: 25px;
+  }
+
+  .btn {
+    width: 350px;
+    font-size: 0.95rem;
+    padding: 8px 18px;
+  }
+
+  .logo-container {
+    width: 300px;
+    height: 300px;
+    margin-top: 300px;
+  }
+}
+
+/* Tablet (up to 1024px) */
+@media (max-width: 1024px) {
+  body {
+    font-size: 14px;
+  }
+
+  .container {
+    max-width: 768px;
+    padding: 0 1rem;
+  }
+
+  .logo-container {
+    width: 250px;
+    height: 250px;
+    margin-top: 150px;
+  }
+
+  .btn {
+    width: 300px;
+    font-size: 0.9rem;
+    padding: 7px 16px;
+  }
+}
+
+/* Mobile (up to 768px) */
+@media (max-width: 768px) {
+  body {
+    font-size: 13px;
+  }
+
+  .container {
+    padding: 0 0.5rem;
+  }
+
+  .logo-container {
+    width: 200px;
+    height: 200px;
+    margin-top: 100px;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+  }
+}
+
+/* Small Mobile (up to 480px) */
+@media (max-width: 480px) {
+  body {
+    font-size: 12px;
+  }
+
+  .container {
+    padding: 0 0.25rem;
+  }
+
+  .logo-container {
+    width: 150px;
+    height: 150px;
+    margin-top: 50px;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 0.8rem;
+    padding: 5px 12px;
+  }
+}
+
+/* General Content Styling */
+
+/* Base Layout */
 .landing-container {
   display: flex;
   flex-direction: column;
@@ -8,9 +113,8 @@
   width: 100%;
 }
 
-/* Logo Container */
 .logo-container {
-  margin-top: 240px;
+  margin-top: 400px;
   width: 350px;
   height: 350px;
   background-image: url('../images/staticLogo.png');
@@ -19,12 +123,18 @@
   background-repeat: no-repeat;
 }
 
-/* Button Styling (Commented out for reference)
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+/* Button Styling */
 .btn {
   width: 400px;
   background-color: #fff;
   color: #008f7a;
-  margin: 5px 10px;
   border: none;
   border-radius: 25px;
   font-size: 1rem;
@@ -33,6 +143,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 10px;
 }
 
 .btn:hover {
@@ -40,40 +151,31 @@
   color: #333;
 }
 
-.therapist-icon,
-.child-icon {
-  width: 140px;
-  height: 140px;
-} */
-
-/* Footer Container Styling */
+/* Footer Container */
 .footer-container {
   display: flex;
   flex-wrap: nowrap;
   width: 100%;
-  margin: 0; /* Remove all margins to avoid extra space */
-  padding: 0; /* Remove all padding to make it flush with edges */
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
-/* Footer Section Styling */
 .footer-section {
   flex: 1;
-  padding: 2rem; /* Adjust padding as needed */
-  text-align: left;
-  box-sizing: border-box;
-  min-width: 0;
+  padding: 2rem;
+  text-align: center;
   opacity: 0;
-  transform: scale(0.9); /* Start slightly smaller for animation effect */
-  transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bounce effect */
+  transform: scale(0.9);
+  transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .footer-section.visible {
   opacity: 1;
-  transform: scale(1); /* Scale to normal size with bounce */
+  transform: scale(1);
 }
 
-/* Section Background Colors */
+/* Section Colors */
 .about {
   background-color: #fff9cd;
   color: #333;
@@ -89,66 +191,30 @@
   color: #333;
 }
 
-/* Footer Section Heading */
+/* Footer Headings */
 .footer-section h2 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  text-align: center;
 }
 
-/* Footer Section Paragraph */
-.footer-section p {
-  font-size: 1rem;
-  line-height: 1.6;
-  text-align: justify; /* Justify for regular paragraphs */
-  margin: 0;
-}
-
-/* List Items in the Key Features Section */
-.footer-section ul {
-  padding-left: 1.5rem; /* Add padding for indentation */
-  margin: 0;
-  text-align: left; /* Left-align list items */
-}
-
-.footer-section ul li {
-  margin-bottom: 0.5rem;
-  list-style-type: disc;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .footer-container {
-    flex-direction: column;
-    align-items: center;
-    padding: 0; /* Remove padding to prevent side whitespace */
-  }
-
-  .footer-section {
-    width: 100%; /* Ensure each section takes full width */
-    padding: 1.5rem; /* Adjust padding for smaller screens */
-  }
-}
-
-/* Features List */
-.features-list {
-  text-align: left; /* Align text to the left */
-  margin: 0;
-  padding-left: 1.5rem; /* Indent to make space for bullets */
+.footer-icon {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
 }
 
 .features-list span {
-  display: block; /* Make each item a block element */
+  display: block;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
   position: relative;
-  padding-left: 1.5rem; /* Space between bullet and text */
-  margin-bottom: 0.5rem; /* Spacing between items */
 }
 
 .features-list span::before {
-  content: "•"; /* Filled circle bullet */
+  content: "•";
   position: absolute;
-  left: 0; /* Position bullet at the start */
-  color: #333; /* Set bullet color to match text */
-  font-size: 1.2rem; /* Adjust size as needed */
+  left: 0;
+  color: #333;
+  font-size: 1.2rem;
   line-height: 1;
 }
