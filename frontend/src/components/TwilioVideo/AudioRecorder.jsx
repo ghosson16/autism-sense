@@ -14,7 +14,15 @@ const AudioRecorder = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const mimeType = "audio/webm";
+
+ let mimeType = "audio/webm";
+  
+  // Check for MIME type support with fallbacks
+  if (!MediaRecorder.isTypeSupported(mimeType)) {
+    mimeType = "audio/ogg"; // Fallback to audio/ogg
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      mimeType = "audio/wav"; // Second fallback to audio/wav if needed
+    }}
 
   useEffect(() => {
     const initStream = async () => {
@@ -39,6 +47,7 @@ const AudioRecorder = () => {
 
   const startRecording = () => {
     setRecordingStatus("recording");
+    
     const media = new MediaRecorder(stream, { mimeType });
     mediaRecorder.current = media;
 
