@@ -10,6 +10,8 @@ import ChildProfilePage from './components/Profile/ProfilePage';
 import ResetPassword from './components/Authentication/ResetPassword';
 import CreateMeetingPage from './components/TwilioVideo/HostMeeting';
 import JoinMeetingPage from './components/TwilioVideo/GuestMeeting';
+import ErrorBoundary from './ErrorBoundary';
+
 
 import AuthRoute from './components/AuthRoute';
 
@@ -24,12 +26,12 @@ function App() {
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/forget-password" element={<ForgetPasswordForm />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/host" element={<CreateMeetingPage />} />
+        <Route path="/host" element={<ErrorBoundary><CreateMeetingPage /> </ErrorBoundary>} />
 
         {/* Protected Routes */}
         <Route path="/home" element={ <AuthRoute> <Home /> </AuthRoute> } />
         <Route path="/child-profile/:childId" element={ <AuthRoute> <ChildProfilePage /> </AuthRoute> } />
-        <Route path="/guest" element={ <AuthRoute> <JoinMeetingPage /> </AuthRoute> } />
+        <Route path="/guest" element={ <AuthRoute> <ErrorBoundary> <JoinMeetingPage /> </ErrorBoundary> </AuthRoute>  } />
       </Routes>
     </Router>
   );
