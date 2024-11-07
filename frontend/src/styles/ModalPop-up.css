@@ -30,7 +30,7 @@
     background-color: #00796b;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 0;
   }
   
   .modal-content button:hover {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate, replace } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { resetPassword } from '../../services/authService';
 import '../../styles/AuthModal.css';
 
@@ -62,7 +62,7 @@ const ResetPassword = ({ onClose }) => {
   return (
     <div className="auth-modal">
       <div className="auth-modal-content">
-        <button className="close-btn" onClick={handleClose}>
+        <button className="close-button" onClick={handleClose}>
           &times;
         </button>
         <div className="form-container">

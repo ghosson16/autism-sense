@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { updateChildData, deleteChildAccount } from '../../services/childService';
-import { useNavigate } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import defaultProfileImage from '../../images/default-profile.png';
+import { deleteChildAccount, updateChildData } from '../../services/childService';
 import '../../styles/AuthModal.css';
 
 const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
@@ -94,7 +94,7 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
   return (
     <div className="auth-modal">
       <div className="auth-modal-content">
-        <button className="close-btn" onClick={onClose}>X</button>
+        <button className="close-button" onClick={onClose}>X</button>
 
         <header className="form-photo">
           <div className="photo-ring">

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import SignUpForm from "./SignUpForm";
-import LoginForm from "./LoginForm";
-import ForgetPasswordForm from "./ForgetPasswordForm";
 import "../../styles/AuthModal.css";
+import ForgetPasswordForm from "./ForgetPasswordForm";
+import LoginForm from "./LoginForm";
+import SignUpForm from "./SignUpForm";
 
 const AuthModal = ({ onClose }) => {
   const [mode, setMode] = useState("login");
@@ -15,8 +15,8 @@ const AuthModal = ({ onClose }) => {
     <div className="auth-modal">
       <div className="auth-modal-content">
         {/* Close button on the top right to close the modal */}
-        <button className="close-btn" onClick={onClose}>
-          &times;
+        <button className="close-button" onClick={onClose}>
+          X
         </button>
 
         {/* Display different forms based on the mode */}

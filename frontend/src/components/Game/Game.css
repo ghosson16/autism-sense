@@ -26,31 +26,6 @@
   animation: fadeIn 0.3s ease-in-out; /* Smooth fade-in animation */
 }
 
-/* Close button */
-.close-btn {
-  position: absolute !important;
-  top: 15px !important;  /* A bit more spacing from the top */
-  right: 15px !important;  /* A bit more spacing from the right */
-  font-size: 24px !important;  /* Larger font for better visibility */
-  background: #FF5A5F !important;  /* Use a modern red color */
-  color: white !important;  /* White text for contrast */
-  border: none !important;
-  padding: 10px 15px !important;  /* Larger padding for easier clicking */
-  border-radius: 50% !important;  /* Circular button for a more modern look */
-  cursor: pointer !important;  /* Pointer cursor to indicate it's clickable */
-  transition: background-color 0.3s, transform 0.3s !important;  /* Smooth transition for hover effect */
-}
-
-.close-btn:hover {
-  background-color: #FF3B30 !important;  /* Darker red on hover */
-  transform: scale(1.1) !important;  /* Slight scale-up effect on hover */
-}
-
-.close-btn:focus {
-  outline: none !important;  /* Remove the outline on focus */
-}
-
-
 
 /* Image styling */
 .game-image img {

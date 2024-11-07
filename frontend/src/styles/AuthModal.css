@@ -7,8 +7,8 @@ body {
   margin: 0;
 }
 
-/* Modal overlay */
-.auth-modal {
+/* Modal overlay (for both .auth-modal and .overlay) */
+.auth-modal, .overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -19,23 +19,25 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 20px;
 }
 
-/* Modal content */
-.auth-modal-content {
+/* Modal content (for both .auth-modal-content and .modal) */
+.auth-modal-content, .modal {
   background: #d2eef9;
   padding: 20px;
   width: 400px;
   max-width: 90%;
-  border-radius: 0; /* Square shape */
+  border-radius: 0;
   text-align: center;
   position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease; /* Fade-in animation */
-  border: 2px solid black; /* Black border for retro feel */
+  animation: fadeIn 0.3s ease;
+  border: 2px solid black;
 }
 
-@keyframes scaleUp {
+/* Keyframes for fade-in effect */
+@keyframes fadeIn {
   from {
     opacity: 0;
     transform: scale(0.9);
@@ -46,6 +48,7 @@ body {
   }
 }
 
+/* Modal Heading */
 h2 {
   text-align: center;
   margin-bottom: 20px;
@@ -54,19 +57,17 @@ h2 {
   font-weight: bold;
 }
 
-.form-group,
-.dob-field-container {
+/* Form Group and Input Styling */
+.form-group, .dob-field-container {
   width: 100%;
   margin-bottom: 10px;
 }
 
-/* Input fields - Square shape */
-.input-field,
-.dob-input {
+.input-field, .dob-input {
   width: 100%;
   padding: 10px;
-  border: 2px solid black; /* Black border for retro feel */
-  border-radius: 0; /* Square shape */
+  border: 2px solid black;
+  border-radius: 0;
   background-color: #ffffff;
   color: #333;
   font-size: 14px;
@@ -81,11 +82,7 @@ h2 {
   line-height: 1.2;
 }
 
-.dob-field-container {
-  position: relative;
-  margin-bottom: 20px;
-}
-
+/* Date of Birth Hint Styling */
 .dob-hint {
   position: absolute;
   top: 10px;
@@ -107,39 +104,28 @@ h2 {
   z-index: 1;
 }
 
-/* Button container styling */
+/* Button Container Styling */
 .form-buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
 }
 
-/* Square buttons with retro style */
-.cancel-btn,
-.save-btn,
-.edit-btn,
-.back-btn,
-.send-email-btn,
-.add-child-btn,
-.reset-btn,
-.forget-btn {
+/* Button Styles */
+button, .cancel-btn, .save-btn, .edit-btn, .back-btn, .send-email-btn, .add-child-btn, .reset-btn, .forget-btn, .start-button {
   padding: 10px 20px;
-  border-radius: 0; /* Square shape */
-  border: 2px solid black; /* Black border for retro feel */
+  border-radius: 0;
+  border: 2px solid black;
   font-size: 16px;
   transition: background-color 0.3s ease;
   font-weight: bold;
-  background: #fff7b8; /* Primary action color */
+  background: #fff7b8;
   color: rgb(0, 0, 0);
+  cursor: pointer;
 }
 
-/* Action buttons hover effect */
-.save-btn:hover,
-.edit-btn:hover,
-.send-email-btn:hover,
-.add-child-btn:hover,
-.reset-btn:hover {
-  background: #ffee71; /* Darker primary action */
+button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-child-btn:hover, .reset-btn:hover, .start-button:hover {
+  background: #ffee71;
   border-color: black;
 }
 
@@ -150,57 +136,53 @@ h2 {
 
 .delete-btn {
   padding: 10px 20px;
-  width: auto; /* Keeps width consistent with other buttons */
-  background-color: #ff604e; /* Red background */
+  width: auto;
+  background-color: #ff604e;
   color: black;
-  border: 2px solid black; /* Black border for retro feel */
+  border: 2px solid black;
   font-size: 16px;
   font-weight: bold;
-  border-radius: 0; /* Square shape */
+  border-radius: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   transition: background-color 0.3s ease;
-  box-shadow: none; /* Removes shadow for a flatter appearance */
+  box-shadow: none;
 }
 
-/* Hover effect for brighter red */
 .delete-btn:hover {
-  background-color: #ff2b2b; /* Brighter red on hover */
+  background-color: #ff2b2b;
   border-color: black;
-
 }
 
-/* Additional styling for Forget Password button */
 .forget-btn {
   background-color: #ceeff0;
   font-size: 14px;
 }
 
 /* Close button styling for modals with square look */
-.close-btn {
-  position: absolute !important;
-  top: 10px !important;
-  right: 10px !important;
-  width: 30px !important; /* Square dimensions */
-  height: 30px !important;
-  background-color: #ff604e !important; /* Red background */
-  color: black !important; /* Black text */
-  border: 2px solid black !important; /* Black border */
-  font-size: 1.2rem !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 0 !important; /* Square shape */
-  box-shadow: none !important; /* Remove shadow */
-  cursor: pointer !important;
-  transition: background-color 0.3s ease !important;
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 40px;
+  background-color: #ff4d4d;
+  color: black;
+  border: 2px solid black;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background-color 0.3s ease;
+  outline: none;
+  box-shadow: none;
 }
 
-/* Hover effect for brighter red */
 .close-btn:hover {
-  background-color: #ff2b2b !important; /* Brighter red on hover */
+  background-color: #ff2b2b;
 }
 
 /* Toggle text and link for modal */
@@ -225,7 +207,7 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px; /* Adds space between image and pencil icon */
+  gap: 10px;
 }
 
 .photo-ring {
@@ -244,7 +226,7 @@ h2 {
 /* Photo pencil icon with retro feel */
 .photo-pencil {
   color: #008f7a;
-  border-radius: 0; /* Square shape */
+  border-radius: 0;
   font-size: 1.2rem;
   padding: 6px;
   margin-left: 10px;
@@ -257,23 +239,119 @@ h2 {
   display: none;
 }
 
-/* Final styling adjustments */
-.auth-modal-content {
-  border: 2px solid black; /* Retro border */
+/* Responsive Breakpoints */
+
+/* Laptop (up to 1440px) */
+@media (max-width: 1440px) {
+  .auth-modal-content, .modal {
+    width: 350px;
+    padding: 18px;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  button {
+    padding: 8px 18px;
+    font-size: 0.95rem;
+  }
+
+  .input-field, .dob-input {
+    font-size: 13px;
+  }
+
+  .photo-img {
+    width: 70px;
+    height: 70px;
+  }
 }
 
-.input-field,
-.dob-input {
-  border: 2px solid black; /* Retro border */
+/* Tablet (up to 1024px) */
+@media (max-width: 1024px) {
+  .auth-modal-content, .modal {
+    width: 320px;
+    padding: 16px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  button {
+    padding: 7px 16px;
+    font-size: 0.9rem;
+  }
+
+  .input-field, .dob-input {
+    font-size: 12px;
+  }
+
+  .photo-img {
+    width: 60px;
+    height: 60px;
+  }
 }
 
-.cancel-btn,
-.save-btn,
-.edit-btn,
-.back-btn,
-.send-email-btn,
-.add-child-btn,
-.reset-btn,
-.forget-btn {
-  border: 2px solid black; /* Retro border */
+/* Mobile (up to 768px) */
+@media (max-width: 768px) {
+  .auth-modal-content, .modal {
+    width: 280px;
+    padding: 14px;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  button {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+  }
+
+  .input-field, .dob-input {
+    font-size: 12px;
+  }
+
+  .photo-img {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* Small Mobile (up to 480px) */
+@media (max-width: 480px) {
+  .auth-modal, .overlay {
+    align-items: flex-start;
+    padding-top: 20px;
+  }
+
+  .auth-modal-content, .modal {
+    width: 90%;
+    padding: 12px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  button {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+  }
+
+  .input-field, .dob-input {
+    font-size: 11px;
+  }
+
+  .photo-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .toggle-text, .toggle-link {
+    font-size: 0.85rem;
+  }
 }

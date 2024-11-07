@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import './Game.css';  // Import the CSS file
+import React, { useEffect, useState } from 'react';
+import './Game.css'; // Import the CSS file
 
 export default function Game({ onClose, gameImage }) {
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -35,7 +35,7 @@ export default function Game({ onClose, gameImage }) {
     return (
       <div className="game-modal">
         <div className="game-modal-content">
-          <button onClick={onClose} className="close-btn">
+          <button onClick={onClose} className="close-button">
             &#10005;
           </button>
           <p>Please wait until the image appears...</p>
@@ -48,7 +48,7 @@ export default function Game({ onClose, gameImage }) {
     <div className="game-modal">
       <div className="game-modal-content">
         {/* Close button */}
-        <button onClick={onClose} className="close-btn">
+        <button onClick={onClose} className="close-button">
           &#10005;
         </button>
 
