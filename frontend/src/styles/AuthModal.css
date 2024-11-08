@@ -109,6 +109,7 @@ h2 {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+
 }
 
 /* Button Styles */
@@ -122,11 +123,13 @@ button, .cancel-btn, .save-btn, .edit-btn, .back-btn, .send-email-btn, .add-chil
   background: #fff7b8;
   color: rgb(0, 0, 0);
   cursor: pointer;
+  box-shadow: none;
 }
 
 button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-child-btn:hover, .reset-btn:hover, .start-button:hover {
   background: #ffee71;
   border-color: black;
+  box-shadow: none;
 }
 
 .back-btn {
