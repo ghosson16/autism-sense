@@ -50,32 +50,38 @@ const HostMeeting = () => {
                 delay="2000"
                 stroke="bold"
                 state="morph-turn-on"
+                style={{ width: "100px", height: "100px" }}
               ></lord-icon>
             </div>
 
-            <h2 className="modal-header">Quick Tips Before you start!</h2> 
-            <br />
+           
+            <h2 style={{ textAlign: "center", margin: 0 }}>Quick Tips Before you start!</h2> <br/>
+
 
             {/* Instructions List */}
-            <ol className="instructions-list">
-              <li>
-                <strong>Create & Share the Meeting Link:</strong><br />
-                Start the meeting and share the link with the child or their caregiver.
+            <ol style={{ lineHeight: "1.7", padding: "10px 0", textAlign: "justify" }}>
+              <li style={{ marginBottom: "15px", }}>
+                <strong>Create & Share the Meeting Link:
+                  <br/>
+                  </strong> Start the meeting and share the link with the child or their caregiver.
               </li>
-              <li>
-                <strong>Emotion Detection:</strong><br />
-                Emotions will appear as icons based on your expressions; encourage the child to observe and relate these icons.
+              <li style={{ marginBottom: "15px" }}>
+                <strong>Emotion Detection:</strong>
+                <br/>
+                 Emotions will appear as icons based on your expressions; encourage the child to observe and relate these icons.
               </li>
-              <li>
-                <strong>Guided Help:</strong><br />
-                If the child is struggling, remind them to use the Help button for response suggestions.
+              <li style={{ marginBottom: "15px" }}>
+                <strong>Guided Help:</strong>
+                <br/>
+                 If the child is struggling, remind them to use the Help button for response suggestions.
               </li>
-              <li>
-                <strong>Emotion Game:</strong><br />
-                The child can start an emotion-identification game, providing a fun, interactive learning experience.
+              <li style={{ marginBottom: "15px" }}>
+                <strong>Emotion Game:</strong> 
+                <br/>The child can start an emotion-identification game, providing a fun, interactive learning experience.
               </li>
             </ol>
 
+       
             <button
               className="start-button"
               onClick={initiateMeeting}

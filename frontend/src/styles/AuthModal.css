@@ -153,6 +153,8 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
 .delete-btn:hover {
   background-color: #ff2b2b;
   border-color: black;
+  box-shadow: none;
+
 }
 
 .forget-btn {
