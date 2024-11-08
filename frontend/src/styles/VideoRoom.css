@@ -152,7 +152,7 @@ body {
   box-shadow: none;
 }
 
-.control-panel {
+.guest-control-panel {
   display: none;
   flex-direction: column;
   position: absolute;
@@ -166,8 +166,8 @@ body {
   width: 220px;
 }
 
-.three-dot-container:hover .control-panel,
-.control-panel:hover {
+.three-dot-container:hover .guest-control-panel,
+.guest-control-panel:hover {
   display: flex;
 }
 

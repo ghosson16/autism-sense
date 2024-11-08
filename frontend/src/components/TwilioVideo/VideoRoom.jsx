@@ -1,22 +1,22 @@
 // components/VideoRoom.js
-import React, { useEffect, useState } from "react";
-import { connect } from "twilio-video";
-import "../../styles/VideoRoom.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faVideo,
-  faVideoSlash,
-  faMicrophone,
-  faMicrophoneSlash,
-  faPhone,
   faClipboard,
   faEllipsisV,
   faGamepad,
+  faMicrophone,
+  faMicrophoneSlash,
+  faPhone,
+  faVideo,
+  faVideoSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import AudioRecorder from "./AudioRecorder";
-import { detectEmotion } from "../../services/videoService";
-import Game from "../Game/Game";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { connect } from "twilio-video";
+import { detectEmotion } from "../../services/videoService";
+import "../../styles/VideoRoom.css";
+import Game from "../Game/Game";
+import AudioRecorder from "./AudioRecorder";
 
 const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => {
   const [room, setRoom] = useState(null);
@@ -173,7 +173,6 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
                 } catch (error) {
                   console.error("Error detecting emotion:", error);
                 }
-                setGamePhoto({blob: blob, result: emotion});
               }
             }, "image/jpeg");
           }
@@ -231,36 +230,47 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
         </div>
       )}
 
+      {role === "guest" && (
       <div className="call-controls">
         <div className="three-dot-container">
           <button className="three-dot-button">
             <FontAwesomeIcon icon={faEllipsisV} />
           </button>
-          <div className="control-panel">
-            {role === "host" ? (
-              <button onClick={endMeeting} className="control-button end-call">
-                <FontAwesomeIcon icon={faPhone} /> End Meeting
-              </button>
-            ) : (
-              <button onClick={leaveMeeting} className="control-button leave-call">
-                <FontAwesomeIcon icon={faPhone} /> Leave Meeting
-              </button>
-            )}
-            <button onClick={toggleCamera} className="control-button video">
-              <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
-              {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
-            </button>
-            <button onClick={toggleMic} className="control-button microphone">
-              <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
-              {isMicOn ? "Mute Mic" : "Unmute Mic"}
-            </button>
-            {role === "host" && (
-              <button onClick={copyRoomName} className="control-button copy-room">
-                <FontAwesomeIcon icon={faClipboard} /> Copy Room Name
-              </button>
-            )}
+        <div className="guest-control-panel">
+          <button onClick={leaveMeeting} className="control-button leave-call">
+            <FontAwesomeIcon icon={faPhone} /> Leave Meeting
+          </button>
+          <button onClick={toggleCamera} className="control-button video">
+            <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
+            {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
+          </button>
+          <button onClick={toggleMic} className="control-button microphone">
+            <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
+            {isMicOn ? "Mute Mic" : "Unmute Mic"}
+          </button>
           </div>
         </div>
+      </div>
+      )}
+
+      {role === "host" && (
+      <div className="host-control-panel">
+        <button onClick={endMeeting} className="control-button leave-call">
+          <FontAwesomeIcon icon={faPhone} /> end Meeting
+        </button>
+        <button onClick={toggleCamera} className="control-button video">
+          <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
+          {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
+        </button>
+        <button onClick={toggleMic} className="control-button microphone">
+          <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
+          {isMicOn ? "Mute Mic" : "Unmute Mic"}
+        </button>
+            <button onClick={copyRoomName} className="control-button copy-room">
+              <FontAwesomeIcon icon={faClipboard} /> Copy Room Name
+            </button>
+      </div>
+      )}
 
         {role === "guest" && (
           <div className="control">
@@ -275,7 +285,6 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
 
         {copySuccess && <p className="copy-success">{copySuccess}</p>}
       </div>
-    </div>
   );
 };
 
