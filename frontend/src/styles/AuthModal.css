@@ -7,8 +7,8 @@ body {
   margin: 0;
 }
 
-/* Modal overlay (for both .auth-modal and .overlay) */
-.auth-modal, .overlay {
+/* Modal overlay */
+.auth-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -22,8 +22,8 @@ body {
   padding: 20px;
 }
 
-/* Modal content (for both .auth-modal-content and .modal) */
-.auth-modal-content, .modal {
+/* Modal content */
+.auth-modal-content {
   background: #d2eef9;
   padding: 20px;
   width: 400px;
@@ -183,7 +183,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
   box-shadow: none;
 }
 
-.close-btn:hover {
+.close-button:hover {
   background-color: #ff2b2b;
 }
 
@@ -245,7 +245,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
 
 /* Laptop (up to 1440px) */
 @media (max-width: 1440px) {
-  .auth-modal-content, .modal {
+  .auth-modal-content {
     width: 350px;
     padding: 18px;
   }
@@ -271,7 +271,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
 
 /* Tablet (up to 1024px) */
 @media (max-width: 1024px) {
-  .auth-modal-content, .modal {
+  .auth-modal-content {
     width: 320px;
     padding: 16px;
   }
@@ -297,7 +297,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
 
 /* Mobile (up to 768px) */
 @media (max-width: 768px) {
-  .auth-modal-content, .modal {
+  .auth-modal-content {
     width: 280px;
     padding: 14px;
   }
@@ -323,12 +323,12 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
 
 /* Small Mobile (up to 480px) */
 @media (max-width: 480px) {
-  .auth-modal, .overlay {
+  .auth-modal {
     align-items: flex-start;
     padding-top: 20px;
   }
 
-  .auth-modal-content, .modal {
+  .auth-modal-content {
     width: 90%;
     padding: 12px;
     max-height: 90vh;
@@ -356,13 +356,4 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
   .toggle-text, .toggle-link {
     font-size: 0.85rem;
   }
-}
-.instructions-list {
-  line-height: 1.7;
-  padding: 10px 0;
-  text-align: justify;
-}
-
-.instructions-list li {
-  margin-bottom: 15px;
 }
