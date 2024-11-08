@@ -123,6 +123,10 @@ body {
   background-repeat: no-repeat;
 }
 
+/* Change to animated GIF on hover */
+.logo-container:hover {
+  background-image: url('../images/animatedLogo.gif');}
+
 .button-container {
   display: flex;
   align-items: center;
