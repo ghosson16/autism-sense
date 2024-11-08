@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
+import EnterInput from "../EnterInput"; // Adjust path based on your structure
 import '../../styles/AuthModal.css';
 
 const LoginForm = () => {
@@ -12,6 +13,9 @@ const LoginForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
+
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const validatePassword = (password) => password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
@@ -28,8 +32,10 @@ const LoginForm = () => {
     setPasswordError(validatePassword(value) ? "" : "Password must be at least 8 characters long and contain both letters and numbers.");
   };
 
+  // Simplify handleLogin to confirm "Enter" works as expected
   const handleLogin = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault(); // Add this to handle cases where this is invoked via button click
+
     setIsSubmitting(true);
     setLoginError("");
 
@@ -53,23 +59,27 @@ const LoginForm = () => {
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div className="form-group">
-          <input
+          <EnterInput
             type="email"
             placeholder="Email"
             value={email}
             onChange={handleEmailChange}
             required
+            ref={emailRef} 
+            onEnter={() => passwordRef.current.focus()} 
             className={`input-field ${emailError ? "error" : ""}`}
           />
           {emailError && <span className="error-message">{emailError}</span>}
         </div>
         <div className="form-group">
-          <input
+          <EnterInput
             type="password"
             placeholder="Password"
             value={password}
             onChange={handlePasswordChange}
             required
+            ref={passwordRef} 
+            onEnter={handleLogin} // Trigger handleLogin directly on Enter
             className={`input-field ${passwordError ? "error" : ""}`}
           />
           {passwordError && <span className="error-message">{passwordError}</span>}
