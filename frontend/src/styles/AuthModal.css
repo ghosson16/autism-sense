@@ -357,3 +357,12 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
     font-size: 0.85rem;
   }
 }
+.instructions-list {
+  line-height: 1.7;
+  padding: 10px 0;
+  text-align: justify;
+}
+
+.instructions-list li {
+  margin-bottom: 15px;
+}
