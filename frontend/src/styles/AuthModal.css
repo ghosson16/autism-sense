@@ -20,6 +20,7 @@ body {
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  overflow-y: auto;
 }
 
 /* Modal content (for both .auth-modal-content and .modal) */
@@ -34,6 +35,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease;
   border: 2px solid black;
+  margin: auto;
 }
 
 /* Keyframes for fade-in effect */
