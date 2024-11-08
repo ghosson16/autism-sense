@@ -4,14 +4,28 @@
   cursor: url('./images/icons8-3d-pointer-48.png'), auto;
 }
 
-a, button {
-  cursor: url('./images/icons8-hand-cursor-48.png'), pointer;
+/* Define custom cursor for common interactive elements */
+a,
+button,
+input[type="button"],
+input[type="submit"],
+label[for],
+select,
+textarea,
+lord-icon,
+.logo-container:hover,
+.toggle-link,
+[role="button"],
+.logo,
+.clickable {
+  cursor: url('./images/icons8-hand-cursor-48.png'), pointer !important ;
 }
+
 
 body, #root {
   font-family: 'Baloo 2', sans-serif;
   background-color: #FFFFFA;
-  color: #333333;
+  color:black;
   margin: 0;
   display: flex;
   place-items: center;
@@ -22,6 +36,10 @@ body, #root {
     linear-gradient(to bottom, rgba(150, 150, 150, 0.1) 1px, transparent 1px);
   background-size: 80px 80px;
   background-repeat: repeat;
+}
+
+.input-field, .dob-input {
+  font-family: 'Baloo 2', sans-serif;
 }
 
 #root {

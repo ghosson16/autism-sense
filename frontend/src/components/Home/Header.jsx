@@ -47,7 +47,6 @@ const Header = ({ onLogout, onProfileClick, childData }) => {
       fontSize: '16px',
       fontWeight: 'bold',
       textTransform: 'uppercase',
-      cursor: 'pointer',
       transition: 'transform 0.3s ease',
       backgroundColor: 'transparent', // Transparent background
       border: 'none', // No border for the button
@@ -63,7 +62,6 @@ const Header = ({ onLogout, onProfileClick, childData }) => {
       padding: '5px 10px', // Reduced padding for slimmer button
       fontSize: '14px',
       fontWeight: 'bold',
-      cursor: 'pointer',
       transition: 'background-color 0.3s ease',
       boxSizing: 'border-box',
       borderRadius: '0', // Square shape

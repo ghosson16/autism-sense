@@ -133,7 +133,7 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
             </form>
           ) : (
             <>
-              <h1>{`${firstName} ${lastName}`}</h1>
+              <h2>{`${firstName} ${lastName}`}</h2>
               <p><strong>Email:</strong> {email}</p>
               <p><strong>Date of Birth:</strong> {new Date(childDOB).toLocaleDateString()}</p>
             </>

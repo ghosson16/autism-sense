@@ -7,8 +7,8 @@ body {
   margin: 0;
 }
 
-/* Modal overlay */
-.auth-modal {
+/* Modal overlay (for both .auth-modal and .overlay) */
+.auth-modal{
   position: fixed;
   top: 0;
   left: 0;
@@ -22,7 +22,7 @@ body {
   padding: 20px;
 }
 
-/* Modal content */
+/* Modal content (for both .auth-modal-content and .modal) */
 .auth-modal-content {
   background: #d2eef9;
   padding: 20px;
@@ -122,7 +122,6 @@ button, .cancel-btn, .save-btn, .edit-btn, .back-btn, .send-email-btn, .add-chil
   font-weight: bold;
   background: #fff7b8;
   color: rgb(0, 0, 0);
-  cursor: pointer;
   box-shadow: none;
 }
 
@@ -179,14 +178,13 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   border-radius: 0;
   transition: background-color 0.3s ease;
   outline: none;
   box-shadow: none;
 }
 
-.close-button:hover {
+.close-btn:hover {
   background-color: #ff2b2b;
 }
 
@@ -248,7 +246,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
 
 /* Laptop (up to 1440px) */
 @media (max-width: 1440px) {
-  .auth-modal-content {
+  .auth-modal-content, .modal {
     width: 350px;
     padding: 18px;
   }
@@ -274,7 +272,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
 
 /* Tablet (up to 1024px) */
 @media (max-width: 1024px) {
-  .auth-modal-content {
+  .auth-modal-content, .modal {
     width: 320px;
     padding: 16px;
   }
@@ -300,7 +298,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
 
 /* Mobile (up to 768px) */
 @media (max-width: 768px) {
-  .auth-modal-content {
+  .auth-modal-content, .modal {
     width: 280px;
     padding: 14px;
   }
@@ -326,12 +324,12 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
 
 /* Small Mobile (up to 480px) */
 @media (max-width: 480px) {
-  .auth-modal {
+  .auth-modal, .overlay {
     align-items: flex-start;
     padding-top: 20px;
   }
 
-  .auth-modal-content {
+  .auth-modal-content, .modal {
     width: 90%;
     padding: 12px;
     max-height: 90vh;
@@ -359,4 +357,13 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
   .toggle-text, .toggle-link {
     font-size: 0.85rem;
   }
+}
+.instructions-list {
+  line-height: 1.7;
+  padding: 10px 0;
+  text-align: justify;
+}
+
+.instructions-list li {
+  margin-bottom: 15px;
 }

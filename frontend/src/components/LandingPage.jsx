@@ -70,7 +70,7 @@ const LandingPage = () => {
             trigger="morph"
             colors="primary:#000000,secondary:#faddd1,tertiary:#3a3347,quaternary:#f28ba8,quinary:#f49cc8"
             className="child-icon"
-            style={{ width: "140px", height: "140px" }}
+            style={{ width: "140px", height: "140px"}}
           ></lord-icon>
           I'M A CHILD
         </button>

@@ -173,6 +173,7 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
                 } catch (error) {
                   console.error("Error detecting emotion:", error);
                 }
+                setGamePhoto({blob: blob, result: emotion});
               }
             }, "image/jpeg");
           }

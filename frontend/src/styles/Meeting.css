@@ -1,0 +1,169 @@
+/* Overlay for modal */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal container */
+.modal {
+  background-color: #d2eef9;
+  border: 2px solid black;
+  padding: 30px;
+  width: 600px;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0; /* Retro square design */
+}
+
+/* Close button */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background-color: #ff4d4d; /* Retro red color */
+  color: black;
+  border: 2px solid black;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  transition: background-color 0.3s ease;
+  outline: none;
+  box-shadow: none;
+}
+
+.close-button:hover {
+  background-color: #ff3333; /* Brighter red on hover */
+}
+
+/* Start button */
+.start-button {
+  background-color: #fff394;
+  color: black;
+  border: 2px solid black;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 0;
+  box-shadow: none;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+  background-color: #fff300; /* Brighter on hover */
+}
+
+/* Icon container */
+.icon-container {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Tips list styling */
+.tips-list {
+  line-height: 1.7;
+  padding: 0 20px;
+  text-align: justify;
+}
+
+.tips-list li {
+  margin-bottom: 15px;
+}
+
+/* Header styling */
+.modal-header {
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+}
+
+
+
+/* Responsive styles */
+
+/* Laptop (between 1024px and 1440px) */
+@media (max-width: 1440px) {
+  .modal {
+    width: 500px;
+    padding: 25px;
+  }
+  .start-button {
+    padding: 8px 16px;
+    font-size: 15px;
+  }
+}
+
+/* Tablet (between 768px and 1024px) */
+@media (max-width: 1024px) {
+  .modal {
+    width: 400px;
+    padding: 20px;
+  }
+  .close-button {
+    width: 25px;
+    height: 25px;
+    font-size: 1rem;
+  }
+  .start-button {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile (between 480px and 767px) */
+@media (max-width: 767px) {
+  .modal {
+    width: 300px;
+    padding: 15px;
+  }
+  .close-button {
+    width: 20px;
+    height: 20px;
+    font-size: 0.9rem;
+  }
+  .start-button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  .tips-list {
+    font-size: 14px;
+    text-align: left;
+  }
+}
+
+/* Small Mobile (below 480px) */
+@media (max-width: 480px) {
+  .modal {
+    width: 90%;
+    padding: 10px;
+  }
+  .close-button {
+    width: 20px;
+    height: 20px;
+    font-size: 0.8rem;
+  }
+  .start-button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  .tips-list {
+    font-size: 13px;
+    text-align: left;
+  }
+}
