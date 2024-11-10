@@ -9,7 +9,9 @@ import EnterInput from '../EnterInput';
 const SignUpForm = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [childDOB, setChildDOB] = useState("");
+  const [day, setDay] = useState("");
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -26,7 +28,6 @@ const SignUpForm = () => {
   const [submitError, setSubmitError] = useState("");
 
   const lastNameRef = useRef();
-  const dobRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
@@ -44,21 +45,24 @@ const SignUpForm = () => {
 
   const validateFirstName = (name) => /^[A-Za-z]{2,}$/.test(name);
   const validateLastName = (name) => /^[A-Za-z]{2,}$/.test(name);
+
   const validateChildDOB = (dob) => {
     const today = new Date();
     const selectedDate = new Date(dob);
     return selectedDate <= today;
   };
+
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const validatePassword = (password) => password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    if (!validateFirstName(firstName) || !validateLastName(lastName) || !validateChildDOB(childDOB) || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
+    const formattedDOB = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    if (!validateFirstName(firstName) || !validateLastName(lastName) || !validateChildDOB(formattedDOB) || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
       setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
       setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
-      setChildDOBError(!validateChildDOB(childDOB) ? "Child's date of birth cannot be in the future." : "");
+      setChildDOBError(!validateChildDOB(formattedDOB) ? "Child's date of birth cannot be in the future." : "");
       setEmailError(!validateEmail(email) ? "Please enter a valid email address." : "");
       setPasswordError(!validatePassword(password) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
       setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match." : "");
@@ -68,7 +72,7 @@ const SignUpForm = () => {
     const childData = {
       firstName,
       lastName,
-      dob: childDOB,
+      dob: formattedDOB,
       email,
       password,
       photo,
@@ -91,6 +95,10 @@ const SignUpForm = () => {
       }
     }
   };
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const currentDay = new Date().getDate();
 
   return (
     <div className="form-container">
@@ -142,23 +150,41 @@ const SignUpForm = () => {
           />
           {lastNameError && <span className="error-message">{lastNameError}</span>}
         </div>
+        
         <div className="form-group dob-field-container">
-          <EnterInput
-            type="date"
-            id="childDOB"
-            ref={dobRef}
-            value={childDOB}
-            onChange={(e) => {
-              setChildDOB(e.target.value);
-              setChildDOBError(!validateChildDOB(e.target.value) ? "Child's date of birth cannot be in the future." : "");
-            }}
-            onEnter={() => emailRef.current.focus()}
-            required
-            max={new Date().toISOString().split("T")[0]}
-            className="dob-input"
-          />
+          <label>Date of Birth:</label>
+          <div style={{ display: "flex", gap: "5px" }}>
+            <select value={day} onChange={(e) => setDay(e.target.value)} required>
+              <option value="">Day</option>
+              {[...Array(31)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>{i + 1}</option>
+              ))}
+            </select>
+
+            <select value={month} onChange={(e) => setMonth(e.target.value)} required>
+              <option value="">Month</option>
+              {[...Array(12)].map((_, i) => (
+                <option key={i + 1} value={i + 1} disabled={year === currentYear && i + 1 > currentMonth}>
+                  {i + 1}
+                </option>
+              ))}
+            </select>
+
+            <select value={year} onChange={(e) => setYear(e.target.value)} required>
+              <option value="">Year</option>
+              {[...Array(100)].map((_, i) => {
+                const yearOption = currentYear - i;
+                return (
+                  <option key={yearOption} value={yearOption}>
+                    {yearOption}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
           {childDOBError && <span className="error-message">{childDOBError}</span>}
         </div>
+        
         <div className="form-group">
           <EnterInput
             type="email"
@@ -190,18 +216,18 @@ const SignUpForm = () => {
           {passwordError && <span className="error-message">{passwordError}</span>}
         </div>
         <div className="form-group">
-        <EnterInput
-        type="password"
-        placeholder="Confirm Password"
-        ref={confirmPasswordRef}
-        value={confirmPassword}
-        onChange={(e) => {
-          setConfirmPassword(e.target.value);
-          setConfirmPasswordError(e.target.value !== password ? "Passwords do not match." : "");
-        }}
-        onEnter={() => handleSignUp({ preventDefault: () => {} })}
-        required
-        />
+          <EnterInput
+            type="password"
+            placeholder="Confirm Password"
+            ref={confirmPasswordRef}
+            value={confirmPassword}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setConfirmPasswordError(e.target.value !== password ? "Passwords do not match." : "");
+            }}
+            onEnter={() => handleSignUp({ preventDefault: () => {} })}
+            required
+          />
           {confirmPasswordError && <span className="error-message">{confirmPasswordError}</span>}
         </div>
         {submitError && <span className="error-message">{submitError}</span>}

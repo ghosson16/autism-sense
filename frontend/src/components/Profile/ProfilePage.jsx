@@ -13,7 +13,9 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
 
   const [firstName, setFirstName] = useState(child?.firstName || '');
   const [lastName, setLastName] = useState(child?.lastName || '');
-  const [childDOB, setChildDOB] = useState(child?.dob ? new Date(child.dob).toISOString().split('T')[0] : '');
+  const [day, setDay] = useState(new Date(child?.dob).getDate() || '');
+  const [month, setMonth] = useState(new Date(child?.dob).getMonth() + 1 || '');
+  const [year, setYear] = useState(new Date(child?.dob).getFullYear() || '');
   const [email, setEmail] = useState(child?.email || '');
   const [photo, setPhoto] = useState(child?.photo || defaultProfileImage);
 
@@ -22,9 +24,9 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
   const [childDOBError, setChildDOBError] = useState('');
   const [emailError, setEmailError] = useState('');
 
-  const validateChildDOB = (dob) => {
+  const validateChildDOB = (day, month, year) => {
     const today = new Date();
-    const selectedDate = new Date(dob);
+    const selectedDate = new Date(year, month - 1, day);
     return selectedDate <= today;
   };
 
@@ -39,10 +41,16 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
 
   const handleSaveChanges = async (e) => {
     e.preventDefault();
-  
-    if (firstNameError || lastNameError || childDOBError || emailError) return;
-  
-    const updatedChildData = { firstName, lastName, dob: childDOB, email, photo };
+
+    const formattedDOB = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    if (!validateChildDOB(day, month, year)) {
+      setChildDOBError("Date of birth cannot be in the future.");
+      return;
+    } else {
+      setChildDOBError('');
+    }
+
+    const updatedChildData = { firstName, lastName, dob: formattedDOB, email, photo };
   
     try {
       const response = await updateChildData(childId, updatedChildData);
@@ -79,17 +87,15 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
     setLastNameError(!/^[A-Za-z]{2,}$/.test(value) ? 'Last name should be at least two letters long.' : '');
   };
 
-  const handleChildDOBChange = (e) => {
-    const value = e.target.value;
-    setChildDOB(value);
-    setChildDOBError(!validateChildDOB(value) ? "Date of birth cannot be in the future." : '');
-  };
-
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
     setEmailError(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Please enter a valid email address.' : '');
   };
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const currentDay = new Date().getDate();
 
   return (
     <div className="auth-modal">
@@ -121,8 +127,37 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
                 <input type="text" value={lastName} onChange={handleLastNameChange} placeholder="Last Name" className="input-field" />
                 {lastNameError && <p>{lastNameError}</p>}
               </div>
-              <div className="form-group">
-                <input type="date" value={childDOB} onChange={handleChildDOBChange} className="dob-input" />
+              <div className="form-group dob-field-container">
+                <label>Date of Birth:</label>
+                <div style={{ display: "flex", gap: "5px" }}>
+                  <select value={day} onChange={(e) => setDay(e.target.value)} required>
+                    <option value="">Day</option>
+                    {[...Array(31)].map((_, i) => (
+                      <option key={i + 1} value={i + 1}>{i + 1}</option>
+                    ))}
+                  </select>
+
+                  <select value={month} onChange={(e) => setMonth(e.target.value)} required>
+                    <option value="">Month</option>
+                    {[...Array(12)].map((_, i) => (
+                      <option key={i + 1} value={i + 1} disabled={year === currentYear && i + 1 > currentMonth}>
+                        {i + 1}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select value={year} onChange={(e) => setYear(e.target.value)} required>
+                    <option value="">Year</option>
+                    {[...Array(100)].map((_, i) => {
+                      const yearOption = currentYear - i;
+                      return (
+                        <option key={yearOption} value={yearOption}>
+                          {yearOption}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
                 {childDOBError && <p>{childDOBError}</p>}
               </div>
               <div className="form-group">
@@ -135,7 +170,7 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
             <>
               <h2>{`${firstName} ${lastName}`}</h2>
               <p><strong>Email:</strong> {email}</p>
-              <p><strong>Date of Birth:</strong> {new Date(childDOB).toLocaleDateString()}</p>
+              <p><strong>Date of Birth:</strong> {`${day}/${month}/${year}`}</p>
             </>
           )}
         </section>
