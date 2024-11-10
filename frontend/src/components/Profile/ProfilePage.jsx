@@ -56,6 +56,7 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
       const response = await updateChildData(childId, updatedChildData);
       onSave(response);
       setEditMode(false);
+      window.alert("Changes saved successfully.");  // Success message as alert
     } catch (error) {
       setError('Failed to save changes. Please try again.');
     }
@@ -180,7 +181,7 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
           {editMode ? null : (
             <div className="form-buttons">
               <button className="delete-btn" onClick={handleDeleteAccount}>Delete Account</button>
-              <button className="edit-btn" onClick={() => setEditMode(true)}>Edit Profile</button>
+              <button className="edit-btn" onClick={() => { setEditMode(true); }}>Edit Profile</button>
             </div>
           )}
         </footer>
