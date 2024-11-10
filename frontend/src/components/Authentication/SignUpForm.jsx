@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { signUp } from "../../services/authService";
 import '../../styles/AuthModal.css';
 import { useNavigate } from "react-router-dom";
 import defaultProfileImage from '../../images/default-profile.png';
 import { FaPencilAlt } from "react-icons/fa";
+import EnterInput from '../EnterInput';
 
 const SignUpForm = () => {
   const [firstName, setFirstName] = useState("");
@@ -23,6 +24,12 @@ const SignUpForm = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [submitError, setSubmitError] = useState("");
+
+  const lastNameRef = useRef();
+  const dobRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const confirmPasswordRef = useRef();
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
@@ -47,7 +54,7 @@ const SignUpForm = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-  
+
     if (!validateFirstName(firstName) || !validateLastName(lastName) || !validateChildDOB(childDOB) || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
       setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
       setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
@@ -57,7 +64,7 @@ const SignUpForm = () => {
       setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match." : "");
       return;
     }
-  
+
     const childData = {
       firstName,
       lastName,
@@ -66,10 +73,10 @@ const SignUpForm = () => {
       password,
       photo,
     };
-  
+
     try {
       const result = await signUp(childData);
-  
+
       if (result && result.message === "Child data saved successfully" && result.user) {
         localStorage.setItem('childData', JSON.stringify(result.user));
         navigate("/home");
@@ -109,90 +116,92 @@ const SignUpForm = () => {
           </div>
         </div>
         <div className="form-group">
-          <input
-            type="text"
+          <EnterInput
             placeholder="First Name"
             value={firstName}
             onChange={(e) => {
               setFirstName(e.target.value);
               setFirstNameError(!validateFirstName(e.target.value) ? "First name should be at least two letters long." : "");
             }}
+            onEnter={() => lastNameRef.current.focus()}
             required
-            className="input-field"
           />
           {firstNameError && <span className="error-message">{firstNameError}</span>}
         </div>
         <div className="form-group">
-          <input
-            type="text"
+          <EnterInput
             placeholder="Last Name"
+            ref={lastNameRef}
             value={lastName}
             onChange={(e) => {
               setLastName(e.target.value);
               setLastNameError(!validateLastName(e.target.value) ? "Last name should be at least two letters long." : "");
             }}
+            onEnter={() => dobRef.current.focus()}
             required
-            className="input-field"
           />
           {lastNameError && <span className="error-message">{lastNameError}</span>}
         </div>
-        <br />
         <div className="form-group dob-field-container">
-          <input
+          <EnterInput
             type="date"
             id="childDOB"
+            ref={dobRef}
             value={childDOB}
             onChange={(e) => {
               setChildDOB(e.target.value);
               setChildDOBError(!validateChildDOB(e.target.value) ? "Child's date of birth cannot be in the future." : "");
             }}
+            onEnter={() => emailRef.current.focus()}
             required
             max={new Date().toISOString().split("T")[0]}
             className="dob-input"
           />
-          <label htmlFor="childDOB" className="dob-hint">Enter your birthday</label>
           {childDOBError && <span className="error-message">{childDOBError}</span>}
         </div>
         <div className="form-group">
-          <input
+          <EnterInput
             type="email"
             placeholder="Email"
+            ref={emailRef}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
               setEmailError(!validateEmail(e.target.value) ? "Please enter a valid email address." : "");
             }}
+            onEnter={() => passwordRef.current.focus()}
             required
-            className="input-field"
           />
           {emailError && <span className="error-message">{emailError}</span>}
         </div>
         <div className="form-group">
-          <input
+          <EnterInput
             type="password"
             placeholder="Password"
+            ref={passwordRef}
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
               setPasswordError(!validatePassword(e.target.value) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
             }}
+            onEnter={() => confirmPasswordRef.current.focus()}
             required
-            className="input-field"
           />
           {passwordError && <span className="error-message">{passwordError}</span>}
         </div>
         <div className="form-group">
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value);
-              setConfirmPasswordError(e.target.value !== password ? "Passwords do not match." : "");
-            }}
-            required
-            className="input-field"
-          />
+        <EnterInput
+        type="password"
+        placeholder="Confirm Password"
+        ref={confirmPasswordRef}
+        value={confirmPassword}
+        onChange={(e) => {
+          setConfirmPassword(e.target.value);
+          setConfirmPasswordError(e.target.value !== password ? "Passwords do not match." : "");
+        }}
+        onEnter={() => handleSignUp({ preventDefault: () => {} })}
+        required
+        />
           {confirmPasswordError && <span className="error-message">{confirmPasswordError}</span>}
         </div>
         {submitError && <span className="error-message">{submitError}</span>}
