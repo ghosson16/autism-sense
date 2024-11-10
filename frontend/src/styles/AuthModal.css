@@ -65,7 +65,7 @@ h2 {
   margin-bottom: 10px;
 }
 
-.input-field, .dob-input {
+.input-field{
   width: 100%;
   padding: 10px;
   border: 2px solid black;
@@ -115,7 +115,7 @@ h2 {
 }
 
 /* Button Styles */
-button, .cancel-btn, .save-btn, .edit-btn, .back-btn, .send-email-btn, .add-child-btn, .reset-btn, .forget-btn, .start-button {
+button, .save-btn, .edit-btn, .back-btn, .send-email-btn, .add-child-btn, .reset-btn, .forget-btn, .start-button {
   padding: 10px 20px;
   border-radius: 0;
   border: 2px solid black;
@@ -172,7 +172,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
   top: 10px;
   right: 10px;
   width: 30px;
-  height: 40px;
+  height: 40px !important; 
   background-color: #ff4d4d;
   color: black;
   border: 2px solid black;
@@ -183,11 +183,11 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
   border-radius: 0;
   transition: background-color 0.3s ease;
   outline: none;
-  box-shadow: none;
-}
+  box-shadow: none; 
+} 
 
 .close-btn:hover {
-  background-color: #ff2b2b;
+  background-color: #ff2b2b ; 
 }
 
 /* Toggle text and link for modal */
@@ -262,7 +262,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
     font-size: 0.95rem;
   }
 
-  .input-field, .dob-input {
+  .input-field{
     font-size: 13px;
   }
 
@@ -314,7 +314,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
     font-size: 0.85rem;
   }
 
-  .input-field, .dob-input {
+  .input-field {
     font-size: 12px;
   }
 
@@ -347,7 +347,7 @@ button:hover, .save-btn:hover, .edit-btn:hover, .send-email-btn:hover, .add-chil
     font-size: 0.8rem;
   }
 
-  .input-field, .dob-input {
+  .input-field {
     font-size: 11px;
   }
 
