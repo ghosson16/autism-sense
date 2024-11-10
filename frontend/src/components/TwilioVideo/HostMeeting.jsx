@@ -66,6 +66,9 @@ const HostMeeting = () => {
               <li>
                 <strong>Emotion Game:</strong> The child can start an emotion-identification game, providing a fun, interactive learning experience.
               </li>
+              <li>
+                  <strong>For the Best Experience:</strong> Use Google Chrome or Firefox as your browser.
+                  </li>
             </ol>
 
             <button
