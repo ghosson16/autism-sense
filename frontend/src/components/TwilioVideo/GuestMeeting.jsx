@@ -27,7 +27,7 @@ const GuestMeeting = () => {
       setErrorMessage("");
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        setErrorMessage("Room does not exist. Please check the room name.");
+        setErrorMessage("Room does not exist. Please check the room link.");
       } else {
         console.error("Error joining meeting:", error);
         setErrorMessage("An error occurred. Please try again.");
@@ -40,9 +40,9 @@ const GuestMeeting = () => {
       {!token ? (
         <div className="overlay">
           <div className="modal">
-            <button className="close-button" onClick={() => navigate("/")}>
-              X
-            </button>
+          <button className="close-button" onClick={() => navigate(-1)}>
+  X
+</button>
             <div className="icon-container">
               <lord-icon
                 src="https://cdn.lordicon.com/jikbqoam.json"
