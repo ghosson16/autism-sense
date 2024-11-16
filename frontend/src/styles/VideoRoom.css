@@ -221,7 +221,7 @@ body {
   background-color: #218838; /* Darker green on hover */
 }
 
-.copy-success {
+.copy-success,.game-start-message{
   position: absolute;
   top: 50%;
   left: 50%;
@@ -232,3 +232,31 @@ body {
   border-radius: 0; /* Square shape */
   z-index: 20;
 }
+
+.countdown-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.countdown-circle {
+  width: 150px;
+  height: 150px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ff0000;
+}
+

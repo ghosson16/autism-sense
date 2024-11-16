@@ -1,43 +1,125 @@
-import React, { useEffect, useState } from 'react';
-import './Game.css'; // Import the CSS file
+import React, { useEffect, useState } from "react";
+import "./Game.css";
 
-export default function Game({ onClose, gameImage }) {
+export default function Game({ onClose, gameImage, fetchNewImage }) {
   const [selectedEmoji, setSelectedEmoji] = useState(null);
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState("");
   const [showResult, setShowResult] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState(gameImage);  // Accept the image and result from props
+  const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [emojiOptions, setEmojiOptions] = useState([]);
+  const [countdown, setCountdown] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [gameEnded, setGameEnded] = useState(false);
 
-  // UseEffect to reset feedback when gameImage changes (every 30 seconds)
-  useEffect(() => {
-    setFeedback('');
+  const emojiMap = {
+    happy: "😊",
+    sad: "😢",
+    angry: "😠",
+    neutral: "😐",
+  };
+
+  const resetGameState = () => {
     setSelectedEmoji(null);
+    setFeedback("");
     setShowResult(false);
-    setCurrentQuestion(gameImage); // Set the new image and result from props
-  }, [gameImage]);  // Dependency on gameImage so it resets whenever the image changes
+    setWrongAttempts(0);
+    setEmojiOptions([]);
+    setCountdown(0);
+    setCorrectCount(0);
+    setTotalCount(0);
+    setGameEnded(false);
+  };
+
+  const generateRandomEmojis = () => {
+    if (!gameImage || !gameImage.result || !emojiMap[gameImage.result]) {
+      console.error("Invalid gameImage or result:", gameImage);
+      return [];
+    }
+
+    const incorrectEmojis = Object.keys(emojiMap).filter(
+      (emoji) => emoji !== gameImage.result
+    );
+    const shuffledIncorrect = incorrectEmojis.sort(() => 0.5 - Math.random());
+    return [
+      emojiMap[gameImage.result],
+      emojiMap[shuffledIncorrect[0]],
+      emojiMap[shuffledIncorrect[1]],
+    ].sort(() => 0.5 - Math.random());
+  };
+
+  useEffect(() => {
+    if (gameImage) {
+      setFeedback("");
+      setSelectedEmoji(null);
+      setShowResult(false);
+      setWrongAttempts(0);
+      setEmojiOptions(generateRandomEmojis());
+    }
+  }, [gameImage]);
+
+  const startCountdown = () => {
+    let count = 3;
+    setCountdown(count);
+    const interval = setInterval(() => {
+      count -= 1;
+      setCountdown(count);
+      if (count === 0) {
+        clearInterval(interval);
+        fetchNewImage();
+        setCountdown(0);
+      }
+    }, 1000);
+  };
 
   const handleEmojiClick = (emoji) => {
     setSelectedEmoji(emoji);
-    
-    // Check if the selected emoji is correct
-    const isCorrect = emoji === currentQuestion.result;
-    setFeedback(isCorrect ? 'Correct!' : 'Wrong!');
-    setShowResult(true);  // Show feedback immediately
+    const isCorrect = emoji === emojiMap[gameImage.result];
+    setFeedback(isCorrect ? "Correct!" : "Wrong!");
+    setShowResult(true);
+    setTotalCount((prev) => prev + 1);
 
-    // Optionally, you can store the answer for tracking, or you can remove this part if not needed
+    if (isCorrect) {
+      setCorrectCount((prev) => prev + 1);
+      setTimeout(() => {
+        setShowResult(false);
+        startCountdown();
+      }, 2000);
+    } else {
+      setWrongAttempts((prev) => prev + 1);
+      if (wrongAttempts + 1 >= 2) {
+        setTimeout(() => {
+          setShowResult(false);
+          fetchNewImage();
+        }, 2000);
+      }
+    }
   };
 
-  setTimeout(() => {
-    console.log(gameImage)
-  }, 1000)
+  const handleEndGame = () => {
+    setGameEnded(true);
+  };
 
-  // Render a message if the image is not available yet
-  if (!gameImage) {
+  if (gameEnded) {
     return (
       <div className="game-modal">
         <div className="game-modal-content">
-          <button onClick={onClose} className="close-button">
-            &#10005;
+          <h3>Game Over</h3>
+          <p>
+            You answered {correctCount} out of {totalCount} correctly!
+          </p>
+          <button onClick={onClose} className="end-game-button">
+            Close
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!gameImage || !gameImage.blob) {
+    return (
+      <div className="game-modal">
+        <div className="game-modal-content">
           <p>Please wait until the image appears...</p>
         </div>
       </div>
@@ -47,49 +129,41 @@ export default function Game({ onClose, gameImage }) {
   return (
     <div className="game-modal">
       <div className="game-modal-content">
-        {/* Close button */}
-        <button onClick={onClose} className="close-button">
-          &#10005;
-        </button>
-
-        {/* Image and Emoji selection */}
-        <div className="game-image">
-          <img src={currentQuestion.blob} alt="Question" />
-        </div>
-
-        {/* Emoji buttons */}
-        <div className="emoji-buttons">
-          {['happy', 'sad', 'angry'].map((emoji) => {
-            const isCorrect = emoji === currentQuestion.result;
-            const isSelected = selectedEmoji === emoji;
-
-            // Apply different styles based on whether the button is selected and if the answer is correct/incorrect
-            const buttonClass = isSelected
-              ? isCorrect
-                ? 'selected-correct'  // Correct answer
-                : 'selected-wrong'  // Incorrect answer
-              : ''; // Default style when not selected
-
-            return (
-              <button
-                key={emoji}
-                onClick={() => handleEmojiClick(emoji)}
-                className={`emoji-btn ${buttonClass}`}
-              >
-                {emoji === 'happy' && '😊'}
-                {emoji === 'sad' && '😢'}
-                {emoji === 'angry' && '😠'}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Display feedback for the current answer */}
-        {showResult && feedback && (
-          <p className={`feedback ${feedback === 'Correct!' ? 'correct' : 'wrong'}`}>
-            {feedback}
-          </p>
+        {countdown > 0 ? (
+          <div className="countdown-circle">
+            <span>{countdown}</span>
+          </div>
+        ) : (
+          <>
+            <div className="game-image">
+              <img src={gameImage.blob} alt="Question" />
+            </div>
+            <div className="emoji-buttons">
+              {emojiOptions.map((emoji, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleEmojiClick(emoji)}
+                  className={`emoji-btn ${
+                    selectedEmoji === emoji
+                      ? feedback === "Correct!"
+                        ? "selected-correct"
+                        : "selected-wrong"
+                      : ""
+                  }`}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+            {showResult && <p className="feedback">{feedback}</p>}
+            <p>
+              Score: {correctCount} / {totalCount}
+            </p>
+          </>
         )}
+        <button onClick={handleEndGame} className="end-game-button">
+          End Game
+        </button>
       </div>
     </div>
   );

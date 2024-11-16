@@ -23,11 +23,15 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
   const [token, setToken] = useState(initialToken);
   const [roomName, setRoomName] = useState(initialRoomName);
   const [emoji, setEmoji] = useState(null);
+  const [isGuestPanelVisible, setGuestPanelVisible] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(true);
   const [isMicOn, setIsMicOn] = useState(true);
   const [copySuccess, setCopySuccess] = useState("");
+
   const [openGame, setOpenGame] = useState(false);
-  const [gamePhoto, setGamePhoto] = useState({blob: 'https://banner2.cleanpng.com/20230816/vew/transparent-happy-face-1711091557183.webp', result: 'sad'});
+  const [gameStartMessage, setGameStartMessage] = useState("");
+  const [gamePhoto, setGamePhoto] = useState(null);
+  const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
 
   // Map detected emotion to an emoji
@@ -111,7 +115,6 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
         room.on("participantDisconnected", (participant) => {
           console.log(`${participant.identity} disconnected.`);
         });
-
       } catch (error) {
         console.error("Error connecting to room:", error);
       }
@@ -125,10 +128,10 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
     if (room) {
       room.disconnect();
       console.log("Meeting ended by host.");
-      localStorage.setItem("meetingEnded", "true"); // Signal all clients that the meeting has ended
+      localStorage.setItem("meetingEnded", "true");
       localStorage.removeItem("meetingToken");
       localStorage.removeItem("meetingRoomName");
-      navigate("/"); // Navigate the host to the landing page
+      navigate("/");
     }
   };
 
@@ -143,46 +146,99 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
       console.log("Left the meeting.");
       localStorage.removeItem("meetingToken");
       localStorage.removeItem("meetingRoomName");
-      navigate("/home"); // Navigate guests to the home page
+      navigate("/home");
     }
   };
 
-  // Capture emotion from remote video for guest role
-  useEffect(() => {
-    const capturePhoto = () => {
-      if (role === "guest") {
-        const remoteVideos = document
-          .getElementById("remote-video")
-          .getElementsByTagName("video");
-        if (remoteVideos.length > 0) {
-          const videoElement = remoteVideos[0];
-          if (videoElement.readyState >= 2) {
-            const canvas = document.createElement("canvas");
-            canvas.width = videoElement.videoWidth;
-            canvas.height = videoElement.videoHeight;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight);
+// Capture emotion from remote video for guest role
+const capturePhoto = async (retryCount = 0) => {
+  const remoteVideos = document.getElementById("remote-video").getElementsByTagName("video");
+  if (remoteVideos.length > 0) {
+    const videoElement = remoteVideos[0];
+    if (videoElement.readyState >= 2) {
+      const canvas = document.createElement("canvas");
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight);
 
-            canvas.toBlob(async (blob) => {
-              if (blob) {
-                const imageData = new FormData();
-                imageData.append("image", blob, "frame.jpg");
-                try {
-                  const emotion = await detectEmotion(imageData);
-                  setEmoji(mapEmotionToEmoji(emotion));
-                } catch (error) {
-                  console.error("Error detecting emotion:", error);
-                }
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          const imageData = new FormData();
+          imageData.append("image", blob, "frame.jpg");
+          try {
+            const emotion = await detectEmotion(imageData);
+
+            // Check if a valid emotion was detected
+            if (emotion) {
+              setEmoji(mapEmotionToEmoji(emotion));
+              setGamePhoto({ blob: URL.createObjectURL(blob), result: emotion });
+            } else {
+              // If no emotion detected and retry count is below the limit, try again
+              if (retryCount < 3) {
+                console.log(`Emotion not detected, retrying capture... Attempt ${retryCount + 1}`);
+                capturePhoto(retryCount + 1);
+              } else {
+                console.error("Emotion detection failed after multiple attempts.");
               }
-            }, "image/jpeg");
+            }
+          } catch (error) {
+            console.error("Error detecting emotion:", error);
           }
         }
+      }, "image/jpeg");
+    }
+  }
+};
+
+
+  // Start the game
+  const startGame = () => {
+    const message = "Child has started the game!";
+    localStorage.setItem("gameStartMessage", message);
+    setGameStartMessage(message);
+
+    setTimeout(() => {
+      localStorage.removeItem("gameStartMessage");
+      setGameStartMessage("");
+      startCountdown();
+    }, 2000);
+  };
+
+  // Start countdown
+  const startCountdown = () => {
+    let count = 3;
+    setCountdown(count);
+    const interval = setInterval(() => {
+      count -= 1;
+      setCountdown(count);
+      if (count === 0) {
+        clearInterval(interval);
+        setCountdown(0);
+        capturePhoto();
+        setOpenGame(true);
+      }
+    }, 1000);
+  };
+
+  // Host Listener for Game Start
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const message = localStorage.getItem("gameStartMessage");
+      if (message) {
+        setGameStartMessage(message);
+        setTimeout(() => {
+          setGameStartMessage("");
+          startCountdown();
+        }, 2000);
       }
     };
 
-    const intervalId = setInterval(capturePhoto, 15000);
-    return () => clearInterval(intervalId);
-  }, [role]);
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   // Toggle camera on/off
   const toggleCamera = () => {
@@ -215,12 +271,17 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
     setTimeout(() => setCopySuccess(""), 2000);
   };
 
+  useEffect(() => {
+    if (role === "guest") {
+      const intervalId = setInterval(capturePhoto, 15000);
+      return () => clearInterval(intervalId);
+    }
+  }, [role]);
+
   return (
     <div className="video-room">
       <div className="video-container">
-        {role === "host" && (
-          <div id="local-video" className="video-section"></div>
-        )}
+        {role === "host" && <div id="local-video" className="video-section"></div>}
         <div id="remote-video" className="video-section"></div>
       </div>
 
@@ -230,12 +291,16 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
         </div>
       )}
 
-      {role === "guest" && (
-      <div className="call-controls">
-        <div className="three-dot-container">
-          <button className="three-dot-button">
-            <FontAwesomeIcon icon={faEllipsisV} />
-          </button>
+{role === "guest" && (
+  <div className="call-controls">
+    <div className="three-dot-container">
+      <button
+        className="three-dot-button"
+        onClick={() => setGuestPanelVisible(!isGuestPanelVisible)}
+      >
+        <FontAwesomeIcon icon={faEllipsisV} />
+      </button>
+      {isGuestPanelVisible && (
         <div className="guest-control-panel">
           <button onClick={leaveMeeting} className="control-button leave-call">
             <FontAwesomeIcon icon={faPhone} /> Leave Meeting
@@ -248,43 +313,85 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
             <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
             {isMicOn ? "Mute Mic" : "Unmute Mic"}
           </button>
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+{role === "host" && (
+  <div className="host-control-panel">
+    <button onClick={endMeeting} className="control-button leave-call">
+      <FontAwesomeIcon icon={faPhone} /> End Meeting
+    </button>
+    <button onClick={toggleCamera} className="control-button video">
+      <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
+      {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
+    </button>
+    <button onClick={toggleMic} className="control-button microphone">
+      <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
+      {isMicOn ? "Mute Mic" : "Unmute Mic"}
+    </button>
+    <button onClick={copyRoomName} className="control-button copy-room">
+      <FontAwesomeIcon icon={faClipboard} /> Copy Room Name
+    </button>
+    {copySuccess && <p className="copy-success">{copySuccess}</p>}
+  </div>
+)}
+
+{role === "guest" && (
+  <div className="control">
+    <AudioRecorder />
+    <button
+      onClick={() => {
+        setGamePhoto(null); // Reset the game photo when starting
+        startGame();
+        setOpenGame(true);
+      }}
+      className="control-button game"
+    >
+      <b>Game</b>
+      <FontAwesomeIcon icon={faGamepad} style={{ marginLeft: "10px" }} />
+    </button>
+    {openGame && (
+      <Game
+        gameImage={gamePhoto}
+        onClose={() => {
+          setOpenGame(false);
+          setGamePhoto(null); // Reset the photo when game closes
+        }}
+        fetchNewImage={() => {
+          setGamePhoto(null); // Reset photo for new image
+          capturePhoto(); // Capture a fresh photo
+        }}
+        onAnswer={(isCorrect) => {
+          if (isCorrect) {
+            setGamePhoto(null); // Prepare for the next question
+            capturePhoto();
+          }
+        }}
+      />
+    )}
+  </div>
+)}
+
+
+
+      {countdown > 0 && (
+        <div className="countdown-overlay">
+          <div className="countdown-circle">
+            <span>{countdown}</span>
           </div>
         </div>
-      </div>
       )}
 
-      {role === "host" && (
-      <div className="host-control-panel">
-        <button onClick={endMeeting} className="control-button leave-call">
-          <FontAwesomeIcon icon={faPhone} /> end Meeting
-        </button>
-        <button onClick={toggleCamera} className="control-button video">
-          <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
-          {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
-        </button>
-        <button onClick={toggleMic} className="control-button microphone">
-          <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
-          {isMicOn ? "Mute Mic" : "Unmute Mic"}
-        </button>
-            <button onClick={copyRoomName} className="control-button copy-room">
-              <FontAwesomeIcon icon={faClipboard} /> Copy Room Name
-            </button>
-      </div>
+      {copySuccess && <p className="copy-success">{copySuccess}</p>}
+      {role === "host" && gameStartMessage && (
+        <div className="game-start-message">
+          <p>{gameStartMessage}</p>
+        </div>
       )}
-
-        {role === "guest" && (
-          <div className="control">
-            <AudioRecorder/>
-            <button onClick={() => setOpenGame(true)}>
-              <b>Game</b>
-              <FontAwesomeIcon icon={faGamepad} style={{ marginLeft: "10px" }} />
-            </button>
-            {openGame && <Game gameImage={gamePhoto} onClose={() => setOpenGame(false)} />}
-          </div>
-        )}
-
-        {copySuccess && <p className="copy-success">{copySuccess}</p>}
-      </div>
+    </div>
   );
 };
 
