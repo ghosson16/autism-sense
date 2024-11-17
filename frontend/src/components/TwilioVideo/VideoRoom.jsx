@@ -13,19 +13,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { connect } from "twilio-video";
-import { detectEmotion } from "../../services/videoService";
+import { detectEmotion , endMeeting } from "../../services/videoService";
 import "../../styles/VideoRoom.css";
 import Game from "../Game/Game";
 import AudioRecorder from "./AudioRecorder";
 
 const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => {
   const [room, setRoom] = useState(null);
-  const [token, setToken] = useState(initialToken);
+  const [meetingToken, setMeetingToken] = useState(initialToken);
   const [roomName, setRoomName] = useState(initialRoomName);
   const [emoji, setEmoji] = useState(null);
   const [isGuestPanelVisible, setGuestPanelVisible] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(true);
   const [isMicOn, setIsMicOn] = useState(true);
+  const [isMeetingEnded, setIsMeetingEnded] = useState(false);
   const [copySuccess, setCopySuccess] = useState("");
 
   const [openGame, setOpenGame] = useState(false);
@@ -45,38 +46,13 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
     return emojiMap[emotion];
   };
 
-  // Persist token and roomName in localStorage for reconnection
-  useEffect(() => {
-    if (token && roomName) {
-      localStorage.setItem("meetingToken", token);
-      localStorage.setItem("meetingRoomName", roomName);
-    }
-  }, [token, roomName]);
-
-  // Load token and roomName from localStorage on component mount
-  useEffect(() => {
-    const savedToken = localStorage.getItem("meetingToken");
-    const savedRoomName = localStorage.getItem("meetingRoomName");
-    const meetingEnded = localStorage.getItem("meetingEnded");
-
-    if (savedToken && savedRoomName && !meetingEnded) {
-      setToken(savedToken);
-      setRoomName(savedRoomName);
-    } else if (meetingEnded) {
-      localStorage.removeItem("meetingToken");
-      localStorage.removeItem("meetingRoomName");
-      localStorage.removeItem("meetingEnded");
-      navigate(role === "host" ? "/" : "/home");
-    }
-  }, [role, navigate]);
-
   // Connect to Twilio room
   useEffect(() => {
     const connectToRoom = async () => {
-      if (!token || !roomName) return;
+      if (!meetingToken || !roomName) return;
 
       try {
-        const room = await connect(token, {
+        const room = await connect(meetingToken, {
           name: roomName,
           region: "gll",
           audio: true,
@@ -121,17 +97,39 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
     };
 
     connectToRoom();
-  }, [token, roomName, role]);
+  }, [meetingToken, roomName, role]);
 
   // End the meeting for all participants (host only)
-  const endMeeting = () => {
-    if (room) {
-      room.disconnect();
-      console.log("Meeting ended by host.");
-      localStorage.setItem("meetingEnded", "true");
+  const endMeetingRoom = async () => {
+    try {
+      if (room) {
+        // Stop and unpublish all tracks
+        room.localParticipant.tracks.forEach((trackPub) => {
+          trackPub.track.stop();
+          trackPub.unpublish();
+        });
+        room.disconnect();
+        console.log("Room disconnected locally.");
+      }
+
+      // Call backend to end the meeting
+      await endMeeting(roomName, "host");
+
+      // Clear local state
+      setRoom(null);
+      setRoomName("");
+      setMeetingToken(null);
+      setIsMeetingEnded(true);
+
+      // Clear room details from localStorage
+      localStorage.removeItem("roomName");
       localStorage.removeItem("meetingToken");
-      localStorage.removeItem("meetingRoomName");
-      navigate("/");
+
+      // Navigate to the correct location
+      navigate(role === "host" ? "/" : "/home");
+    } catch (error) {
+      console.error("Error ending meeting:", error);
+      alert("An error occurred while ending the meeting. Please try again.");
     }
   };
 
@@ -145,7 +143,7 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
       room.disconnect();
       console.log("Left the meeting.");
       localStorage.removeItem("meetingToken");
-      localStorage.removeItem("meetingRoomName");
+      localStorage.removeItem("roomName");
       navigate("/home");
     }
   };
@@ -321,7 +319,7 @@ const capturePhoto = async (retryCount = 0) => {
 
 {role === "host" && (
   <div className="host-control-panel">
-    <button onClick={endMeeting} className="control-button leave-call">
+    <button onClick={endMeetingRoom} className="control-button leave-call">
       <FontAwesomeIcon icon={faPhone} /> End Meeting
     </button>
     <button onClick={toggleCamera} className="control-button video">

@@ -16,6 +16,19 @@ export const startMeeting = async (roomName, role) => {
   }
 };
 
+export const endMeeting = async (roomName, role) => {
+  try {
+    const response = await axios.post(`${apiUrl}/api/room/end-room`, {
+      roomName,
+      role,
+    });
+    return response.data.token;
+  } catch (error) {
+    console.error("Error in video service:", error);
+    throw error;
+  }
+};
+
 export const detectEmotion = async (imageData) => {
   try {
     const requestUrl = `${apiUrl}/api/detection/detect-emotion`;
