@@ -10,16 +10,7 @@ const HostMeeting = () => {
   const [token, setToken] = useState(null);
   const navigate = useNavigate();
 
-  // Load existing meeting details from localStorage
-  useEffect(() => {
-    const savedRoomName = localStorage.getItem("roomName");
-    const savedToken = localStorage.getItem("token");
 
-    if (savedRoomName && savedToken) {
-      setRoomName(savedRoomName);
-      setToken(savedToken);
-    }
-  }, []);
 
   // Add Lordicon script dynamically
   useEffect(() => {
