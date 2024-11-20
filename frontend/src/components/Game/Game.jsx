@@ -33,7 +33,6 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
 
   const generateRandomEmojis = () => {
     if (!gameImage || !gameImage.result || !emojiMap[gameImage.result]) {
-      console.error("Invalid gameImage or result:", gameImage);
       return [];
     }
 
@@ -54,11 +53,16 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
       setSelectedEmoji(null);
       setShowResult(false);
       setWrongAttempts(0);
-      setEmojiOptions(generateRandomEmojis());
+
+      if (gameImage.result && emojiMap[gameImage.result]) {
+        setEmojiOptions(generateRandomEmojis());
+      } else {
+        handleNoEmotionDetected(); // Skip if no emotion is detected
+      }
     }
   }, [gameImage]);
 
-  const startCountdown = () => {
+  const startCountdown = (onComplete) => {
     let count = 3;
     setCountdown(count);
     const interval = setInterval(() => {
@@ -66,13 +70,28 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
       setCountdown(count);
       if (count === 0) {
         clearInterval(interval);
-        fetchNewImage();
         setCountdown(0);
+        if (onComplete) onComplete();
       }
     }, 1000);
   };
 
+  const handleNoEmotionDetected = () => {
+    setFeedback("No emotion detected. Skipping to the next question...");
+    setShowResult(true);
+
+    setTimeout(() => {
+      setShowResult(false);
+      fetchNewImage();
+    }, 2000);
+  };
+
   const handleEmojiClick = (emoji) => {
+    if (!gameImage.result) {
+      handleNoEmotionDetected();
+      return;
+    }
+
     setSelectedEmoji(emoji);
     const isCorrect = emoji === emojiMap[gameImage.result];
     setFeedback(isCorrect ? "Correct!" : "Wrong!");
@@ -83,7 +102,7 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
       setCorrectCount((prev) => prev + 1);
       setTimeout(() => {
         setShowResult(false);
-        startCountdown();
+        startCountdown(fetchNewImage);
       }, 2000);
     } else {
       setWrongAttempts((prev) => prev + 1);
@@ -104,7 +123,7 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
     return (
       <div className="game-modal">
         <div className="game-modal-content">
-          <h3>Game Over</h3>
+          <h3>good job !</h3>
           <p>
             You answered {correctCount} out of {totalCount} correctly!
           </p>
@@ -138,23 +157,27 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
             <div className="game-image">
               <img src={gameImage.blob} alt="Question" />
             </div>
-            <div className="emoji-buttons">
-              {emojiOptions.map((emoji, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleEmojiClick(emoji)}
-                  className={`emoji-btn ${
-                    selectedEmoji === emoji
-                      ? feedback === "Correct!"
-                        ? "selected-correct"
-                        : "selected-wrong"
-                      : ""
-                  }`}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
+            {emojiOptions.length > 0 ? (
+              <div className="emoji-buttons">
+                {emojiOptions.map((emoji, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleEmojiClick(emoji)}
+                    className={`emoji-btn ${
+                      selectedEmoji === emoji
+                        ? feedback === "Correct!"
+                          ? "selected-correct"
+                          : "selected-wrong"
+                        : ""
+                    }`}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p>No valid emotion detected. Skipping...</p>
+            )}
             {showResult && <p className="feedback">{feedback}</p>}
             <p>
               Score: {correctCount} / {totalCount}

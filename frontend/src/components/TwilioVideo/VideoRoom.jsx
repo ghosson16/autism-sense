@@ -1,4 +1,3 @@
-// components/VideoRoom.js
 import {
   faClipboard,
   faEllipsisV,
@@ -26,7 +25,6 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
   const [isGuestPanelVisible, setGuestPanelVisible] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(true);
   const [isMicOn, setIsMicOn] = useState(true);
-  const [isMeetingEnded, setIsMeetingEnded] = useState(false);
   const [copySuccess, setCopySuccess] = useState("");
 
   const [openGame, setOpenGame] = useState(false);
@@ -103,7 +101,6 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
   const endMeetingRoom = async () => {
     try {
       if (room) {
-        // Stop and unpublish all tracks
         room.localParticipant.tracks.forEach((trackPub) => {
           trackPub.track.stop();
           trackPub.unpublish();
@@ -111,25 +108,15 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
         room.disconnect();
         console.log("Room disconnected locally.");
       }
-
-      // Call backend to end the meeting
       await endMeeting(roomName, "host");
-
-      // Clear local state
       setRoom(null);
       setRoomName("");
       setMeetingToken(null);
-      setIsMeetingEnded(true);
-
-      // Clear room details from localStorage
       localStorage.removeItem("roomName");
       localStorage.removeItem("meetingToken");
-
-      // Navigate to the correct location
       navigate(role === "host" ? "/" : "/home");
     } catch (error) {
       console.error("Error ending meeting:", error);
-      alert("An error occurred while ending the meeting. Please try again.");
     }
   };
 
@@ -148,17 +135,53 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
     }
   };
 
-// Capture emotion from remote video for guest role
-const capturePhoto = async (retryCount = 0) => {
-  const remoteVideos = document.getElementById("remote-video").getElementsByTagName("video");
-  if (remoteVideos.length > 0) {
+  // Capture emotion from remote video for emoji display
+  const continuousCapturePhoto = async () => {
+    const remoteVideos = document.getElementById("remote-video")?.getElementsByTagName("video");
+    if (remoteVideos?.length > 0) {
+      const videoElement = remoteVideos[0];
+      if (videoElement.readyState >= 2) {
+        const canvas = document.createElement("canvas");
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight);
+
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            const imageData = new FormData();
+            imageData.append("image", blob, "frame.jpg");
+            try {
+              const emotion = await detectEmotion(imageData);
+              if (emotion) setEmoji(mapEmotionToEmoji(emotion));
+            } catch (error) {
+              console.error("Error detecting emotion:", error);
+            }
+          }
+        }, "image/jpeg");
+      }
+    }
+  };
+
+// Game-specific capture with retry logic
+const gameCapturePhotoWithRetry = async (retryCount = 0) => {
+  const remoteVideos = document
+    .getElementById("remote-video")
+    ?.getElementsByTagName("video");
+  if (remoteVideos?.length > 0) {
     const videoElement = remoteVideos[0];
     if (videoElement.readyState >= 2) {
       const canvas = document.createElement("canvas");
       canvas.width = videoElement.videoWidth;
       canvas.height = videoElement.videoHeight;
       const ctx = canvas.getContext("2d");
-      ctx.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight);
+      ctx.drawImage(
+        videoElement,
+        0,
+        0,
+        videoElement.videoWidth,
+        videoElement.videoHeight
+      );
 
       canvas.toBlob(async (blob) => {
         if (blob) {
@@ -167,18 +190,17 @@ const capturePhoto = async (retryCount = 0) => {
           try {
             const emotion = await detectEmotion(imageData);
 
-            // Check if a valid emotion was detected
             if (emotion) {
-              setEmoji(mapEmotionToEmoji(emotion));
-              setGamePhoto({ blob: URL.createObjectURL(blob), result: emotion });
+              console.log("Game photo emotion detected:", emotion);
+              setGamePhoto({
+                blob: URL.createObjectURL(blob),
+                result: emotion,
+              });
+            } else if (retryCount < 1) {
+              console.log(`Retrying game photo capture... Attempt ${retryCount + 1}`);
+              startRetryCountdown(() => gameCapturePhotoWithRetry(retryCount + 1));
             } else {
-              // If no emotion detected and retry count is below the limit, try again
-              if (retryCount < 3) {
-                console.log(`Emotion not detected, retrying capture... Attempt ${retryCount + 1}`);
-                capturePhoto(retryCount + 1);
-              } else {
-                console.error("Emotion detection failed after multiple attempts.");
-              }
+              console.error("Failed to detect emotion after 3 attempts.");
             }
           } catch (error) {
             console.error("Error detecting emotion:", error);
@@ -189,54 +211,87 @@ const capturePhoto = async (retryCount = 0) => {
   }
 };
 
+// Retry countdown
+const startRetryCountdown = (callback) => {
+  let retryCountdown = 3;
+  setCountdown(retryCountdown);
 
-  // Start the game
-  const startGame = () => {
-    const message = "Child has started the game!";
-    localStorage.setItem("gameStartMessage", message);
-    setGameStartMessage(message);
+  const interval = setInterval(() => {
+    retryCountdown -= 1;
+    setCountdown(retryCountdown);
 
-    setTimeout(() => {
-      localStorage.removeItem("gameStartMessage");
-      setGameStartMessage("");
-      startCountdown();
-    }, 2000);
+    if (retryCountdown === 0) {
+      clearInterval(interval);
+      setCountdown(0);
+      if (callback) callback();
+    }
+  }, 1000);
+};
+
+// Game countdown and start
+const startGame = () => {
+  const message = "Game Start: Guest has started the game!";
+  localStorage.setItem("gameStartMessage", message); // Notify the host
+  setGameStartMessage(message);
+
+  let gameCountdown = 3;
+  setCountdown(gameCountdown);
+
+  const interval = setInterval(() => {
+    gameCountdown -= 1;
+    setCountdown(gameCountdown);
+
+    if (gameCountdown === 0) {
+      clearInterval(interval);
+      setCountdown(0);
+
+      // Capture the first photo for the game
+      gameCapturePhotoWithRetry();
+      setOpenGame(true);
+    }
+  }, 1000);
+};
+
+// Host Listener for Game Start
+useEffect(() => {
+  const handleStorageChange = () => {
+    const message = localStorage.getItem("gameStartMessage");
+
+    if (message && message.startsWith("Game Start:")) {
+      setGameStartMessage(message); // Update the message to display on the host's side
+
+      let gameCountdown = 3;
+      setCountdown(gameCountdown);
+
+      const interval = setInterval(() => {
+        gameCountdown -= 1;
+        setCountdown(gameCountdown);
+
+        if (gameCountdown === 0) {
+          clearInterval(interval);
+          setCountdown(0);
+          console.log("Host detected game start by the guest.");
+        }
+      }, 1000);
+    }
   };
 
-  // Start countdown
-  const startCountdown = () => {
-    let count = 3;
-    setCountdown(count);
-    const interval = setInterval(() => {
-      count -= 1;
-      setCountdown(count);
-      if (count === 0) {
-        clearInterval(interval);
-        setCountdown(0);
-        capturePhoto();
-        setOpenGame(true);
-      }
-    }, 1000);
-  };
+  window.addEventListener("storage", handleStorageChange);
 
-  // Host Listener for Game Start
+  return () => {
+    window.removeEventListener("storage", handleStorageChange);
+  };
+}, []);
+  
+
+  // Continuous capture for emoji updates
   useEffect(() => {
-    const handleStorageChange = () => {
-      const message = localStorage.getItem("gameStartMessage");
-      if (message) {
-        setGameStartMessage(message);
-        setTimeout(() => {
-          setGameStartMessage("");
-          startCountdown();
-        }, 2000);
-      }
-    };
+    if (role === "guest") {
+      const intervalId = setInterval(continuousCapturePhoto, 15000);
+      return () => clearInterval(intervalId);
+    }
+  }, [role]);
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
 
   // Toggle camera on/off
   const toggleCamera = () => {
@@ -269,12 +324,6 @@ const capturePhoto = async (retryCount = 0) => {
     setTimeout(() => setCopySuccess(""), 2000);
   };
 
-  useEffect(() => {
-    if (role === "guest") {
-      const intervalId = setInterval(capturePhoto, 15000);
-      return () => clearInterval(intervalId);
-    }
-  }, [role]);
 
   return (
     <div className="video-room">
@@ -360,12 +409,12 @@ const capturePhoto = async (retryCount = 0) => {
         }}
         fetchNewImage={() => {
           setGamePhoto(null); // Reset photo for new image
-          capturePhoto(); // Capture a fresh photo
+          gameCapturePhotoWithRetry(); // Capture a fresh photo
         }}
         onAnswer={(isCorrect) => {
           if (isCorrect) {
             setGamePhoto(null); // Prepare for the next question
-            capturePhoto();
+            gameCapturePhotoWithRetry();
           }
         }}
       />
