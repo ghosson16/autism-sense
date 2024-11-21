@@ -90,6 +90,7 @@ const sendPasswordResetEmail = async (req, res) => {
         pass: process.env.EMAIL_PASS,
       },
     });
+    
 
     const mailOptions = {
       to: user.email,
@@ -97,8 +98,7 @@ const sendPasswordResetEmail = async (req, res) => {
       subject: 'Password Reset',
       text: `You are receiving this because you (or someone else) have requested a password reset for your account.
              Please click on the following link, or paste this into your browser to complete the process:
-             http://localhost:5173/autism-sense/#/reset-password/${resetToken}`
-             //https://ghosson16.github.io/autism-sense/#/reset-password/${resetToken}
+             https://ghosson16.github.io/autism-sense/#/reset-password/${resetToken}`
     };
 
     transporter.sendMail(mailOptions, (err, info) => {
