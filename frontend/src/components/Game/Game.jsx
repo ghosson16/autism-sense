@@ -17,6 +17,7 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
     sad: "😢",
     angry: "😠",
     neutral: "😐",
+    surprised: "😲",
   };
 
   const resetGameState = () => {
