@@ -18,7 +18,7 @@ const port = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:4173', 'http://localhost:5173','https://ghosson16.github.io/autism-sense'],
+  origin: ['http://localhost:4173', 'http://localhost:5173','https://ghosson16.github.io'],
   credentials: true,
 }));
 app.use(express.json());
