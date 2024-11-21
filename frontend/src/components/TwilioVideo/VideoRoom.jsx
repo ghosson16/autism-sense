@@ -44,58 +44,112 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
     return emojiMap[emotion];
   };
 
-  // Connect to Twilio room
-  useEffect(() => {
-    const connectToRoom = async () => {
-      if (!meetingToken || !roomName) return;
+// Connect to Twilio room
+useEffect(() => {
+  const connectToRoom = async () => {
+    if (!meetingToken || !roomName) return;
 
-      try {
-        const room = await connect(meetingToken, {
-          name: roomName,
-          region: "gll",
-          audio: true,
-          video: true,
-        });
-        setRoom(room);
-        console.log("Connected to room:", room);
+    try {
+      const room = await connect(meetingToken, {
+        name: roomName,
+        region: "gll",
+        audio: true,
+        video: true,
+      });
+      setRoom(room);
+      console.log("Connected to room:", room);
 
-        // Attach local video track if the user is the host
-        if (role === "host") {
-          const localVideoContainer = document.getElementById("local-video");
-          localVideoContainer.innerHTML = "";
-          room.localParticipant.videoTracks.forEach((trackPub) => {
-            const track = trackPub.track;
-            localVideoContainer.appendChild(track.attach());
-          });
-        }
+      // Attach local video and audio tracks if the user is the host
+      if (role === "host") {
+        const localVideoContainer = document.getElementById("local-video");
+        const localAudioContainer = document.getElementById("local-audio");
 
-        // Attach remote participants' video tracks
-        room.participants.forEach((participant) => {
-          participant.on("trackSubscribed", (track) => {
-            const remoteVideoContainer = document.getElementById("remote-video");
-            remoteVideoContainer.innerHTML = "";
-            remoteVideoContainer.appendChild(track.attach());
-          });
+        // Attach local video tracks
+        localVideoContainer.innerHTML = "";
+        room.localParticipant.videoTracks.forEach((trackPub) => {
+          const track = trackPub.track;
+          localVideoContainer.appendChild(track.attach());
         });
 
-        room.on("participantConnected", (participant) => {
-          participant.on("trackSubscribed", (track) => {
-            const remoteVideoContainer = document.getElementById("remote-video");
-            remoteVideoContainer.innerHTML = "";
-            remoteVideoContainer.appendChild(track.attach());
-          });
+        // Attach local audio tracks (hidden audio elements for playback)
+        localAudioContainer.innerHTML = "";
+        room.localParticipant.audioTracks.forEach((trackPub) => {
+          const track = trackPub.track;
+          const audioElement = track.attach();
+          localAudioContainer.appendChild(audioElement);
         });
-
-        room.on("participantDisconnected", (participant) => {
-          console.log(`${participant.identity} disconnected.`);
-        });
-      } catch (error) {
-        console.error("Error connecting to room:", error);
       }
-    };
 
-    connectToRoom();
-  }, [meetingToken, roomName, role]);
+      // Attach remote participants' video and audio tracks
+      room.participants.forEach((participant) => {
+        participant.tracks.forEach((trackPub) => {
+          trackPub.on("subscribed", (track) => {
+            const remoteVideoContainer = document.getElementById("remote-video");
+            const remoteAudioContainer = document.getElementById("remote-audio");
+
+            if (track.kind === "video") {
+              remoteVideoContainer.innerHTML = ""; // Clear previous video
+              remoteVideoContainer.appendChild(track.attach());
+            } else if (track.kind === "audio") {
+              remoteAudioContainer.innerHTML = ""; // Clear previous audio
+              const audioElement = track.attach();
+              remoteAudioContainer.appendChild(audioElement);
+            }
+          });
+        });
+      });
+
+      // Handle new participant connections
+      room.on("participantConnected", (participant) => {
+        console.log(`${participant.identity} connected.`);
+        participant.tracks.forEach((trackPub) => {
+          trackPub.on("subscribed", (track) => {
+            const remoteVideoContainer = document.getElementById("remote-video");
+            const remoteAudioContainer = document.getElementById("remote-audio");
+
+            if (track.kind === "video") {
+              remoteVideoContainer.innerHTML = ""; // Clear previous video
+              remoteVideoContainer.appendChild(track.attach());
+            } else if (track.kind === "audio") {
+              remoteAudioContainer.innerHTML = ""; // Clear previous audio
+              const audioElement = track.attach();
+              remoteAudioContainer.appendChild(audioElement);
+            }
+          });
+        });
+      });
+
+      // Handle participant disconnections
+      room.on("participantDisconnected", (participant) => {
+        console.log(`${participant.identity} disconnected.`);
+        detachAndStopTracks([...participant.videoTracks.values(), ...participant.audioTracks.values()]);
+      });
+
+    } catch (error) {
+      console.error("Error connecting to room:", error);
+    }
+  };
+
+  connectToRoom();
+
+  // Cleanup on unmount
+  return () => {
+    if (room) {
+      detachAndStopTracks([...room.localParticipant.tracks.values()]);
+      room.disconnect();
+      setRoom(null);
+    }
+  };
+}, [meetingToken, roomName, role]);
+
+// Utility function to detach and stop tracks
+const detachAndStopTracks = (tracks) => {
+  tracks.forEach((track) => {
+    track.stop();
+    const elements = track.detach();
+    elements.forEach((element) => element.remove());
+  });
+};
 
   // End the meeting for all participants (host only)
   const endMeetingRoom = async () => {
@@ -326,10 +380,19 @@ useEffect(() => {
 
 
   return (
-    <div className="video-room">
+ <div className="video-room">
       <div className="video-container">
-        {role === "host" && <div id="local-video" className="video-section"></div>}
-        <div id="remote-video" className="video-section"></div>
+         {/* Local Video and Audio Containers for the Host */}
+    {role === "host" && (
+      <>
+        <div id="local-video" className="video-section"></div>
+        <div id="local-audio" style={{ display: "none" }}></div>
+      </>
+    )}
+
+    {/* Remote Video and Audio Containers */}
+    <div id="remote-video" className="video-section"></div>
+    <div id="remote-audio" style={{ display: "none" }}></div>
       </div>
 
       {role === "guest" && emoji && (

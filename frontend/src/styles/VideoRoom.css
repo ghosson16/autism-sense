@@ -243,6 +243,7 @@ body {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.5);
+  border: 2px solid black;
   z-index: 1000;
 }
 
@@ -254,9 +255,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   font-size: 3rem;
   font-weight: bold;
-  color: #ff0000;
+  color: black;
+  border: 2px solid black; /* Retro black border */
 }
 
