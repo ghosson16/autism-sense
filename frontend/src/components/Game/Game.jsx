@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios"; 
 import "./Game.css";
 
-export default function Game({ onClose, gameImage, fetchNewImage }) {
+// eslint-disable-next-line react/prop-types
+export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [showResult, setShowResult] = useState(false);
@@ -11,6 +13,7 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
   const [correctCount, setCorrectCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [gameEnded, setGameEnded] = useState(false);
+  const [error, setError] = useState(null);
 
   const emojiMap = {
     happy: "😊",
@@ -30,6 +33,7 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
     setCorrectCount(0);
     setTotalCount(0);
     setGameEnded(false);
+    setError(null);
   };
 
   const generateRandomEmojis = () => {
@@ -58,7 +62,7 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
       if (gameImage.result && emojiMap[gameImage.result]) {
         setEmojiOptions(generateRandomEmojis());
       } else {
-        handleNoEmotionDetected(); // Skip if no emotion is detected
+        handleNoEmotionDetected();
       }
     }
   }, [gameImage]);
@@ -116,15 +120,30 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
     }
   };
 
-  const handleEndGame = () => {
+  const saveScoreToBackend = async () => {
+    try {
+      await axios.post("http://localhost:5000/api/gamescores", {
+        childId,
+        correctCount,
+        totalCount,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.error("Error saving score:", err);
+      setError("Failed to save your game score. Please try again later.");
+    }
+  };
+
+  const handleEndGame = async () => {
     setGameEnded(true);
+    await saveScoreToBackend();
   };
 
   if (gameEnded) {
     return (
       <div className="game-modal">
         <div className="game-modal-content">
-          <h3>good job !</h3>
+          <h3>Good job!</h3>
           <p>
             You answered {correctCount} out of {totalCount} correctly!
           </p>
@@ -188,6 +207,7 @@ export default function Game({ onClose, gameImage, fetchNewImage }) {
         <button onClick={handleEndGame} className="end-game-button">
           End Game
         </button>
+        {error && <p className="error">{error}</p>}
       </div>
     </div>
   );

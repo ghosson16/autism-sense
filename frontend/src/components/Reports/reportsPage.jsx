@@ -2,14 +2,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../styles/Reports.css";
+import { PulseLoader } from 'react-spinners';
+
 
 // eslint-disable-next-line react/prop-types
 const ReportsPage = ({ childData }) => {
   const [statistics, setStatistics] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchStatistics = async () => {
+      setLoading(true); // Start loading
+      setError('');     // Reset error
       try {
         // eslint-disable-next-line react/prop-types
         const childId = childData?._id || childData?.id;
@@ -17,18 +23,26 @@ const ReportsPage = ({ childData }) => {
         setStatistics(response.data);
       // eslint-disable-next-line no-unused-vars
       } catch (err) {
-        setError("Failed to fetch statistics. Please try again.");
+        setError("Failed to fetch statistics. Please try again."); // Handle error
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
-
+  
     if (childData) fetchStatistics();
   }, [childData]);
+  
 
   return (
     <div className="reports-container">
       <h1>Reports</h1>
-      {error && <p className="error-message">{error}</p>}
-      {statistics.length === 0 ? (
+      {loading ? (
+        <div className="spinner-container">
+          <PulseLoader color="#36d7b7" size={15} />
+        </div>
+      ) : error ? (
+        <p className="error-message">{error}</p>
+      ) : statistics.length === 0 ? (
         <p>No statistics available yet.</p>
       ) : (
         <table className="reports-table">
@@ -54,6 +68,8 @@ const ReportsPage = ({ childData }) => {
       )}
     </div>
   );
+  
+  
 };
 
 export default ReportsPage;
