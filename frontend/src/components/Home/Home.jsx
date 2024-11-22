@@ -60,15 +60,15 @@ const Home = () => {
       />
 
       <section className="button-container">
-        <button className="btn">
-          <lord-icon
-            src="https://cdn.lordicon.com/ofcynlwa.json"
-            trigger="hover"
-            colors="primary:#121131,secondary:#d1fad7,tertiary:#d1f3fa,quaternary:#f4f19c"
-            style={{ width: "240px", height: "240px" }}
-          ></lord-icon>
-          <h2>Reports</h2>
-        </button>
+      <button className="btn" onClick={() => navigate("/reportsPage")}>
+  <lord-icon
+    src="https://cdn.lordicon.com/ofcynlwa.json"
+    trigger="hover"
+    colors="primary:#121131,secondary:#d1fad7,tertiary:#d1f3fa,quaternary:#f4f19c"
+    style={{ width: "240px", height: "240px" }}
+  ></lord-icon>
+  <h2>Reports</h2>
+</button>
 
         <button className="btn" onClick={handleJoinSpecialMode}>
           <lord-icon
