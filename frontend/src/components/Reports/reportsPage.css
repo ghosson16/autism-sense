@@ -1,0 +1,29 @@
+.reports-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .reports-table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+  }
+  
+  .reports-table th,
+  .reports-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  .reports-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+  }
+  
