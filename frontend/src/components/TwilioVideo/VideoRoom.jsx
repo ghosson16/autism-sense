@@ -433,7 +433,7 @@ useEffect(() => {
 {role === "host" && (
   <div className="host-control-panel">
     <button onClick={endMeetingRoom} className="control-button leave-call">
-      <FontAwesomeIcon icon={faPhone} /> End Meeting
+      <FontAwesomeIcon icon={faPhone} /> Leave Meeting
     </button>
     <button onClick={toggleCamera} className="control-button video">
       <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />

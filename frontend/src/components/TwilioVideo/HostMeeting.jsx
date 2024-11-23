@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -10,7 +12,17 @@ const HostMeeting = () => {
   const [token, setToken] = useState(null);
   const navigate = useNavigate();
 
+  // Load existing meeting details from localStorage
+  useEffect(() => {
+    const savedRoomName = localStorage.getItem("roomName");
+    const savedToken = localStorage.getItem("meetingToken"); // Ensure we're using the correct key for token
 
+    // If roomName and token are available in localStorage, use them
+    if (savedRoomName && savedToken) {
+      setRoomName(savedRoomName);
+      setToken(savedToken);
+    }
+  }, []);
 
   // Add Lordicon script dynamically
   useEffect(() => {
@@ -27,6 +39,7 @@ const HostMeeting = () => {
     try {
       const token = await startMeeting(generatedRoomName, "host");
       setToken(token);
+
       // Store room details in localStorage
       localStorage.setItem("roomName", generatedRoomName);
       localStorage.setItem("meetingToken", token);
@@ -34,6 +47,11 @@ const HostMeeting = () => {
       console.error("Error starting the meeting:", error);
     }
   };
+
+  // If token exists, display the VideoRoom component
+  if (token && roomName) {
+    return <VideoRoom token={token} roomName={roomName} role="host" />;
+  }
 
   return (
     <div className="meeting-container">
@@ -94,3 +112,4 @@ const HostMeeting = () => {
 };
 
 export default HostMeeting;
+
