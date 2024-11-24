@@ -14,6 +14,7 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
   const [totalCount, setTotalCount] = useState(0);
   const [gameEnded, setGameEnded] = useState(false);
   const [error, setError] = useState(null);
+  const [showCelebration, setShowCelebration] = useState(false); // Celebration state
 
   const emojiMap = {
     happy: "😊",
@@ -105,10 +106,12 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
 
     if (isCorrect) {
       setCorrectCount((prev) => prev + 1);
+      setShowCelebration(true); // Trigger celebration effect
       setTimeout(() => {
+        setShowCelebration(false); // Hide celebration after 3 seconds
         setShowResult(false);
         startCountdown(fetchNewImage);
-      }, 2000);
+      }, 3000);
     } else {
       setWrongAttempts((prev) => prev + 1);
       if (wrongAttempts + 1 >= 2) {
@@ -209,6 +212,26 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
         </button>
         {error && <p className="error">{error}</p>}
       </div>
+      {showCelebration && (
+        <div className="celebration-effect">
+          {[...Array(30)].map((_, index) => (
+            <lord-icon
+              key={index}
+              src="https://cdn.lordicon.com/fkmafinl.json"
+              trigger="hover"
+              colors="primary:#e8b730,secondary:#eeca66,tertiary:#66d7ee,quaternary:#66d7ee"
+              style={{
+                width: "100px",
+                height: "100px",
+                position: "absolute",
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animation: "fall 3s linear infinite",
+              }}
+            ></lord-icon>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
