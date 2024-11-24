@@ -77,6 +77,27 @@ const GuestMeeting = () => {
       console.error("Error reconnecting to room:", error);
     }
   };
+// Handle joining the meeting
+const joinMeeting = async () => {
+  if (!roomName.trim()) {
+    setErrorMessage("Room name is required."); // Set an error message
+    return; // Stop execution if roomName is empty
+  }
+
+  try {
+    const newToken = await startMeeting(roomName, "guest"); // Get token from service
+    setToken(newToken); // Save the token in the state
+    localStorage.setItem('token', newToken); // Store the token in localStorage
+    setErrorMessage(""); // Clear any previous errors
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      setErrorMessage("Room does not exist. Please check the room link.");
+    } else {
+      console.error("Error joining meeting:", error);
+      setErrorMessage("An error occurred. Please try again.");
+    }
+  }
+};
 
   // Handle leaving the meeting
   const leaveMeeting = () => {
