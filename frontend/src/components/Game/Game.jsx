@@ -214,19 +214,19 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
       </div>
       {showCelebration && (
         <div className="celebration-effect">
-          {[...Array(30)].map((_, index) => (
+          {[...Array(50)].map((_, index) => (
             <lord-icon
               key={index}
               src="https://cdn.lordicon.com/fkmafinl.json"
-              trigger="hover"
+              trigger="loop"
               colors="primary:#e8b730,secondary:#eeca66,tertiary:#66d7ee,quaternary:#66d7ee"
               style={{
-                width: "100px",
-                height: "100px",
                 position: "absolute",
+                width: "80px",
+                height: "80px",
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
-                animation: "fall 3s linear infinite",
+                animation: `fall 3s ease-in-out infinite`,
               }}
             ></lord-icon>
           ))}
