@@ -2,11 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import VideoRoom from "./VideoRoom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {   faEllipsisV, faMicrophone, faMicrophoneSlash, faPhone, faVideo, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsisV,
+  faMicrophone,
+  faMicrophoneSlash,
+  faPhone,
+  faVideo,
+  faVideoSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import "../../styles/Meeting.css";
 import "../../styles/VideoRoom.css";
 import { startMeeting } from "../../services/videoService";
-import { connect } from "twilio-video";
 
 const GuestMeeting = () => {
   const [roomName, setRoomName] = useState(""); // state for room name
@@ -15,89 +21,55 @@ const GuestMeeting = () => {
   const [errorMessage, setErrorMessage] = useState(""); // state for error messages
   const [isCameraOn, setIsCameraOn] = useState(true); // state for camera control
   const [isMicOn, setIsMicOn] = useState(true); // state for microphone control
-  const [copySuccess, setCopySuccess] = useState(""); // state for clipboard copy success message
+  const [isLoading, setIsLoading] = useState(false); // state for loading status during join
+  const [showControlPanel, setShowControlPanel] = useState(false); // state for toggling control panel visibility
   const navigate = useNavigate();
 
-  // Load the room name and token from localStorage when the component mounts
-  useEffect(() => {
-    const savedRoomName = localStorage.getItem('roomName');
-    const savedToken = localStorage.getItem('token');
-
-    if (savedToken && savedRoomName) {
-      // If both the token and roomName are found, directly set the state and attempt to reconnect
-      setToken(savedToken);
-      setRoomName(savedRoomName);
-      reconnectToRoom(savedToken, savedRoomName);
-    }
+    // Load existing meeting details from localStorage
+    useEffect(() => {
+      const savedRoomName = localStorage.getItem("roomName");
+      const savedToken = localStorage.getItem("meetingToken");
+  
+      // If roomName and token are available in localStorage, use them
+      if (savedRoomName && savedToken) {
+        setRoomName(savedRoomName);
+        setToken(savedToken);
+      }
+    }, []);
 
     // Dynamically load the Lord Icon library (it only needs to be loaded once)
+    useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://cdn.lordicon.com/lordicon.js";
     script.async = true;
     document.body.appendChild(script);
   }, []);
 
-  // Save the room name to localStorage whenever it changes
-  useEffect(() => {
-    if (roomName) {
-      localStorage.setItem('roomName', roomName);
-    }
-  }, [roomName]);
-
   // Handle joining the meeting
   const joinMeeting = async () => {
     try {
-      const newToken = await startMeeting(roomName, "guest"); // Get token from service
-      setToken(newToken); // Save the token in the state
-      localStorage.setItem('token', newToken); // Store the token in localStorage
-      setErrorMessage(""); // Clear any previous errors
-      reconnectToRoom(newToken, roomName); // Connect to Twilio Room after token is obtained
+      setIsLoading(true);
+      const newToken = await startMeeting(roomName, "guest");
+      setToken(newToken);
+      localStorage.setItem("meetingToken", newToken);
+      localStorage.setItem("roomName", roomName);
+      setErrorMessage("");
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        setErrorMessage("Room does not exist. Please check the room link.");
+        setErrorMessage("The room does not exist or has ended. Please check the room link.");
+      } else if (error.response && error.response.status === 400) {
+        setErrorMessage("Room name is required");
+      } else if (error.response && error.response.status === 500) {
+        setErrorMessage("Internal server error occurred. Please try again later.");
       } else {
         console.error("Error joining meeting:", error);
         setErrorMessage("An error occurred. Please try again.");
       }
+    } finally {
+      setRoomName(""); // Clear the room name from input after attempting to join
+      setIsLoading(false);
     }
   };
-
-  // Reconnect to the Twilio Room after refresh or page load
-  const reconnectToRoom = async (meetingToken, roomName) => {
-    try {
-      const connectedRoom = await connect(meetingToken, {
-        name: roomName,
-        region: "gll",
-        audio: true,
-        video: true,
-      });
-      setRoom(connectedRoom);
-      console.log("Reconnected to room:", connectedRoom);
-    } catch (error) {
-      console.error("Error reconnecting to room:", error);
-    }
-  };
-// Handle joining the meeting
-const joinMeeting = async () => {
-  if (!roomName.trim()) {
-    setErrorMessage("Room name is required."); // Set an error message
-    return; // Stop execution if roomName is empty
-  }
-
-  try {
-    const newToken = await startMeeting(roomName, "guest"); // Get token from service
-    setToken(newToken); // Save the token in the state
-    localStorage.setItem('token', newToken); // Store the token in localStorage
-    setErrorMessage(""); // Clear any previous errors
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      setErrorMessage("Room does not exist. Please check the room link.");
-    } else {
-      console.error("Error joining meeting:", error);
-      setErrorMessage("An error occurred. Please try again.");
-    }
-  }
-};
 
   // Handle leaving the meeting
   const leaveMeeting = () => {
@@ -108,12 +80,13 @@ const joinMeeting = async () => {
     }
 
     // Clear the room name and token from localStorage and state
-    localStorage.removeItem('roomName');
-    localStorage.removeItem('token');
+    localStorage.removeItem("roomName");
+    localStorage.removeItem("token");
+    localStorage.removeItem("isJoining"); // Clear joining state
     setRoomName(""); // Clear room name from state
     setToken(null); // Clear token from state
     setErrorMessage(""); // Clear any error message
-    navigate("/home"); // Optionally, navigate to the home page or some other page
+    navigate("/home");
   };
 
   // Toggle camera on/off
@@ -138,13 +111,9 @@ const joinMeeting = async () => {
     }
   };
 
-  // Copy room name to clipboard
-  const copyRoomName = () => {
-    navigator.clipboard
-      .writeText(roomName)
-      .then(() => setCopySuccess("Room name copied to clipboard!"))
-      .catch(() => setCopySuccess("Failed to copy room name."));
-    setTimeout(() => setCopySuccess(""), 2000);
+  // Toggle the visibility of the control panel
+  const toggleControlPanel = () => {
+    setShowControlPanel((prev) => !prev);
   };
 
   // If token exists, render VideoRoom and control buttons, else show room input modal
@@ -193,8 +162,8 @@ const joinMeeting = async () => {
               placeholder="Enter the invitation's link"
               className="input-field"
             />
-            <button className="start-button" onClick={joinMeeting}>
-              Join Meeting
+            <button className="start-button" onClick={joinMeeting} disabled={isLoading}>
+              {isLoading ? "Joining..." : "Join Meeting"}
             </button>
             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
           </div>
@@ -204,20 +173,24 @@ const joinMeeting = async () => {
           <VideoRoom token={token} roomName={roomName} role="guest" setRoom={setRoom} />
           <div className="call-controls">
             <div className="three-dot-container">
-              <button className="three-dot-button"> <FontAwesomeIcon icon={faEllipsisV} /></button>
-              <div className="guest-control-panel">
-                <button onClick={leaveMeeting} className="control-button leave-call">
-                  <FontAwesomeIcon icon={faPhone} /> Leave Meeting
+              <button className="three-dot-button" onClick={toggleControlPanel}>
+                <FontAwesomeIcon icon={faEllipsisV} />
+              </button>
+              {showControlPanel && (
+                <div className="guest-control-panel">
+                  <button onClick={leaveMeeting} className="control-button leave-call">
+                    <FontAwesomeIcon icon={faPhone} /> Leave Meeting
                   </button>
                   <button onClick={toggleCamera} className="control-button video">
                     <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
                     {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
-                    </button>
-                    <button onClick={toggleMic} className="control-button microphone">
-                      <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
-                      {isMicOn ? "Mute Mic" : "Unmute Mic"}
-                      </button>
-              </div>
+                  </button>
+                  <button onClick={toggleMic} className="control-button microphone">
+                    <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
+                    {isMicOn ? "Mute Mic" : "Unmute Mic"}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </>
