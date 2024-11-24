@@ -14,7 +14,7 @@ export const login = async (email, password) => {
     return { message: "Login successful", user };
   } catch (error) {
     console.error("Login error:", error);
-    throw error.response?.data?.message || "An error occurred during login.";
+    throw new Error(error.response?.data?.message || "An error occurred during login.");
   }
 };
 
@@ -24,8 +24,7 @@ export const signUp = async (userData) => {
     const response = await axios.post(`${apiUrl}/api/auth/signup`, userData);
     return response.data;
   } catch (error) {
-    console.error("Sign-up error:", error);
-    throw error.response?.data?.message || "An error occurred during sign-up.";
+    throw new Error(error.response?.data?.message || "An error occurred during sign-up.");
   }
 };
 
@@ -36,7 +35,7 @@ export const sendResetPasswordEmail = async (email) => {
     return response.data;
   } catch (error) {
     console.error("Reset password email error:", error);
-    throw error.response?.data?.message || "An error occurred while sending the reset password email.";
+    throw new Error(error.response?.data?.message || "An error occurred while sending the reset password email.");
   }
 };
 
@@ -47,7 +46,7 @@ export const resetPassword = async (token, newPassword) => {
     return response.data;
   } catch (error) {
     console.error("Reset password error:", error);
-    throw error.response?.data?.message || "An error occurred while resetting the password.";
+    throw new Error(error.response?.data?.message || "An error occurred while resetting the password.");
   }
 };
 
@@ -61,6 +60,6 @@ export const logout = async () => {
     return response.data;
   } catch (error) {
     console.error("Logout error:", error);
-    throw error.response?.data?.message || "An error occurred during logout.";
+    throw new Error(error.response?.data?.message || "An error occurred during logout.");
   }
 };

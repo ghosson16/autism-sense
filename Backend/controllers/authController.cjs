@@ -9,7 +9,7 @@ const signUp = async (req, res) => {
   try {
     const existingChild = await childModel.findOne({ email: req.body.email });
     if (existingChild) {
-      return res.status(400).json({ message: 'Email already exists' });
+      return res.status(409).json({ message: 'Email already exists' });
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newChild = new childModel({ ...req.body, password: hashedPassword });

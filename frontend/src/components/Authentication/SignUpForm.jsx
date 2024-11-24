@@ -60,41 +60,38 @@ const SignUpForm = () => {
 
     const formattedDOB = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     if (!validateFirstName(firstName) || !validateLastName(lastName) || !validateChildDOB(formattedDOB) || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
-      setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
-      setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
-      setChildDOBError(!validateChildDOB(formattedDOB) ? "Child's date of birth cannot be in the future." : "");
-      setEmailError(!validateEmail(email) ? "Please enter a valid email address." : "");
-      setPasswordError(!validatePassword(password) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
-      setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match." : "");
-      return;
+        setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
+        setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
+        setChildDOBError(!validateChildDOB(formattedDOB) ? "Child's date of birth cannot be in the future." : "");
+        setEmailError(!validateEmail(email) ? "Please enter a valid email address." : "");
+        setPasswordError(!validatePassword(password) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
+        setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match." : "");
+        return;
     }
 
     const childData = {
-      firstName,
-      lastName,
-      dob: formattedDOB,
-      email,
-      password,
-      photo,
+        firstName,
+        lastName,
+        dob: formattedDOB,
+        email,
+        password,
+        photo,
     };
 
     try {
-      const result = await signUp(childData);
+        const result = await signUp(childData);
 
-      if (result && result.message === "Child data saved successfully" && result.user) {
-        localStorage.setItem('childData', JSON.stringify(result.user));
-        navigate("/home");
-      } else {
-        setSubmitError("Sign-up completed, but could not retrieve user data.");
-      }
+        if (result && result.message === "Child data saved successfully" && result.user) {
+            localStorage.setItem('childData', JSON.stringify(result.user));
+            alert("Sign-up successful! Welcome to AutismSense.");
+            navigate("/home");
+        } else {
+            setSubmitError("Sign-up completed, but could not retrieve user data.");
+        }
     } catch (err) {
-      if (err.response && err.response.status === 409) {
-        setSubmitError("This email is already in use. Please use a different email.");
-      } else {
-        setSubmitError("An error occurred during sign up. Please try again.");
-      }
+        setSubmitError(err.message || "An error occurred during sign-up. Please try again.");
     }
-  };
+};
 
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
@@ -230,7 +227,7 @@ const SignUpForm = () => {
           />
           {confirmPasswordError && <span className="error-message">{confirmPasswordError}</span>}
         </div>
-        {submitError && <span className="error-message">{submitError}</span>}
+        {submitError && <div className="error-message">{submitError}</div>}
         <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
           <button type="submit" className="add-child-btn">Sign up</button>
         </div>
