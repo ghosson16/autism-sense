@@ -14,7 +14,6 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
   const [totalCount, setTotalCount] = useState(0);
   const [gameEnded, setGameEnded] = useState(false);
   const [error, setError] = useState(null);
-  const [showCelebration, setShowCelebration] = useState(false); // Celebration state
 
   const emojiMap = {
     happy: "😊",
@@ -106,9 +105,7 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
 
     if (isCorrect) {
       setCorrectCount((prev) => prev + 1);
-      setShowCelebration(true); // Trigger celebration effect
       setTimeout(() => {
-        setShowCelebration(false); // Hide celebration after 2 seconds
         setShowResult(false);
         startCountdown(fetchNewImage);
       }, 2000);
@@ -212,13 +209,6 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
         </button>
         {error && <p className="error">{error}</p>}
       </div>
-      {showCelebration && (
-        <div className="celebration-effect">
-          <div className="confetti"></div>
-          <div className="confetti"></div>
-          <div className="confetti"></div>
-        </div>
-      )}
     </div>
   );
 }
