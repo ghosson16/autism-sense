@@ -40,7 +40,7 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
       sad: "😢",
       angry: "😠",
       neutral: "😐",
-      surprised: "😲",
+      surprise: "😲",
     };
     return emojiMap[emotion];
   };
