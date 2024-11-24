@@ -21,7 +21,7 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
     sad: "😢",
     angry: "😠",
     neutral: "😐",
-    surprised: "😲",
+    surprise: "😲",
   };
 
   const resetGameState = () => {
@@ -123,7 +123,7 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
     }
   };
 
-  const saveScoreToBackend = async () => {
+  /*const saveScoreToBackend = async () => {
     try {
       await axios.post("http://localhost:5000/api/gamescores", {
         childId,
@@ -135,7 +135,7 @@ export default function Game({ onClose, gameImage, fetchNewImage, childId }) {
       console.error("Error saving score:", err);
       setError("Failed to save your game score. Please try again later.");
     }
-  };
+  };*/
 
   const handleEndGame = async () => {
     setGameEnded(true);
