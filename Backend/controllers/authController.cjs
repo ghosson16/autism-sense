@@ -40,7 +40,7 @@ const login = async (req, res) => {
       };
       res.json({ message: "Login successful" , user: req.session.user });
     } else {
-      res.status(401).json({ message: 'Email or password is incorrect' });
+      res.status(401).json({ message: 'Invalid email or password' });
     }
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });

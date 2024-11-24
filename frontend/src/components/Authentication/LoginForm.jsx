@@ -29,12 +29,22 @@ const LoginForm = () => {
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setPassword(value);
-    setPasswordError(validatePassword(value) ? "" : "Password must be at least 8 characters long and contain both letters and numbers.");
+    setPasswordError(validatePassword(value) ? "" : "Invalid password. Please try again.");
   };
 
-  // Simplify handleLogin to confirm "Enter" works as expected
+  // Simplified handleLogin to confirm "Enter" works as expected
   const handleLogin = async (e) => {
     if (e) e.preventDefault(); // Add this to handle cases where this is invoked via button click
+
+    // Ensure that there are no validation errors before submission
+    if (!validateEmail(email)) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+    if (!validatePassword(password)) {
+      setPasswordError("Invalid password. Please try again.");
+      return;
+    }
 
     setIsSubmitting(true);
     setLoginError("");
@@ -45,7 +55,7 @@ const LoginForm = () => {
         localStorage.setItem('childData', JSON.stringify(result.user));
         navigate("/home");
       } else {
-        setLoginError(result.message || "Login failed. Please try again.");
+        setLoginError(result.message || "Invalid email or password");
       }
     } catch (err) {
       setLoginError("An error occurred during login. Please try again.");
@@ -65,11 +75,20 @@ const LoginForm = () => {
             value={email}
             onChange={handleEmailChange}
             required
-            ref={emailRef} 
-            onEnter={() => passwordRef.current.focus()} 
+            ref={emailRef}
+            onEnter={() => passwordRef.current.focus()}
             className={`input-field ${emailError ? "error" : ""}`}
+            aria-describedby="email-error"
           />
-          {emailError && <span className="error-message">{emailError}</span>}
+          {emailError && (
+            <span
+              id="email-error"
+              className="error-message"
+              aria-live="assertive"
+            >
+              {emailError}
+            </span>
+          )}
         </div>
         <div className="form-group">
           <EnterInput
@@ -78,16 +97,37 @@ const LoginForm = () => {
             value={password}
             onChange={handlePasswordChange}
             required
-            ref={passwordRef} 
-            onEnter={handleLogin} // Trigger handleLogin directly on Enter
+            ref={passwordRef}
+            onEnter={handleLogin}
             className={`input-field ${passwordError ? "error" : ""}`}
+            aria-describedby="password-error"
           />
-          {passwordError && <span className="error-message">{passwordError}</span>}
+          {passwordError && (
+            <span
+              id="password-error"
+              className="error-message"
+              aria-live="assertive"
+            >
+              {passwordError}
+            </span>
+          )}
         </div>
-        {loginError && <span className="error-message">{loginError}</span>}
-        
-        <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-          <button type="submit" className="add-child-btn" disabled={isSubmitting}>
+        {loginError && (
+          <span className="error-message" aria-live="assertive">
+            {loginError}
+          </span>
+        )}
+
+        <div
+          className="form-buttons"
+          style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
+        >
+          <button
+            type="submit"
+            className="add-child-btn"
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+          >
             {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </div>
