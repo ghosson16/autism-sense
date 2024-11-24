@@ -1,21 +1,27 @@
-
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClipboard, faMicrophone, faMicrophoneSlash, faPhone, faVideo, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
 import VideoRoom from "./VideoRoom";
-import { startMeeting } from "../../services/videoService";
+import { startMeeting, endMeeting } from "../../services/videoService"; // Import startMeeting and endMeeting
 import "../../styles/Meeting.css";
+import "../../styles/VideoRoom.css";
+
 
 const HostMeeting = () => {
   const [roomName, setRoomName] = useState("");
   const [token, setToken] = useState(null);
+  const [room, setRoom] = useState(null);
+  const [isCameraOn, setIsCameraOn] = useState(true);
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [copySuccess, setCopySuccess] = useState("");
   const navigate = useNavigate();
 
   // Load existing meeting details from localStorage
   useEffect(() => {
     const savedRoomName = localStorage.getItem("roomName");
-    const savedToken = localStorage.getItem("meetingToken"); // Ensure we're using the correct key for token
+    const savedToken = localStorage.getItem("meetingToken");
 
     // If roomName and token are available in localStorage, use them
     if (savedRoomName && savedToken) {
@@ -48,9 +54,86 @@ const HostMeeting = () => {
     }
   };
 
-  // If token exists, display the VideoRoom component
+  // End the meeting for all participants (host only)
+  const endMeetingRoom = async () => {
+    try {
+      if (room) {
+        room.localParticipant.tracks.forEach((trackPub) => {
+          trackPub.track.stop();
+          trackPub.unpublish();
+        });
+        room.disconnect();
+        console.log("Room disconnected locally.");
+      }
+      await endMeeting(roomName, "host");
+      setRoom(null);
+      setRoomName("");
+      setToken(null);
+      localStorage.removeItem("roomName");
+      localStorage.removeItem("meetingToken");
+      navigate("/");
+    } catch (error) {
+      console.error("Error ending meeting:", error);
+    }
+  };
+
+  // Toggle camera on/off
+  const toggleCamera = () => {
+    if (room) {
+      room.localParticipant.videoTracks.forEach((trackPub) => {
+        const track = trackPub.track;
+        isCameraOn ? track.disable() : track.enable();
+      });
+      setIsCameraOn(!isCameraOn);
+    }
+  };
+
+  // Toggle microphone on/off
+  const toggleMic = () => {
+    if (room) {
+      room.localParticipant.audioTracks.forEach((trackPub) => {
+        const track = trackPub.track;
+        isMicOn ? track.disable() : track.enable();
+      });
+      setIsMicOn(!isMicOn);
+    }
+  };
+
+  // Copy room name to clipboard
+  const copyRoomName = () => {
+    navigator.clipboard
+      .writeText(roomName)
+      .then(() => setCopySuccess("Room name copied to clipboard!"))
+      .catch(() => setCopySuccess("Failed to copy room name."));
+    setTimeout(() => setCopySuccess(""), 2000);
+  };
+
+  // If token exists, display the VideoRoom and control buttons
   if (token && roomName) {
-    return <VideoRoom token={token} roomName={roomName} role="host" />;
+    return (
+      <div className="meeting-container">
+        <VideoRoom token={token} roomName={roomName} role="host" setRoom={setRoom} />
+
+        {/* Host Control Panel */}
+        <div className="host-control-panel">
+          <button onClick={endMeetingRoom} className="control-button leave-call">
+            <FontAwesomeIcon icon={faPhone} /> End Meeting
+          </button>
+          <button onClick={toggleCamera} className="control-button video">
+            <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
+            {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
+          </button>
+          <button onClick={toggleMic} className="control-button microphone">
+            <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
+            {isMicOn ? "Mute Mic" : "Unmute Mic"}
+          </button>
+          <button onClick={copyRoomName} className="control-button copy-room">
+            <FontAwesomeIcon icon={faClipboard} /> Copy Room Name
+          </button>
+          {copySuccess && <p className="copy-success">{copySuccess}</p>}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -112,4 +195,3 @@ const HostMeeting = () => {
 };
 
 export default HostMeeting;
-

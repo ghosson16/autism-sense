@@ -1,18 +1,9 @@
-import {
-  faClipboard,
-  faEllipsisV,
-  faGamepad,
-  faMicrophone,
-  faMicrophoneSlash,
-  faPhone,
-  faVideo,
-  faVideoSlash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faGamepad } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { connect } from "twilio-video";
-import { detectEmotion , endMeeting } from "../../services/videoService";
+import { detectEmotion } from "../../services/videoService";
 import "../../styles/VideoRoom.css";
 import Game from "../Game/Game";
 import AudioRecorder from "./AudioRecorder";
@@ -22,10 +13,6 @@ const VideoRoom = ({ token: initialToken, roomName: initialRoomName, role }) => 
   const [meetingToken, setMeetingToken] = useState(initialToken);
   const [roomName, setRoomName] = useState(initialRoomName);
   const [emoji, setEmoji] = useState(null);
-  const [isGuestPanelVisible, setGuestPanelVisible] = useState(false);
-  const [isCameraOn, setIsCameraOn] = useState(true);
-  const [isMicOn, setIsMicOn] = useState(true);
-  const [copySuccess, setCopySuccess] = useState("");
 
   const [openGame, setOpenGame] = useState(false);
   const [gameStartMessage, setGameStartMessage] = useState("");
@@ -151,44 +138,6 @@ const detachAndStopTracks = (tracks) => {
     elements.forEach((element) => element.remove());
   });
 };
-
-  // End the meeting for all participants (host only)
-  const endMeetingRoom = async () => {
-    try {
-      if (room) {
-        room.localParticipant.tracks.forEach((trackPub) => {
-          trackPub.track.stop();
-          trackPub.unpublish();
-        });
-        room.disconnect();
-        console.log("Room disconnected locally.");
-      }
-      await endMeeting(roomName, "host");
-      setRoom(null);
-      setRoomName("");
-      setMeetingToken(null);
-      localStorage.removeItem("roomName");
-      localStorage.removeItem("meetingToken");
-      navigate(role === "host" ? "/" : "/home");
-    } catch (error) {
-      console.error("Error ending meeting:", error);
-    }
-  };
-
-  // Leave the meeting (for guests or individual participants)
-  const leaveMeeting = () => {
-    if (room) {
-      room.localParticipant.tracks.forEach((trackPub) => {
-        trackPub.track.stop();
-        trackPub.unpublish();
-      });
-      room.disconnect();
-      console.log("Left the meeting.");
-      localStorage.removeItem("meetingToken");
-      localStorage.removeItem("roomName");
-      navigate("/home");
-    }
-  };
 
   // Capture emotion from remote video for emoji display
   const continuousCapturePhoto = async () => {
@@ -347,39 +296,6 @@ useEffect(() => {
     }
   }, [role]);
 
-
-  // Toggle camera on/off
-  const toggleCamera = () => {
-    if (room) {
-      room.localParticipant.videoTracks.forEach((trackPub) => {
-        const track = trackPub.track;
-        isCameraOn ? track.disable() : track.enable();
-      });
-      setIsCameraOn(!isCameraOn);
-    }
-  };
-
-  // Toggle microphone on/off
-  const toggleMic = () => {
-    if (room) {
-      room.localParticipant.audioTracks.forEach((trackPub) => {
-        const track = trackPub.track;
-        isMicOn ? track.disable() : track.enable();
-      });
-      setIsMicOn(!isMicOn);
-    }
-  };
-
-  // Copy room name to clipboard
-  const copyRoomName = () => {
-    navigator.clipboard
-      .writeText(roomName)
-      .then(() => setCopySuccess("Room name copied to clipboard!"))
-      .catch(() => setCopySuccess("Failed to copy room name."));
-    setTimeout(() => setCopySuccess(""), 2000);
-  };
-
-
   return (
  <div className="video-room">
       <div className="video-container">
@@ -401,54 +317,6 @@ useEffect(() => {
           <span>{emoji}</span>
         </div>
       )}
-
-{role === "guest" && (
-  <div className="call-controls">
-    <div className="three-dot-container">
-      <button
-        className="three-dot-button"
-        onClick={() => setGuestPanelVisible(!isGuestPanelVisible)}
-      >
-        <FontAwesomeIcon icon={faEllipsisV} />
-      </button>
-      {isGuestPanelVisible && (
-        <div className="guest-control-panel">
-          <button onClick={leaveMeeting} className="control-button leave-call">
-            <FontAwesomeIcon icon={faPhone} /> Leave Meeting
-          </button>
-          <button onClick={toggleCamera} className="control-button video">
-            <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
-            {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
-          </button>
-          <button onClick={toggleMic} className="control-button microphone">
-            <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
-            {isMicOn ? "Mute Mic" : "Unmute Mic"}
-          </button>
-        </div>
-      )}
-    </div>
-  </div>
-)}
-
-{role === "host" && (
-  <div className="host-control-panel">
-    <button onClick={endMeetingRoom} className="control-button leave-call">
-      <FontAwesomeIcon icon={faPhone} /> Leave Meeting
-    </button>
-    <button onClick={toggleCamera} className="control-button video">
-      <FontAwesomeIcon icon={isCameraOn ? faVideo : faVideoSlash} />
-      {isCameraOn ? "Turn Off Camera" : "Turn On Camera"}
-    </button>
-    <button onClick={toggleMic} className="control-button microphone">
-      <FontAwesomeIcon icon={isMicOn ? faMicrophone : faMicrophoneSlash} />
-      {isMicOn ? "Mute Mic" : "Unmute Mic"}
-    </button>
-    <button onClick={copyRoomName} className="control-button copy-room">
-      <FontAwesomeIcon icon={faClipboard} /> Copy Room Name
-    </button>
-    {copySuccess && <p className="copy-success">{copySuccess}</p>}
-  </div>
-)}
 
 {role === "guest" && (
   <div className="control">
@@ -496,7 +364,6 @@ useEffect(() => {
         </div>
       )}
 
-      {copySuccess && <p className="copy-success">{copySuccess}</p>}
       {role === "host" && gameStartMessage && (
         <div className="game-start-message">
           <p>{gameStartMessage}</p>

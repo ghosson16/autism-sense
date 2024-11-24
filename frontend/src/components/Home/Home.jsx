@@ -26,7 +26,7 @@ const Home = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      localStorage.removeItem('childData');
+      localStorage.clear();
       navigate('/');
     } catch (error) {
       setError("Logout failed. Please try again.");
