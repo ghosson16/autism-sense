@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/LandingPage.css";
 import AuthModal from "./Authentication/AuthModal";
-import lottie from "lottie-web";
+import lottie from "lottie-web/build/player/lottie_light";
 import { defineElement } from "@lordicon/element";
 
 const LandingPage = () => {
