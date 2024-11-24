@@ -25,6 +25,7 @@ const SignUpForm = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState('');
   const [submitError, setSubmitError] = useState("");
 
   const lastNameRef = useRef();
@@ -46,12 +47,6 @@ const SignUpForm = () => {
   const validateFirstName = (name) => /^[A-Za-z]{2,}$/.test(name);
   const validateLastName = (name) => /^[A-Za-z]{2,}$/.test(name);
 
-  const validateChildDOB = (dob) => {
-    const today = new Date();
-    const selectedDate = new Date(dob);
-    return selectedDate <= today;
-  };
-
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const validatePassword = (password) => password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
 
@@ -59,10 +54,10 @@ const SignUpForm = () => {
     e.preventDefault();
 
     const formattedDOB = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    if (!validateFirstName(firstName) || !validateLastName(lastName) || !validateChildDOB(formattedDOB) || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
+    if (!validateFirstName(firstName) || !validateLastName(lastName) || !day || !month || !year || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
         setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
         setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
-        setChildDOBError(!validateChildDOB(formattedDOB) ? "Child's date of birth cannot be in the future." : "");
+        setChildDOBError(!day || !month || !year ? "Please complete the date of birth." : "");
         setEmailError(!validateEmail(email) ? "Please enter a valid email address." : "");
         setPasswordError(!validatePassword(password) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
         setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match." : "");
@@ -83,7 +78,7 @@ const SignUpForm = () => {
 
         if (result && result.message === "Child data saved successfully" && result.user) {
             localStorage.setItem('childData', JSON.stringify(result.user));
-            alert("Sign-up successful! Welcome to AutismSense.");
+            setSubmitSuccess("Sign-up successful! Welcome to AutismSense.");
             navigate("/home");
         } else {
             setSubmitError("Sign-up completed, but could not retrieve user data.");
@@ -91,11 +86,16 @@ const SignUpForm = () => {
     } catch (err) {
         setSubmitError(err.message || "An error occurred during sign-up. Please try again.");
     }
-};
+  };
 
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const currentDay = new Date().getDate();
+
+  // Helper function to determine the number of days in a month
+  const getDaysInMonth = (month, year) => {
+    return new Date(year, month, 0).getDate();
+  };
 
   return (
     <div className="form-container">
@@ -151,23 +151,23 @@ const SignUpForm = () => {
         <div className="form-group dob-field-container">
           <label>Date of Birth:</label>
           <div style={{ display: "flex", gap: "5px" }}>
-            <select value={day} onChange={(e) => setDay(e.target.value)} required>
+            <select aria-label="Day" value={day} onChange={(e) => setDay(e.target.value)} required>
               <option value="">Day</option>
-              {[...Array(31)].map((_, i) => (
+              {[...Array(getDaysInMonth(month, year))].map((_, i) => (
                 <option key={i + 1} value={i + 1}>{i + 1}</option>
               ))}
             </select>
 
-            <select value={month} onChange={(e) => setMonth(e.target.value)} required>
+            <select aria-label="Month" value={month} onChange={(e) => setMonth(e.target.value)} required>
               <option value="">Month</option>
               {[...Array(12)].map((_, i) => (
-                <option key={i + 1} value={i + 1} disabled={year === currentYear && i + 1 > currentMonth}>
+                <option key={i + 1} value={i + 1} disabled={year == currentYear && i + 1 > currentMonth}>
                   {i + 1}
                 </option>
               ))}
             </select>
 
-            <select value={year} onChange={(e) => setYear(e.target.value)} required>
+            <select aria-label="Year" value={year} onChange={(e) => setYear(e.target.value)} required>
               <option value="">Year</option>
               {[...Array(100)].map((_, i) => {
                 const yearOption = currentYear - i;
@@ -227,6 +227,7 @@ const SignUpForm = () => {
           />
           {confirmPasswordError && <span className="error-message">{confirmPasswordError}</span>}
         </div>
+        {submitSuccess && (<div role="alert" style={{ color: "green" }}>{submitSuccess}</div>)}
         {submitError && <div className="error-message">{submitError}</div>}
         <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
           <button type="submit" className="add-child-btn">Sign up</button>
