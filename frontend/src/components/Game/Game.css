@@ -26,48 +26,54 @@
   animation: fadeIn 0.3s ease-in-out; /* Smooth fade-in animation */
 }
 
-
-/* Image styling */
-.game-image img {
+/* Celebration effect */
+.celebration-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-/* Emoji buttons */
-.emoji-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 20px;
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #f9d423; /* Confetti color */
+  animation: fall 2s linear infinite;
 }
 
-.emoji-btn {
-  font-size: 40px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: #f0f0f0 !important;
-  border: none;
-  transition: background-color 0.3s, transform 0.2s;
+@keyframes fall {
+  0% {
+    transform: translateY(-50px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(500px) rotate(360deg);
+    opacity: 0;
+  }
 }
 
-.emoji-btn:hover {
-  background-color: #e0e0e0;
-  transform: scale(1.1);
+.confetti:nth-child(2) {
+  left: 20%;
+  animation-delay: 0.2s;
 }
 
-.emoji-btn.selected-happy {
-  background-color: #b0dcba;
+.confetti:nth-child(3) {
+  left: 40%;
+  animation-delay: 0.4s;
 }
 
-.emoji-btn.selected-correct {
-  background-color: #9fe9b0 !important;
+.confetti:nth-child(4) {
+  left: 60%;
+  animation-delay: 0.6s;
 }
 
-.emoji-btn.selected-wrong {
-  background-color: #eeafb4 !important;
+.confetti:nth-child(5) {
+  left: 80%;
+  animation-delay: 0.8s;
 }
 
 /* Feedback message */
