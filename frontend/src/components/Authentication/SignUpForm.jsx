@@ -46,10 +46,9 @@ const SignUpForm = () => {
 
   const validateFirstName = (name) => /^[A-Za-z]{2,}$/.test(name);
   const validateLastName = (name) => /^[A-Za-z]{2,}$/.test(name);
-
+  
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const validatePassword = (password) => password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
-    password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
 
   const getFirstNameError = (name) => {
     if (name.length < 2) return "First name should be at least two letters long.";
@@ -107,6 +106,24 @@ const SignUpForm = () => {
     }
   };
 
+  const handleFirstNameChange = (e) => {
+    const value = e.target.value.replace(/[^A-Za-z]/g, ''); // Remove invalid characters
+    setFirstName(value);
+    setFirstNameError(getFirstNameError(value));
+  };
+
+  const handleLastNameChange = (e) => {
+    const value = e.target.value.replace(/[^A-Za-z]/g, ''); // Remove invalid characters
+    setLastName(value);
+    setLastNameError(getLastNameError(value));
+  };
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value.replace(/\s/g, ''); // Remove spaces
+    setEmail(value);
+    setEmailError(getEmailError(value));
+  };
+
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const currentDay = new Date().getDate();
@@ -143,10 +160,7 @@ const SignUpForm = () => {
           <EnterInput
             placeholder="First Name"
             value={firstName}
-            onChange={(e) => {
-              setFirstName(e.target.value);
-              setFirstNameError(getFirstNameError(e.target.value));
-            }}
+            onChange={handleFirstNameChange}
             onEnter={() => lastNameRef.current.focus()}
             required
           />
@@ -157,10 +171,7 @@ const SignUpForm = () => {
             placeholder="Last Name"
             ref={lastNameRef}
             value={lastName}
-            onChange={(e) => {
-              setLastName(e.target.value);
-              setLastNameError(getLastNameError(e.target.value));
-            }}
+            onChange={handleLastNameChange}
             onEnter={() => emailRef.current.focus()}
             required
           />
@@ -173,7 +184,7 @@ const SignUpForm = () => {
             <select aria-label="Day" value={day} onChange={(e) => setDay(e.target.value)} required>
               <option value="">Day</option>
               {[...Array(getDaysInMonth(month, year))].map((_, i) => (
-                <option key={i + 1} value={i + 1}> {i + 1} </option>
+                <option key={i + 1} value={i + 1}>{i + 1}</option>
               ))}
             </select>
 
@@ -204,17 +215,14 @@ const SignUpForm = () => {
           </div>
           {childDOBError && <span className="error-message">{childDOBError}</span>}
         </div>
-        
+
         <div className="form-group">
           <EnterInput
             type="email"
             placeholder="Email"
             ref={emailRef}
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setEmailError(getEmailError(e.target.value));
-            }}
+            onChange={handleEmailChange}
             onEnter={() => passwordRef.current.focus()}
             required
           />
