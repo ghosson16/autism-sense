@@ -6,6 +6,7 @@ const ForgetPasswordForm = ({ onCancel }) => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [serverError, setServerError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const validateEmail = (email) => {
@@ -26,6 +27,8 @@ const ForgetPasswordForm = ({ onCancel }) => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setSuccessMessage("");
+    setServerError("");
 
     if (!validateEmail(email)) {
       setEmailError("Please enter a valid email address.");
@@ -36,12 +39,12 @@ const ForgetPasswordForm = ({ onCancel }) => {
     try {
       const result = await sendResetPasswordEmail(email);
       if (result.message === "Password reset email sent") {
-        alert("Check your email for a password reset link");
-        onCancel(); // Close the modal on success
+        setSuccessMessage("Check your email for a password reset link.");
+        onCancel();
       }
     } catch (err) {
       console.error("Error during reset password:", err);
-      setServerError("An error occurred while sending the reset email. Please try again.");
+      setServerError("An unexpected error occurred. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -60,15 +63,18 @@ const ForgetPasswordForm = ({ onCancel }) => {
             onChange={handleEmailChange}
             required
             className="input-field"
+            aria-describedby="email-error"
           />
-          {emailError && <span className="error-message">{emailError}</span>}
+          {emailError && <span id="email-error" className="error-message">{emailError}</span>}
           {serverError && <span className="server-error-message">{serverError}</span>}
+          {successMessage && <span className="success-message">{successMessage}</span>}
         </div>
         <div className="form-buttons" style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
           <button 
             type="submit" 
-            className="reset-btn"  // added class for consistent styling
+            className="reset-btn" 
             disabled={loading}
+            aria-busy={loading}
           >
             {loading ? 'Sending...' : 'Send Reset Email'}
           </button>
