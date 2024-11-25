@@ -49,42 +49,61 @@ const SignUpForm = () => {
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const validatePassword = (password) => password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
+    password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
+
+  const getFirstNameError = (name) => {
+    if (name.length < 2) return "First name should be at least two letters long.";
+    if (name.length > 50) return "First name should not exceed 50 characters.";
+    return "";
+  };
+
+  const getLastNameError = (name) => {
+    if (name.length < 2) return "Last name should be at least two letters long.";
+    if (name.length > 50) return "Last name should not exceed 50 characters.";
+    return "";
+  };
+
+  const getEmailError = (email) => {
+    if (!validateEmail(email)) return "Please enter a valid email address, e.g., example@example.com.";
+    if (email.length > 320) return "Email should not exceed 320 characters.";
+    return "";
+  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
 
     const formattedDOB = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     if (!validateFirstName(firstName) || !validateLastName(lastName) || !day || !month || !year || !validateEmail(email) || !validatePassword(password) || password !== confirmPassword) {
-        setFirstNameError(!validateFirstName(firstName) ? "First name should be at least two letters long." : "");
-        setLastNameError(!validateLastName(lastName) ? "Last name should be at least two letters long." : "");
-        setChildDOBError(!day || !month || !year ? "Please complete the date of birth." : "");
-        setEmailError(!validateEmail(email) ? "Please enter a valid email address." : "");
-        setPasswordError(!validatePassword(password) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
-        setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match." : "");
-        return;
+      setFirstNameError(getFirstNameError(firstName));
+      setLastNameError(getLastNameError(lastName));
+      setChildDOBError(!day || !month || !year ? "Please complete the date of birth." : "");
+      setEmailError(getEmailError(email));
+      setPasswordError(!validatePassword(password) ? "Password must be at least 8 characters long and contain both letters and numbers." : "");
+      setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match." : "");
+      return;
     }
 
     const childData = {
-        firstName,
-        lastName,
-        dob: formattedDOB,
-        email,
-        password,
-        photo,
+      firstName,
+      lastName,
+      dob: formattedDOB,
+      email,
+      password,
+      photo,
     };
 
     try {
-        const result = await signUp(childData);
+      const result = await signUp(childData);
 
-        if (result && result.message === "Child data saved successfully" && result.user) {
-            localStorage.setItem('childData', JSON.stringify(result.user));
-            setSubmitSuccess("Sign-up successful! Welcome to AutismSense.");
-            navigate("/home");
-        } else {
-            setSubmitError("Sign-up completed, but could not retrieve user data.");
-        }
+      if (result && result.message === "Child data saved successfully" && result.user) {
+        localStorage.setItem('childData', JSON.stringify(result.user));
+        setSubmitSuccess("Sign-up successful! Welcome to AutismSense.");
+        navigate("/home");
+      } else {
+        setSubmitError("Sign-up completed, but could not retrieve user data.");
+      }
     } catch (err) {
-        setSubmitError(err.message || "An error occurred during sign-up. Please try again.");
+      setSubmitError(err.message || "An error occurred during sign-up. Please try again.");
     }
   };
 
@@ -126,7 +145,7 @@ const SignUpForm = () => {
             value={firstName}
             onChange={(e) => {
               setFirstName(e.target.value);
-              setFirstNameError(!validateFirstName(e.target.value) ? "First name should be at least two letters long." : "");
+              setFirstNameError(getFirstNameError(e.target.value));
             }}
             onEnter={() => lastNameRef.current.focus()}
             required
@@ -140,28 +159,32 @@ const SignUpForm = () => {
             value={lastName}
             onChange={(e) => {
               setLastName(e.target.value);
-              setLastNameError(!validateLastName(e.target.value) ? "Last name should be at least two letters long." : "");
+              setLastNameError(getLastNameError(e.target.value));
             }}
-            onEnter={() => dobRef.current.focus()}
+            onEnter={() => emailRef.current.focus()}
             required
           />
           {lastNameError && <span className="error-message">{lastNameError}</span>}
         </div>
-        
+
         <div className="form-group dob-field-container">
           <label>Date of Birth:</label>
           <div style={{ display: "flex", gap: "5px" }}>
             <select aria-label="Day" value={day} onChange={(e) => setDay(e.target.value)} required>
               <option value="">Day</option>
               {[...Array(getDaysInMonth(month, year))].map((_, i) => (
-                <option key={i + 1} value={i + 1}>{i + 1}</option>
+                <option key={i + 1} value={i + 1}> {i + 1} </option>
               ))}
             </select>
 
             <select aria-label="Month" value={month} onChange={(e) => setMonth(e.target.value)} required>
               <option value="">Month</option>
               {[...Array(12)].map((_, i) => (
-                <option key={i + 1} value={i + 1} disabled={year == currentYear && i + 1 > currentMonth}>
+                <option
+                  key={i + 1}
+                  value={i + 1}
+                  disabled={year == currentYear && i + 1 > currentMonth}
+                >
                   {i + 1}
                 </option>
               ))}
@@ -190,7 +213,7 @@ const SignUpForm = () => {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              setEmailError(!validateEmail(e.target.value) ? "Please enter a valid email address." : "");
+              setEmailError(getEmailError(e.target.value));
             }}
             onEnter={() => passwordRef.current.focus()}
             required
