@@ -19,26 +19,27 @@ const GuestMeeting = () => {
   const [token, setToken] = useState(null); // state for token
   const [room, setRoom] = useState(null); // state to manage the Twilio room
   const [errorMessage, setErrorMessage] = useState(""); // state for error messages
+  const [successMessage, setSuccessMessage] = useState(""); // state for success messages
   const [isCameraOn, setIsCameraOn] = useState(true); // state for camera control
   const [isMicOn, setIsMicOn] = useState(true); // state for microphone control
   const [isLoading, setIsLoading] = useState(false); // state for loading status during join
   const [showControlPanel, setShowControlPanel] = useState(false); // state for toggling control panel visibility
   const navigate = useNavigate();
 
-    // Load existing meeting details from localStorage
-    useEffect(() => {
-      const savedRoomName = localStorage.getItem("roomName");
-      const savedToken = localStorage.getItem("meetingToken");
-  
-      // If roomName and token are available in localStorage, use them
-      if (savedRoomName && savedToken) {
-        setRoomName(savedRoomName);
-        setToken(savedToken);
-      }
-    }, []);
+  // Load existing meeting details from localStorage
+  useEffect(() => {
+    const savedRoomName = localStorage.getItem("roomName");
+    const savedToken = localStorage.getItem("meetingToken");
 
-    // Dynamically load the Lord Icon library (it only needs to be loaded once)
-    useEffect(() => {
+    // If roomName and token are available in localStorage, use them
+    if (savedRoomName && savedToken) {
+      setRoomName(savedRoomName);
+      setToken(savedToken);
+    }
+  }, []);
+
+  // Dynamically load the Lord Icon library (it only needs to be loaded once)
+  useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://cdn.lordicon.com/lordicon.js";
     script.async = true;
@@ -49,24 +50,30 @@ const GuestMeeting = () => {
   const joinMeeting = async () => {
     try {
       setIsLoading(true);
+      if (!roomName.trim()) {
+        setErrorMessage("Please enter a valid room name before joining the meeting.");
+        return;
+      }
+      
       const newToken = await startMeeting(roomName, "guest");
       setToken(newToken);
       localStorage.setItem("meetingToken", newToken);
       localStorage.setItem("roomName", roomName);
       setErrorMessage("");
+      setSuccessMessage("You have successfully joined the meeting!");
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        setErrorMessage("The room does not exist or has ended. Please check the room link.");
-      } else if (error.response && error.response.status === 400) {
-        setErrorMessage("Room name is required");
+        setErrorMessage(
+          "The meeting room you're trying to join doesn't exist or has already ended. Please verify the room name or link and try again."
+        );
       } else if (error.response && error.response.status === 500) {
-        setErrorMessage("Internal server error occurred. Please try again later.");
+        setErrorMessage("An internal issue occurred while joining the meeting. Please try again in a few moments.");
       } else {
         console.error("Error joining meeting:", error);
-        setErrorMessage("An error occurred. Please try again.");
+        setErrorMessage("Something went wrong. Please check your internet connection and try again.");
       }
     } finally {
-      setRoomName(""); // Clear the room name from input after attempting to join
+      setRoomName("");
       setIsLoading(false);
     }
   };
@@ -86,6 +93,7 @@ const GuestMeeting = () => {
     setRoomName(""); // Clear room name from state
     setToken(null); // Clear token from state
     setErrorMessage(""); // Clear any error message
+    setSuccessMessage(""); // Clear success message
     navigate("/home");
   };
 
@@ -115,6 +123,17 @@ const GuestMeeting = () => {
   const toggleControlPanel = () => {
     setShowControlPanel((prev) => !prev);
   };
+
+  // Clear success message after a certain time
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage("");
+      }, 5000); // Clear success message after 5 seconds
+
+      return () => clearTimeout(timer); // Clean up the timer
+    }
+  }, [successMessage]);
 
   // If token exists, render VideoRoom and control buttons, else show room input modal
   return (
@@ -170,6 +189,7 @@ const GuestMeeting = () => {
         </div>
       ) : (
         <>
+          {successMessage && <p className="join-success">{successMessage}</p>}
           <VideoRoom token={token} roomName={roomName} role="guest" setRoom={setRoom} />
           <div className="call-controls">
             <div className="three-dot-container">
