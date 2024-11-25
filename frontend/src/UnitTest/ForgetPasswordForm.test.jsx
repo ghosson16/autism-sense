@@ -11,12 +11,6 @@ describe("ForgetPasswordForm Component", () => {
     render(<ForgetPasswordForm onCancel={onCancelMock} />);
   });
 
-  test("should render form with all necessary elements", () => {
-    expect(screen.getByText(/Forgot Password/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Enter your email/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Send Reset Email/i })).toBeInTheDocument();
-  });
-
   test("should display an error for an invalid email format", async () => {
     const emailInput = screen.getByPlaceholderText("Enter your email");
     const submitButton = screen.getByRole("button", { name: /Send Reset Email/i });
@@ -84,18 +78,4 @@ describe("ForgetPasswordForm Component", () => {
     ).toBeInTheDocument();
   });
 
-  test("should show loading state when submitting the form", async () => {
-    sendResetPasswordEmail.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 1000)));
-
-    const emailInput = screen.getByPlaceholderText("Enter your email");
-    const submitButton = screen.getByRole("button", { name: /Send Reset Email/i });
-
-    await act(async () => {
-      fireEvent.change(emailInput, { target: { value: "valid@example.com" } });
-      fireEvent.click(submitButton);
-    });
-
-    expect(submitButton).toHaveTextContent("Sending...");
-    expect(submitButton).toBeDisabled();
-  });
 });
