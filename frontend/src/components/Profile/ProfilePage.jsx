@@ -44,7 +44,7 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
 
     const formattedDOB = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     if (!validateChildDOB(day, month, year)) {
-      setChildDOBError("Date of birth cannot be in the future.");
+      setChildDOBError("The date of birth cannot be in the future. Please select a valid date.");
       return;
     } else {
       setChildDOBError('');
@@ -58,12 +58,12 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
       setEditMode(false);
       window.alert("Changes saved successfully.");  // Success message as alert
     } catch (error) {
-      setError('Failed to save changes. Please try again.');
+      setError('Failed to save changes. Please check your network connection and try again.');
     }
   };
 
   const handleDeleteAccount = async () => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this account?');
+    const confirmDelete = window.confirm('Are you sure you want to delete this account? This action cannot be undone.');
     if (confirmDelete) {
       try {
         await deleteChildAccount(childId);
@@ -71,7 +71,7 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
         onClose();
         navigate("/");
       } catch (error) {
-        setError('Failed to delete the account. Please try again.');
+        setError('Failed to delete the account. Please try again later.');
       }
     }
   };
@@ -79,19 +79,19 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
   const handleFirstNameChange = (e) => {
     const value = e.target.value;
     setFirstName(value);
-    setFirstNameError(!/^[A-Za-z]{2,}$/.test(value) ? 'First name should be at least two letters long.' : '');
+    setFirstNameError(!/^[A-Za-z]{2,}$/.test(value) ? 'First name must contain at least two alphabetic characters.' : '');
   };
 
   const handleLastNameChange = (e) => {
     const value = e.target.value;
     setLastName(value);
-    setLastNameError(!/^[A-Za-z]{2,}$/.test(value) ? 'Last name should be at least two letters long.' : '');
+    setLastNameError(!/^[A-Za-z]{2,}$/.test(value) ? 'Last name must contain at least two alphabetic characters.' : '');
   };
 
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    setEmailError(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Please enter a valid email address.' : '');
+    setEmailError(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Please enter a valid email address in the format: example@example.com' : '');
   };
 
   const currentYear = new Date().getFullYear();
@@ -122,11 +122,11 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
               </div>
               <div className="form-group">
                 <input type="text" value={firstName} onChange={handleFirstNameChange} placeholder="First Name" className="input-field" />
-                {firstNameError && <p>{firstNameError}</p>}
+                {firstNameError && <p className="error-message">{firstNameError}</p>}
               </div>
               <div className="form-group">
                 <input type="text" value={lastName} onChange={handleLastNameChange} placeholder="Last Name" className="input-field" />
-                {lastNameError && <p>{lastNameError}</p>}
+                {lastNameError && <p className="error-message">{lastNameError}</p>}
               </div>
               <div className="form-group dob-field-container">
                 <label>Date of Birth:</label>
@@ -159,11 +159,11 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
                     })}
                   </select>
                 </div>
-                {childDOBError && <p>{childDOBError}</p>}
+                {childDOBError && <p className="error-message">{childDOBError}</p>}
               </div>
               <div className="form-group">
-                <input type="email" value={email} onChange={handleEmailChange} className="input-field" />
-                {emailError && <p>{emailError}</p>}
+                <input type="email" value={email} onChange={handleEmailChange} className="input-field" placeholder="Email Address" />
+                {emailError && <p className="error-message">{emailError}</p>}
               </div>
               <button type="submit" className="save-btn">Save Changes</button>
             </form>
