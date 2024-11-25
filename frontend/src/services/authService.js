@@ -13,7 +13,6 @@ export const login = async (email, password) => {
     localStorage.setItem("token", token);
     return { message: "Login successful", user };
   } catch (error) {
-    console.error("Login error:", error);
     throw new Error(error.response?.data?.message || "An error occurred during login.");
   }
 };

@@ -54,11 +54,9 @@ const LoginForm = () => {
       if (result.message === "Login successful" && result.user) {
         localStorage.setItem('childData', JSON.stringify(result.user));
         navigate("/home");
-      } else {
-        setLoginError(result.message || "Invalid email or password");
-      }
+      } 
     } catch (err) {
-      setLoginError("An error occurred during login. Please try again.");
+      setLoginError(err.message || "An error occurred during login. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

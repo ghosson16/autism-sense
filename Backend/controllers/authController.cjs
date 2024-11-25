@@ -26,7 +26,7 @@ const login = async (req, res) => {
   try {
     const existingChild = await childModel.findOne({ email });
     if (!existingChild) {
-      return res.status(404).json({ message: 'No records found' });
+      return res.status(404).json({ message: 'Invalid email or password' });
     }
     const passwordMatch = await bcrypt.compare(password, existingChild.password);
     if (passwordMatch) {
