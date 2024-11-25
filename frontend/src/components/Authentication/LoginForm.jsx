@@ -111,7 +111,7 @@ const LoginForm = () => {
           )}
         </div>
         {loginError && (
-          <span className="error-message" aria-live="assertive">
+          <span className="error-message" aria-live="assertive" data-testid="login-error-message">
             {loginError}
           </span>
         )}

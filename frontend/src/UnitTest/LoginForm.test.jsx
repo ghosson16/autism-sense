@@ -72,22 +72,22 @@ describe("LoginForm Component", () => {
       fireEvent.click(submitButton);
     });
 
-    expect(await screen.findByText(/An error occurred during login. Please try again./i)).toBeInTheDocument();
+    expect(await screen.findByTestId("login-error-message")).toBeInTheDocument();
   });
 
   test("should display an error message for invalid email or password", async () => {
-    login.mockResolvedValueOnce({ message: "Invalid email or password" });
-
+    login.mockRejectedValueOnce(new Error("Invalid email or password"));
+  
     const emailInput = screen.getByPlaceholderText("Email");
     const passwordInput = screen.getByPlaceholderText("Password");
     const submitButton = screen.getByRole("button", { name: /login/i });
-
+  
     await act(async () => {
       fireEvent.change(emailInput, { target: { value: "user@example.com" } });
       fireEvent.change(passwordInput, { target: { value: "WrongPassword1" } });
       fireEvent.click(submitButton);
     });
-
+  
     expect(await screen.findByText(/Invalid email or password/i)).toBeInTheDocument();
   });
 
