@@ -30,6 +30,25 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
     return selectedDate <= today;
   };
 
+  const validateFirstName = (name) => {
+    if (name.length < 2) return "First name should be at least two letters long.";
+    if (name.length > 50) return "First name should not exceed 50 characters.";
+    if (!/^[A-Za-z]+$/.test(name)) return "First name should contain only letters.";
+    return "";
+  };
+
+  const validateLastName = (name) => {
+    if (name.length < 2) return "Last name should be at least two letters long.";
+    if (name.length > 50) return "Last name should not exceed 50 characters.";
+    if (!/^[A-Za-z]+$/.test(name)) return "Last name should contain only letters.";
+    return "";
+  };
+
+  const validateEmail = (email) => {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Please enter a valid email address in the format: example@example.com.";
+    return "";
+  };
+
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -43,6 +62,17 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
     e.preventDefault();
 
     const formattedDOB = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+    const firstNameValidationError = validateFirstName(firstName);
+    const lastNameValidationError = validateLastName(lastName);
+    const emailValidationError = validateEmail(email);
+
+    setFirstNameError(firstNameValidationError);
+    setLastNameError(lastNameValidationError);
+    setEmailError(emailValidationError);
+
+    if (firstNameValidationError || lastNameValidationError || emailValidationError) return;
+
     if (!validateChildDOB(day, month, year)) {
       setChildDOBError("The date of birth cannot be in the future. Please select a valid date.");
       return;
@@ -51,7 +81,7 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
     }
 
     const updatedChildData = { firstName, lastName, dob: formattedDOB, email, photo };
-  
+
     try {
       const response = await updateChildData(childId, updatedChildData);
       onSave(response);
@@ -77,21 +107,21 @@ const ChildProfilePage = ({ child, childId, onClose, onSave }) => {
   };
 
   const handleFirstNameChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/[^A-Za-z]/g, ''); // Remove invalid characters
     setFirstName(value);
-    setFirstNameError(!/^[A-Za-z]{2,}$/.test(value) ? 'First name must contain at least two alphabetic characters.' : '');
+    setFirstNameError(validateFirstName(value));
   };
 
   const handleLastNameChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/[^A-Za-z]/g, ''); // Remove invalid characters
     setLastName(value);
-    setLastNameError(!/^[A-Za-z]{2,}$/.test(value) ? 'Last name must contain at least two alphabetic characters.' : '');
+    setLastNameError(validateLastName(value));
   };
 
   const handleEmailChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.replace(/\s/g, ''); // Remove spaces
     setEmail(value);
-    setEmailError(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Please enter a valid email address in the format: example@example.com' : '');
+    setEmailError(validateEmail(value));
   };
 
   const currentYear = new Date().getFullYear();
